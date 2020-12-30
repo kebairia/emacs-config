@@ -18,12 +18,13 @@
          user-emacs-directory)
         ((boundp 'user-init-directory)
          user-init-directory)
-        (t "~/.config/emacs/modules")))
+        (t "~/.config/emacs")))
 
 (defun load-user-file (file)
   (interactive "f")
   "Load a file in current user's configuration directory"
   (load-file (expand-file-name file user-init-dir)))
+
 (load-user-file "DEFAULTS.el")
 (load-user-file "KEYBIDING.el")
 (load-user-file "PACKAGES.el")

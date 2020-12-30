@@ -1,3 +1,7 @@
+;; reduce the frequency of garbage collection by making it happen on
+;; each 50MB of allocated data (the default is on every 0.76MB)
+(setq gc-cons-threshold 50000000)
+
 ;; Better Defaults
 ;;----------------
 ;;(add-to-list
@@ -53,10 +57,6 @@
  ;; fix the emacsclient font problem
  (add-to-list 'default-frame-alist '(font . "FantasqueSansMono 13")) ;; Font type & size
 
-;;; smart-mode-line-light-theme.el ends here.
- ;; (setq sml/no-confirm-load-theme t)
- ;; (setq sml/theme 'dark)
- ;; (sml/setup)
  (setq-default
      display-line-numbers-current-absolute t ;  Enable the line nubmers
      display-line-numbers-width 2

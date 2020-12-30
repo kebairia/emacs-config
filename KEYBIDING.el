@@ -9,9 +9,6 @@
 (global-set-key [f5] '(lambda () (interactive) (revert-buffer nil t nil)))
 
 ;; packages
-(defun zk/switch-to-agenda ()
-     (interactive)
-     (org-agenda nil "g"))
 
 (defun zk/split-go-right()
   (interactive)
