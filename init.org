@@ -6,6 +6,9 @@
 #+ARCHIVE: ~/org/config_archive.org::
 * Bootstrap
 ** Initial
+  :PROPERTIES:
+  :header-args: :tangle ~/.config/emacs/init.el
+  :END:
    #+begin_src emacs-lisp
      ;;; package --- SummarY
      ;; Load configuration from ~/.config/emacs/settings.org
@@ -21,8 +24,27 @@
      (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
      (package-initialize)
+
+     (defconst user-init-dir
+       (cond ((boundp 'user-emacs-directory)
+              user-emacs-directory)
+             ((boundp 'user-init-directory)
+              user-init-directory)
+             (t "~/.config/emacs/modules")))
+
+     (defun load-user-file (file)
+       (interactive "f")
+       "Load a file in current user's configuration directory"
+       (load-file (expand-file-name file user-init-dir)))
+     (load-user-file "DEFAULTS.el")
+     (load-user-file "KEYBIDING.el")
+     (load-user-file "PACKAGES.el")
+     (load-user-file "ORG.el")
    #+end_src
-** Better Defaults
+* BETTER DEFAULTS
+  :PROPERTIES:
+  :header-args: :tangle ~/.config/emacs/DEFAULTS.el
+  :END:
 *** COMMENT Garbage Collection
     - The garbage collection in Emacs is very simple.
       You allocate some bytes and once you pass a certain threshold, it garbage collects. That’s it.
@@ -146,7 +168,10 @@
              regexp-search-ring))
     #+END_SRC
      #+end_src
-* Keymaps
+* KEYMAPS
+  :PROPERTIES:
+  :header-args: :tangle ~/.config/emacs/KEYBIDING.el
+  :END:
 ** files
    #+begin_src emacs-lisp
      ;; some shortcuts -- files
@@ -199,7 +224,10 @@
         (global-set-key (kbd "M-o") 'delete-other-windows)
         (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
    #+end_src
-* Packages
+* PACKAGES
+  :PROPERTIES:
+  :header-args: :tangle ~/.config/emacs/PACKAGES.el
+  :END:
 ** Theme
    #+BEGIN_SRC emacs-lisp
      (use-package gruvbox-theme
@@ -359,7 +387,10 @@
     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
     ))
 #+END_SRC
-* org
+* ORG
+  :PROPERTIES:
+  :header-args: :tangle ~/.config/emacs/ORG.el
+  :END:
 ** Look & Feel
    #+begin_src emacs-lisp
      (use-package org
@@ -442,34 +473,20 @@
     "......" "----------------"))
     (setq
         org-agenda-start-on-weekday 0                       ;; Weekday start on Sunday
-<<<<<<< HEAD
-        org-trust-scanner-tags t
-        org-treat-S-cursor-todo-selection-as-state-change nil;; S-R,S-L skip the note/log info[used when fixing the state]
-        org-agenda-tags-column -140                     ;; Set tags far to the right
-        org-clock-out-remove-zero-time-clocks t         ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
-        org-clock-persist t                             ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-        org-use-fast-todo-selection t                   ;; from any todo state to any other state; using it keys
-        org-agenda-window-setup 'only-window)              ;; Always open my agenda in fullscreen
-=======
          org-treat-S-cursor-todo-selection-as-state-change nil;; S-R,S-L skip the note/log info[used when fixing the state]
           org-agenda-tags-column -140                     ;; Set tags far to the right
           org-clock-out-remove-zero-time-clocks t         ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
           org-clock-persist t                             ;; Save the running clock and all clock history when exiting Emacs, load it on startup
           org-use-fast-todo-selection t                   ;; from any todo state to any other state; using it keys
          org-agenda-window-setup 'only-window)              ;; Always open my agenda in fullscreen
->>>>>>> origin/new-gtd
-
     (setq org-agenda-prefix-format
       '((agenda . " %i %-12:c%?-12t% s")
         (todo   . " ")
         (tags   . " %i %-12:c")
         (search . " %i %-12:c")))
 
-<<<<<<< HEAD
-=======
     (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)")))
->>>>>>> origin/new-gtd
 
     (defun log-todo-next-creation-date (&rest ignore)
       "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
