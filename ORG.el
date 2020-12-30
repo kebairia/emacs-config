@@ -3,9 +3,7 @@
   :custom
   (org-src-window-setup 'current-window)
   :custom-face
-   (org-block ((t (:background "#181818"))))
    (org-done ((t (:strike-through t :weight bold))))
-   (org-headline-done ((t (:strike-through t))))
    (org-document-title ((t (:foreground "#00b0d1" :weight bold :height 1.1 ))))
    (org-document-info ((t (:foreground "#00b0d1"  :height 1.0 ))))
    (org-document-info-keyword ((t (:foreground "#928374" :slant italic :height 1.0 ))))
@@ -58,22 +56,19 @@
 (setq org-agenda-directory "~/org/gtd/"
       org-agenda-files '("~/org/gtd" ))                 ;; org-agenda-files
 
- (setq org-agenda-span 1)
- (setq org-agenda-tags-column -100) ; take advantage of the screen width
- (setq org-agenda-sticky nil)
- (setq org-agenda-inhibit-startup t)
- (setq org-agenda-dim-blocked-tasks nil)                ;; Do not dim blocked tasks
- (setq org-agenda-inhibit-startup t)              ;; Stop preparing agenda buffers on startup:
- (setq org-agenda-use-tag-inheritance nil)              ;; Disable tag inheritance for agendas:
- (setq org-agenda-use-tag-inheritance nil)
- (setq org-agenda-show-log t)
- (setq org-agenda-skip-scheduled-if-done t)
- (setq org-agenda-skip-deadline-if-done t)
- (setq org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
- (setq org-agenda-time-grid
+ (setq org-agenda-dim-blocked-tasks nil                ;; Do not dim blocked tasks
+       org-agenda-span 'day
+       org-agenda-inhibit-startup t              ;; Stop preparing agenda buffers on startup:
+       org-agenda-use-tag-inheritance nil              ;; Disable tag inheritance for agendas:
+       org-agenda-show-log t
+       org-agenda-skip-scheduled-if-done t
+       org-agenda-skip-deadline-if-done t
+       org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+
+       org-agenda-time-grid
        '((daily today require-timed)
-(800 1000 1200 1400 1600 1800 2000)
-"......" "----------------"))
+        (800 1000 1200 1400 1600 1800 2000)
+        "......" "----------------"))
 (setq
     org-agenda-start-on-weekday 0                       ;; Weekday start on Sunday
      org-treat-S-cursor-todo-selection-as-state-change nil;; S-R,S-L skip the note/log info[used when fixing the state]
@@ -98,16 +93,13 @@
     (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
 
 (add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
-(setq org-log-done 'time)
-
- (add-hook 'org-agenda-mode-hook                        ;; disable line-number when i open org-agenda view
+(add-hook 'org-agenda-mode-hook                        ;; disable line-number when i open org-agenda view
            (lambda() (display-line-numbers-mode -1)))
 
 ;; (define-key global-map (kbd "C-c c") 'org-capture)
 ;; (define-key global-map (kbd "C-c a") 'org-agenda)
 
 (setq org-agenda-block-separator 9472)     ; use 'straight line' as a block-agenda divider
-(setq org-agenda-hide-tags-regexp ".")
 (setq org-agenda-custom-commands
       '(("g" "Get Things Done (GTD)"
          ((agenda ""
@@ -134,10 +126,10 @@
                       (org-agenda-files '("~/org/gtd/inbox.org"))
                       (org-agenda-prefix-format "  %?-12t% s")))
 
-          (tags "CLOSED>=\"<today>\""
-                ((org-agenda-overriding-header "Completed today")
-                 (org-agenda-prefix-format "  %?-12t% s")
-            ))))))
+            ))))
+          ;; (tags "CLOSED>=\"<today>\""
+          ;;       ((org-agenda-overriding-header "Completed today")
+          ;;        (org-agenda-prefix-format "  %?-12t% s")
 
 (require 'org-habit)
 (add-to-list 'org-modules 'org-habit)
@@ -185,7 +177,7 @@
 
 (setq org-todo-keywords
   '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED")))
- (setq org-todo-keyword-faces
+(setq org-todo-keyword-faces
   '(
     ("TODO" . (:foreground "brown2" :weight bold))
     ("READ" . (:foreground "brown2" :weight bold))
