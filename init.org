@@ -442,6 +442,7 @@
     "......" "----------------"))
     (setq
         org-agenda-start-on-weekday 0                       ;; Weekday start on Sunday
+<<<<<<< HEAD
         org-trust-scanner-tags t
         org-treat-S-cursor-todo-selection-as-state-change nil;; S-R,S-L skip the note/log info[used when fixing the state]
         org-agenda-tags-column -140                     ;; Set tags far to the right
@@ -449,6 +450,14 @@
         org-clock-persist t                             ;; Save the running clock and all clock history when exiting Emacs, load it on startup
         org-use-fast-todo-selection t                   ;; from any todo state to any other state; using it keys
         org-agenda-window-setup 'only-window)              ;; Always open my agenda in fullscreen
+=======
+         org-treat-S-cursor-todo-selection-as-state-change nil;; S-R,S-L skip the note/log info[used when fixing the state]
+          org-agenda-tags-column -140                     ;; Set tags far to the right
+          org-clock-out-remove-zero-time-clocks t         ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+          org-clock-persist t                             ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+          org-use-fast-todo-selection t                   ;; from any todo state to any other state; using it keys
+         org-agenda-window-setup 'only-window)              ;; Always open my agenda in fullscreen
+>>>>>>> origin/new-gtd
 
     (setq org-agenda-prefix-format
       '((agenda . " %i %-12:c%?-12t% s")
@@ -456,6 +465,11 @@
         (tags   . " %i %-12:c")
         (search . " %i %-12:c")))
 
+<<<<<<< HEAD
+=======
+    (setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)")))
+>>>>>>> origin/new-gtd
 
     (defun log-todo-next-creation-date (&rest ignore)
       "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"

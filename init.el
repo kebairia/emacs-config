@@ -362,6 +362,7 @@
 
 (setq org-agenda-directory "~/org/gtd/"
       org-agenda-files '("~/org/gtd" ))                 ;; org-agenda-files
+<<<<<<< HEAD
 
  (setq org-agenda-span 1)
  (setq org-agenda-tags-column -100) ; take advantage of the screen width
@@ -388,6 +389,16 @@
     org-clock-persist t                             ;; Save the running clock and all clock history when exiting Emacs, load it on startup
     org-use-fast-todo-selection t                   ;; from any todo state to any other state; using it keys
     org-agenda-window-setup 'only-window)              ;; Always open my agenda in fullscreen
+=======
+(setq
+    org-agenda-start-on-weekday 0                       ;; Weekday start on Sunday
+     org-treat-S-cursor-todo-selection-as-state-change nil;; S-R,S-L skip the note/log info[used when fixing the state]
+      org-agenda-tags-column -140                     ;; Set tags far to the right
+      org-clock-out-remove-zero-time-clocks t         ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+      org-clock-persist t                             ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+      org-use-fast-todo-selection t                   ;; from any todo state to any other state; using it keys
+     org-agenda-window-setup 'only-window)              ;; Always open my agenda in fullscreen
+>>>>>>> origin/new-gtd
 
 (setq org-agenda-prefix-format
   '((agenda . " %i %-12:c%?-12t% s")
@@ -395,6 +406,11 @@
     (tags   . " %i %-12:c")
     (search . " %i %-12:c")))
 
+<<<<<<< HEAD
+=======
+(setq org-todo-keywords
+  '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)")))
+>>>>>>> origin/new-gtd
 
 (defun log-todo-next-creation-date (&rest ignore)
   "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
@@ -412,12 +428,20 @@
 ;; (define-key global-map (kbd "C-c a") 'org-agenda)
 
 (setq org-agenda-block-separator 9472)     ; use 'straight line' as a block-agenda divider
+<<<<<<< HEAD
 (setq org-agenda-hide-tags-regexp ".")
+=======
+>>>>>>> origin/new-gtd
 (setq org-agenda-custom-commands
       '(("g" "Get Things Done (GTD)"
          ((agenda ""
                 ((org-agenda-overriding-header "Tasks")
+<<<<<<< HEAD
                  (org-agenda-prefix-format "  %i %-12:c [%e] ")
+=======
+                 (org-agenda-span 'day)
+                 (org-agenda-prefix-format "  %i %-12:c (%e) ")
+>>>>>>> origin/new-gtd
 
                    (org-agenda-files '("~/org/gtd/next.org"))
                    (org-deadline-warning-days 0)
@@ -434,7 +458,11 @@
                    (org-agenda-skip-function
                     '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))))
 
+<<<<<<< HEAD
           (todo "TODO"
+=======
+          (tags-todo "inbox"
+>>>>>>> origin/new-gtd
                      ((org-agenda-overriding-header "Inbox")
                       (org-agenda-files '("~/org/gtd/inbox.org"))
                       (org-agenda-prefix-format "  %?-12t% s")))
@@ -488,6 +516,7 @@
      ((and (member (org-get-todo-state) (list "NEXT")))  "HOLD")
       )))
 
+<<<<<<< HEAD
 (setq org-todo-keywords
   '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED")))
  (setq org-todo-keyword-faces
@@ -504,3 +533,19 @@
 
     ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
   ))
+=======
+(setq org-todo-keyword-faces
+ '(
+   ("TODO" . (:foreground "brown2" :weight bold))
+   ("READ" . (:foreground "brown2" :weight bold))
+
+   ("NEXT" . (:foreground "#00b0d1"  :weight bold ))
+   ("READING" . (:foreground "#00b0d1"  :weight bold ))
+
+   ("DONE" . (:foreground "#16a637" :weight bold))
+
+   ("HOLD" . (:foreground "orange"  :weight bold))
+
+   ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
+ ))
+>>>>>>> origin/new-gtd
