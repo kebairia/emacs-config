@@ -442,6 +442,11 @@
                            ((org-agenda-overriding-header "Inbox")
                             (org-agenda-files '("~/org/gtd/inbox.org"))
                             (org-agenda-prefix-format "  %?-12t% s")))
+                (tags "DONE"
+                      ((org-agenda-overriding-header "Completed today")
+                    (org-agenda-files
+                      '("~/org/gtd/projects.org" "~/org/gtd/inbox.org" "~/org/gtd/next.org" "~/org/gtd/habits.org"))
+                       (org-agenda-prefix-format "  %?-12t% s")))
 
                   ))))
                 ;; (tags "CLOSED>=\"<today>\""
