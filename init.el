@@ -25,8 +25,9 @@
   "Load a file in current user's configuration directory"
   (load-file (expand-file-name file user-init-dir)))
 
-(load-user-file "DEFAULTS.el")
-(load-user-file "KEYBIDING.el")
-(load-user-file "PACKAGES.el")
-(load-user-file "ORG.el")
+;;(load-user-file "DEFAULTS.el")
+(load-user-file "modules/KEYBIDING.el")
+(load-user-file "modules/PACKAGES.el")
+(load-user-file "modules/ORG.el")
 (load-user-file "elegant-theme/elegance.el")
+(load-user-file "elegant-theme/sanity.el")

@@ -3,6 +3,7 @@
 #+STARTUP: overview
 #+PROPERTY: header-args :results none
 #+ARCHIVE: ~/org/config_archive.org::
+
 * BOOTSTRAP
   :PROPERTIES:
   :header-args: :tangle ~/.config/emacs/init.el
@@ -36,99 +37,17 @@
        "Load a file in current user's configuration directory"
        (load-file (expand-file-name file user-init-dir)))
 
-     (load-user-file "DEFAULTS.el")
-     (load-user-file "KEYBIDING.el")
-     (load-user-file "PACKAGES.el")
-     (load-user-file "ORG.el")
+     ;;(load-user-file "DEFAULTS.el")
+     (load-user-file "modules/KEYBIDING.el")
+     (load-user-file "modules/PACKAGES.el")
+     (load-user-file "modules/ORG.el")
      (load-user-file "elegant-theme/elegance.el")
+     (load-user-file "elegant-theme/sanity.el")
    #+end_src
-
-* BETTER DEFAULTS
-  :PROPERTIES:
-  :header-args: :tangle ~/.config/emacs/DEFAULTS.el
-  :header-args: :results none
-  :END:
- #+BEGIN_SRC emacs-lisp
-   ;; Better Defaults
-   ;;----------------
-   ;;(add-to-list
-   ;; 'default-frame-alist '(fullscreen . fullboth)) ; Start emacs/emacsclient in fullscreen mode
-   (require 'generic-x)                        ; Add syntax high' for ini/conf/batch files
-   (setq-default
-       fill-column 80                          ; Set width for automatic line breaks
-       tab-width 4                             ; Set width for tabs
-       indent-tabs-mode nil)                   ; Stop using tabs to indent
-   (setq
-       tab-always-indent 'complete)             ; Tab always indent
-   (electric-pair-mode 1)
-   (global-hl-line-mode t)                     ; highlight current line
-   (fset 'yes-or-no-p 'y-or-n-p)               ; Replace yes/no prompts with y/n
-
- #+END_SRC
-*** Garbage Collection
-    - The garbage collection in Emacs is very simple.
-      You allocate some bytes and once you pass a certain threshold, it garbage collects. That’s it.
-      - More infos [[https://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/][here]] and [[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][here]]
-    #+begin_src emacs-lisp
-     ;; reduce the frequency of garbage collection by making it happen on
-     ;; each 50MB of allocated data (the default is on every 0.76MB)
-     (setq gc-cons-threshold 50000000)
-    #+end_src
-*** Fonts,Line numbers
-    #+BEGIN_SRC emacs-lisp
-
-       (setq-default
-           display-line-numbers-current-absolute t ;  Enable the line nubmers
-           display-line-numbers-width 2
-           display-line-numbers-widen t)
-       (add-hook 'text-mode-hook #'display-line-numbers-mode)
-       (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-       (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
-       (custom-set-faces
-         ;; Make Comments/strings italic
-         '(font-lock-comment-face ((t (:forground "#928374" :slant italic t))))
-         '(font-lock-string-face ((t (:foreground "#b8bb26" :slant italic))))
-         '(dired-directory ((t (:inherit nil :foreground "#00b0d1" :weight bold))))
-         '(line-number ((t (:background "#1d2021" :foreground "#7c6f64"))))
-         '(line-number-current-line ((t (:background "#504945" :foreground "#fe8019")))))
-
-    #+END_SRC
-*** Hist, Backup and auto-save
-     check it here: [[https://github.com/bradwright/emacs.d]]
-    #+BEGIN_SRC emacs-lisp
-      ;; Hist, Backup and auto-save ..etc
-      ;;---------------------------------
-      (setq backup-directory-alist '(("." . "~/.config/emacs/backup"))
-        backup-by-copying t                       ; Don't delink hardlinks
-        version-control t                         ; Use version numbers on backups
-        delete-old-versions t                     ; Automatically delete excess backups
-        kept-new-versions 3                       ; how many of the newest versions to keep
-        kept-old-versions 3                       ; and how many of the old
-        vc-make-backup-files t                    ; Even version controlled files get to be backed up.
-        )
-      (setq auto-save-file-name-transforms
-            '((".*" "~/.config/emacs/undo/" t)))
-      (setq undo-tree-history-directory-alist     ; Saving persistent tree-undo to a single directory
-            '(("." . "~/.config/emacs/undo")))
-
-       (setq is-work nil)                         ; *--=~~ search for explanations ~~=--*
-       ;; t means no truncation
-       (setq history-length t)
-       (setq history-delete-duplicates t)
-
-       (savehist-mode 1)                           ; Saves your minibuffer histories
-       (setq
-           savehist-file "~/.config/emacs/savehist")    ; Set the savehist file
-       (setq savehist-save-minibuffer-history 1)
-       (setq savehist-additional-variables         ; Save other histories and other variables as well
-           '(kill-ring
-             search-ring
-             regexp-search-ring))
-    #+END_SRC
-     #+end_src
+   
 * KEYMAPS
   :PROPERTIES:
-  :header-args: :tangle ~/.config/emacs/KEYBIDING.el
+  :header-args: :tangle ~/.config/emacs/modules/KEYBIDING.el
   :header-args: :results none
   :END:
 ** Files
@@ -137,15 +56,11 @@
      (global-set-key (kbd "C-c C") (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
      (global-set-key (kbd "C-c b") (lambda() (interactive)(find-file "~/org/books.org")))
      (global-set-key (kbd "C-c I") (lambda() (interactive)(find-file "~/org/gtd/inbox.org")))
-     (global-set-key (kbd "C-c L") (lambda() (interactive)(find-file "~/org/links.org")))
-     (global-set-key (kbd "C-c E") (lambda() (interactive)(find-file "~/org/gtd/emails.org")))
+     ;;(global-set-key (kbd "C-c L") (lambda() (interactive)(find-file "~/org/links.org")))
+     ;;(global-set-key (kbd "C-c E") (lambda() (interactive)(find-file "~/org/gtd/emails.org")))
      (global-set-key (kbd "<f12>") (lambda() (interactive)(find-file "~/org/files/org.pdf")))
      ;; Reload buffer with <F5>
      (global-set-key [f5] '(lambda () (interactive) (revert-buffer nil t nil)))
-   #+end_src
-** Apps
-   #+begin_src emacs-lisp
-         ;; packages
    #+end_src
 ** win-movements
    #+begin_src emacs-lisp
@@ -182,7 +97,7 @@
    #+end_src
 * PACKAGES
   :PROPERTIES:
-  :header-args: :tangle ~/.config/emacs/PACKAGES.el
+  :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
   :header-args: :results none
   :END:
 ** COMMENT Theme
@@ -346,7 +261,7 @@
 #+END_SRC
 * ORG
   :PROPERTIES:
-  :header-args: :tangle ~/.config/emacs/ORG.el
+  :header-args: :tangle ~/.config/emacs/modules/ORG.el
   :header-args: :results none
   :END:
 ** COMMENT Look & Feel
@@ -493,10 +408,10 @@
 
 *** Habit
     #+BEGIN_SRC emacs-lisp
-     (require 'org-habit)
-     (add-to-list 'org-modules 'org-habit)
-     (setq org-habit-graph-column 48)
-     (setq org-habit-show-habits-only-for-today t)
+      (require 'org-habit)
+      (add-to-list 'org-modules 'org-habit)
+      (setq org-habit-graph-column 48)
+      (setq org-habit-show-habits-only-for-today t)
     #+END_SRC
 
 *** refiling
