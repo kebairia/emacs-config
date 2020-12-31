@@ -28,8 +28,8 @@
 ;;(load-user-file "DEFAULTS.el")
 (load-user-file "modules/KEYBIDING.el")
 (load-user-file "modules/PACKAGES.el")
-(load-user-file "neat-theme/neat.el")
-(load-user-file "neat-theme/sanity.el")
+(load-user-file "clean-theme/clean.el")
+(load-user-file "clean-theme/defaults.el")
 (load-user-file "modules/ORG.el")
 
 ;; Hist, Backup and auto-save ..etc
