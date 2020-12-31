@@ -40,8 +40,8 @@
      ;;(load-user-file "DEFAULTS.el")
      (load-user-file "modules/KEYBIDING.el")
      (load-user-file "modules/PACKAGES.el")
-     (load-user-file "elegant-theme/elegance.el")
-     (load-user-file "elegant-theme/sanity.el")
+     (load-user-file "clean-theme/clean.el")
+     (load-user-file "clean-theme/defaults.el")
      (load-user-file "modules/ORG.el")
 
    #+end_src
@@ -357,8 +357,6 @@
                                  (match-beginning 1)
                                  (match-end 1) "•"))))))
    #+end_src
-
-   #+RESULTS:
 
 ** GTD
   #+begin_src emacs-lisp
