@@ -29,3 +29,4 @@
 (load-user-file "KEYBIDING.el")
 (load-user-file "PACKAGES.el")
 (load-user-file "ORG.el")
+(load-user-file "elegant-theme/elegance.el")

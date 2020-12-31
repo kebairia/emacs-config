@@ -1,13 +1,3 @@
-(use-package gruvbox-theme
- :init )
- ;; the bellow is used so that emacs will trust the elisp code[the theme]
- ;; in future
-(custom-set-variables
- '(custom-enabled-themes  '(gruvbox-dark-hard))
- '(custom-safe-themes
-    '("4cf9ed30ea575fb0ca3cff6ef34b1b87192965245776afa9e9e20c17d115f3fb"
-       default)))
-
 (setq evil-want-keybinding nil)                   ;; this statement is required to enable evil/evil-colleciton mode
 (evil-mode 1)                                     ;; enable evil-mode
 (setq evil-want-abbrev-expand-on-insert-exit nil)
@@ -58,13 +48,6 @@
         (global-evil-leader-mode 1))
          ;;"B" 'zetteldeft-backlink-add
          ;;"s" 'zk/gen-scratch-buffer
-
-;;Use minions to hide all minor modes
-(use-package minions
-  :config
-  (setq minions-mode-line-lighter ""
-        minions-mode-line-delimiters '("" . ""))
-  (minions-mode 1))
 
 ;; disable linum-mode
 (add-hook 'ibuffer-mode (lambda() (linum-mode -1)))

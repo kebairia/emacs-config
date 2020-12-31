@@ -40,6 +40,7 @@
      (load-user-file "KEYBIDING.el")
      (load-user-file "PACKAGES.el")
      (load-user-file "ORG.el")
+     (load-user-file "elegant-theme/elegance.el")
    #+end_src
 
 * BETTER DEFAULTS
@@ -56,7 +57,7 @@
      ;; each 50MB of allocated data (the default is on every 0.76MB)
      (setq gc-cons-threshold 50000000)
     #+end_src
-*** Better Defaults
+*** COMMENT Better Defaults
    #+BEGIN_SRC emacs-lisp
      ;; Better Defaults
      ;;----------------
@@ -108,7 +109,7 @@
      (add-hook 'text-mode-hook #'rainbow-mode)   ;exp #2398f9
 
    #+END_SRC
-*** Fonts,Line numbers
+*** COMMENT Fonts,Line numbers
     #+BEGIN_SRC emacs-lisp
       ;; Fonts, line nubmers ..etc
       ;;--------------------------
@@ -225,7 +226,7 @@
   :header-args: :tangle ~/.config/emacs/PACKAGES.el
   :header-args: :results none
   :END:
-** Theme
+** COMMENT Theme
    #+BEGIN_SRC emacs-lisp
      (use-package gruvbox-theme
       :init )
@@ -292,7 +293,7 @@
               ;;"B" 'zetteldeft-backlink-add
               ;;"s" 'zk/gen-scratch-buffer
    #+END_SRC
-** Minions
+** COMMENT Minions
    #+BEGIN_SRC emacs-lisp
      ;;Use minions to hide all minor modes
      (use-package minions
@@ -389,7 +390,7 @@
   :header-args: :tangle ~/.config/emacs/ORG.el
   :header-args: :results none
   :END:
-** Look & Feel
+** COMMENT Look & Feel
    #+begin_src emacs-lisp
      (use-package org
        :mode ("\\.org\\'" . org-mode)
