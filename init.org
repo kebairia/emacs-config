@@ -5,7 +5,7 @@
 #+ARCHIVE: ~/org/config_archive.org::
 
 * BOOTSTRAP
-  :PROPERTIES:
+  :Properties:
   :header-args: :tangle ~/.config/emacs/init.el
   :header-args: :results none
   :END:
@@ -40,8 +40,8 @@
      ;;(load-user-file "DEFAULTS.el")
      (load-user-file "modules/KEYBIDING.el")
      (load-user-file "modules/PACKAGES.el")
-     (load-user-file "elegant-theme/elegance.el")
-     (load-user-file "elegant-theme/sanity.el")
+     (load-user-file "neat-theme/neat.el")
+     (load-user-file "neat-theme/sanity.el")
      (load-user-file "modules/ORG.el")
 
    #+end_src
@@ -49,7 +49,6 @@
     check it here: [[https://github.com/bradwright/emacs.d]]
    #+BEGIN_SRC emacs-lisp
      ;; Hist, Backup and auto-save ..etc
-     ;;---------------------------------
      (setq backup-directory-alist '(("." . "~/.config/emacs/backup"))
        backup-by-copying t                       ; Don't delink hardlinks
        version-control t                         ; Use version numbers on backups
@@ -298,7 +297,7 @@
   :header-args: :tangle ~/.config/emacs/modules/ORG.el
   :header-args: :results none
   :END:
-** Look & Feel
+** COMMENT Look & Feel
    #+begin_src emacs-lisp
      (use-package org
        :mode ("\\.org\\'" . org-mode)
@@ -306,9 +305,9 @@
        (org-src-window-setup 'current-window)
        :custom-face
         (org-done ((t (:strike-through t :weight bold))))
-        (org-document-title ((t (:weight bold :height 1.1 :underline t))))
-        (org-document-info ((t (:height 1.0 ))))
-        (org-document-info-keyword ((t (:foreground "#928374" :slant italic :height 1.0 ))))
+        ;;(org-document-title ((t (:weight bold :height 1.1 :underline t))))
+        ;;(org-document-info ((t (:height 1.0 ))))
+        ;;(org-document-info-keyword ((t (:foreground "#928374" :slant italic :height 1.0 ))))
         (org-level-1 ((t (:weight bold))))
         (org-level-2 ((t (:weight bold))))
         (org-level-3 ((t (:weight bold))))
@@ -324,9 +323,9 @@
         (org-drawer ((t (:foreground "#fabd2f" ))))
         (org-agenda-clocking ((t (:foreground "#dcdccc" :weight bold))))
         ;;(org-link ((t (:foreground "SpringGreen3" :underline t)))))
-        (org-link ((t (:foreground "SeaGreen3" :underline t)))))
+        ;;(org-link ((t (:foreground "SeaGreen3" :underline t))))
      (setq org-fontify-done-headline t
-           org-hide-leading-stars t
+           org-hide-leading-stars nil
            org-pretty-entities t
            org-image-actual-width nil
            org-hide-emphasis-markers t
@@ -348,7 +347,7 @@
      ;; Allow setting single tags without the menu
      (setq org-fast-tag-selection-single-key 'expert)
      ;; use '⌄/⌵⤵' instead of '...' in headlines
-     (setq org-ellipsis "⤵")
+     (setq org-ellipsis " ⌵")
      ;; use '•' instead of '-' in lists
      (font-lock-add-keywords 'org-mode
                         '(("^ *\\([-]\\) "
@@ -357,9 +356,6 @@
                                  (match-beginning 1)
                                  (match-end 1) "•"))))))
    #+end_src
-
-   #+RESULTS:
-
 ** GTD
   #+begin_src emacs-lisp
     ;; ;; Adding a separator line between days in Emacs Org-mode calender view (prettier)
@@ -417,41 +413,42 @@
 *** org agenda
     #+begin_src emacs-lisp
 
-      (setq org-agenda-block-separator  9472)     ; use 'straight line' as a block-agenda divider
-      (setq org-agenda-custom-commands
-            '(("g" "Get Things Done (GTD)"
-               ((agenda ""
-                      ((org-agenda-overriding-header "Tasks")
-                       (org-agenda-prefix-format "  %i %-12:c [%e] ")
+            (setq org-agenda-block-separator  9472)     ; use 'straight line' as a block-agenda divider
+            (setq org-agenda-custom-commands
+                  '(("g" "Get Things Done (GTD)"
+                     ((agenda ""
+                            ((org-agenda-overriding-header "Tasks")
+                             (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                             (org-agenda-use-time-grid t)
 
-                         (org-deadline-warning-days 0)
-                         (org-agenda-skip-function
-                          '(org-agenda-skip-entry-if 'deadline))
-                               ))
+                               (org-deadline-warning-days 0)
+                               (org-agenda-skip-function
+                                '(org-agenda-skip-entry-if 'deadline))
+                                     ))
 
-                (agenda nil
-                        ((org-agenda-overriding-header "Deadlines")
-                         (org-agenda-entry-types '(:deadline))
-                         (org-agenda-format-date "")
-                         (org-deadline-warning-days 7)
-                         (org-agenda-prefix-format "  %?-12t% s")
-                         (org-agenda-skip-function
-                          '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))))
+                      (agenda nil
+                              ((org-agenda-overriding-header "Deadlines")
+                               (org-agenda-entry-types '(:deadline))
+                               (org-agenda-format-date "")
+                               (org-deadline-warning-days 7)
+                               (org-agenda-prefix-format "  %?-12t% s")
+                               (org-agenda-skip-function
+                                '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))))
 
-                (todo "TODO"
-                           ((org-agenda-overriding-header "Inbox")
-                            (org-agenda-files '("~/org/gtd/inbox.org"))
-                            (org-agenda-prefix-format "  %?-12t% s")))
-                (tags "DONE"
-                      ((org-agenda-overriding-header "Completed today")
-                    (org-agenda-files
-                      '("~/org/gtd/projects.org" "~/org/gtd/inbox.org" "~/org/gtd/next.org" "~/org/gtd/habits.org"))
-                       (org-agenda-prefix-format "  %?-12t% s")))
+                      (todo "TODO"
+                                 ((org-agenda-overriding-header "Inbox")
+                                  (org-agenda-files '("~/org/gtd/inbox.org"))
+                                  (org-agenda-prefix-format "  %?-12t% s")))
+                      (todo "DONE"
+                            ((org-agenda-overriding-header "Completed today")
+                          (org-agenda-files
+                            '("~/org/gtd/projects.org" "~/org/gtd/inbox.org" "~/org/gtd/next.org" "~/org/gtd/habits.org"))
+                             (org-agenda-prefix-format "  %?-12t% s")))
 
-                  ))))
-                ;; (tags "CLOSED>=\"<today>\""
-                ;;       ((org-agenda-overriding-header "Completed today")
-                ;;        (org-agenda-prefix-format "  %?-12t% s")
+                        ))))
+                      ;; (tags "CLOSED>=\"<today>\""
+                      ;;       ((org-agenda-overriding-header "Completed today")
+                      ;;        (org-agenda-prefix-format "  %?-12t% s")
     #+end_src
 
 *** Habit
@@ -611,3 +608,70 @@
                (R . t)
                ))
    #+END_SRC
+
+** COMMENT Look & Feel
+   #+begin_src emacs-lisp
+     (use-package org
+       :mode ("\\.org\\'" . org-mode)
+       :custom
+       (org-src-window-setup 'current-window)
+       :custom-face
+        (org-done ((t (:strike-through t :weight bold))))
+        ;;(org-document-title ((t (:weight bold :height 1.1 :underline t))))
+        ;;(org-document-info ((t (:height 1.0 ))))
+        (org-document-info-keyword ((t (:foreground "#928374" :slant italic :height 1.0 ))))
+        (org-level-1 ((t (:weight bold))))
+        (org-level-2 ((t (:weight bold))))
+        (org-level-3 ((t (:weight bold))))
+        (org-level-4 ((t (:weight bold))))
+        (org-level-5 ((t (:weight bold))))
+        (org-level-6 ((t (:weight bold))))
+        (org-level-7 ((t (:weight bold))))
+        (font-lock-comment-face ((t (:forground "#928374" :slant italic t))))
+        (org-date-selected ((t (:foreground "#00b0d1" :weight bold :height 1.1 :underline t))))
+        (org-done ((t (:foreground "#16a637" :strike-through t :weight bold))))
+        (org-headline-done ((t (:foreground "#16a637" :strike-through t ))))
+        (org-date ((t (:foreground "#458588" :underline t))))
+        (org-drawer ((t (:foreground "#fabd2f" ))))
+        (org-agenda-clocking ((t (:foreground "#dcdccc" :weight bold))))
+        (org-agenda-clocking ((t (:foreground "#dcdccc" :weight bold))))
+        (org-agenda-filter-tags ((t (:foreground "#458588" ))))
+        (org-priority ((t (:foreground "#ef5350" ))))
+        (org-time-grid ((t (:foreground "#ffcdd2" ))))
+        (org-block ((t (:foreground "#dcdccc" ))))
+        ;;(org-link ((t (:foreground "SpringGreen3" :underline t)))))
+        (org-link ((t (:foreground "SeaGreen3" :underline t)))))
+     (setq org-fontify-done-headline t
+           org-hide-leading-stars nil
+           org-pretty-entities t
+           org-image-actual-width nil
+           org-hide-emphasis-markers t
+           org-log-into-drawer t
+           org-log-done '(time)
+           org-log-reschedule '(time)
+           org-babel-min-lines-for-block-output 0
+           org-deadline-warning-days 0
+           org-emphasis-alist
+              '(("*" (bold ))
+                 ("/" italic)
+                 ("_" underline)
+                 ("=" (:foreground "brown2" :weight bold))
+                 ("~" (:foreground "#928374" :slant italic))
+                 ("+" (:strike-through t))))
+     ;; When editing a code snippet, use the current window rather than popping open a new one
+     (setq org-src-window-setup 'current-window)
+     ;;(add-hook 'org-mode-hook 'org-indent-mode)
+     ;; Allow setting single tags without the menu
+     (setq org-fast-tag-selection-single-key 'expert)
+     ;; use '⌄/⌵⤵' instead of '...' in headlines
+     (setq org-ellipsis " ⌵")
+     ;; use '•' instead of '-' in lists
+     (font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 ()
+                                (compose-region
+                                 (match-beginning 1)
+                                 (match-end 1) "•"))))))
+   #+end_src
+
+   #+RESULTS:

@@ -28,12 +28,11 @@
 ;;(load-user-file "DEFAULTS.el")
 (load-user-file "modules/KEYBIDING.el")
 (load-user-file "modules/PACKAGES.el")
-(load-user-file "elegant-theme/elegance.el")
-(load-user-file "elegant-theme/sanity.el")
+(load-user-file "neat-theme/neat.el")
+(load-user-file "neat-theme/sanity.el")
 (load-user-file "modules/ORG.el")
 
 ;; Hist, Backup and auto-save ..etc
-;;---------------------------------
 (setq backup-directory-alist '(("." . "~/.config/emacs/backup"))
   backup-by-copying t                       ; Don't delink hardlinks
   version-control t                         ; Use version numbers on backups
