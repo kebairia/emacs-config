@@ -298,7 +298,7 @@
   :header-args: :tangle ~/.config/emacs/modules/ORG.el
   :header-args: :results none
   :END:
-** COMMENT Look & Feel
+** Look & Feel
    #+begin_src emacs-lisp
      (use-package org
        :mode ("\\.org\\'" . org-mode)
@@ -306,13 +306,13 @@
        (org-src-window-setup 'current-window)
        :custom-face
         (org-done ((t (:strike-through t :weight bold))))
-        (org-document-title ((t (:foreground "#00b0d1" :weight bold :height 1.1 ))))
-        (org-document-info ((t (:foreground "#00b0d1"  :height 1.0 ))))
+        (org-document-title ((t (:weight bold :height 1.1 :underline t))))
+        (org-document-info ((t (:height 1.0 ))))
         (org-document-info-keyword ((t (:foreground "#928374" :slant italic :height 1.0 ))))
-        (org-level-1 ((t (:foreground "#00b0d1" :weight bold))))
+        (org-level-1 ((t (:weight bold))))
         (org-level-2 ((t (:weight bold))))
         (org-level-3 ((t (:weight bold))))
-        (org-level-4 ((t (:foreground "tomato" :weight bold))))
+        (org-level-4 ((t (:weight bold))))
         (org-level-5 ((t (:weight bold))))
         (org-level-6 ((t (:weight bold))))
         (org-level-7 ((t (:weight bold))))
@@ -321,6 +321,8 @@
         (org-done ((t (:foreground "#16a637" :strike-through t :weight bold))))
         (org-headline-done ((t (:foreground "#16a637" :strike-through t ))))
         (org-date ((t (:foreground "#458588" :underline t))))
+        (org-drawer ((t (:foreground "#fabd2f" ))))
+        (org-agenda-clocking ((t (:foreground "#dcdccc" :weight bold))))
         ;;(org-link ((t (:foreground "SpringGreen3" :underline t)))))
         (org-link ((t (:foreground "SeaGreen3" :underline t)))))
      (setq org-fontify-done-headline t
@@ -356,65 +358,72 @@
                                  (match-end 1) "•"))))))
    #+end_src
 
+   #+RESULTS:
+
 ** GTD
   #+begin_src emacs-lisp
-    (setq org-agenda-directory "~/org/gtd/"
-          org-agenda-files '("~/org/gtd" ))                 ;; org-agenda-files
+    ;; ;; Adding a separator line between days in Emacs Org-mode calender view (prettier)
 
-     (setq org-agenda-dim-blocked-tasks nil                ;; Do not dim blocked tasks
-           org-agenda-span 'day
-           org-agenda-inhibit-startup t              ;; Stop preparing agenda buffers on startup:
-           org-agenda-use-tag-inheritance nil              ;; Disable tag inheritance for agendas:
-           org-agenda-show-log t
-           org-agenda-skip-scheduled-if-done t
-           org-agenda-skip-deadline-if-done t
-           org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+    ;;     (setq org-agenda-format-date (lambda (date) (concat "\n"
+    ;;                                                         (make-string (window-width) 9472)
+    ;;                                                         "\n"
+    ;;                                                         (org-agenda-format-date-aligned date))))
+            (setq org-agenda-directory "~/org/gtd/"
+                  org-agenda-files '("~/org/gtd" ))                 ;; org-agenda-files
 
-           org-agenda-time-grid
-           '((daily today require-timed)
-            (800 1000 1200 1400 1600 1800 2000)
-            "......" "----------------"))
-    (setq
-        org-agenda-start-on-weekday 0                       ;; Weekday start on Sunday
-         org-treat-S-cursor-todo-selection-as-state-change nil;; S-R,S-L skip the note/log info[used when fixing the state]
-          org-agenda-tags-column -100                     ;; Set tags far to the right
-          org-clock-out-remove-zero-time-clocks t         ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
-          org-clock-persist t                             ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-          org-use-fast-todo-selection t                   ;; from any todo state to any other state; using it keys
-         org-agenda-window-setup 'only-window)              ;; Always open my agenda in fullscreen
-    (setq org-agenda-prefix-format
-      '((agenda . " %i %-12:c%?-12t% s")
-        (todo   . " ")
-        (tags   . " %i %-12:c")
-        (search . " %i %-12:c")))
+             (setq org-agenda-dim-blocked-tasks nil                ;; Do not dim blocked tasks
+                   org-agenda-span 'day
+                   org-agenda-inhibit-startup t              ;; Stop preparing agenda buffers on startup:
+                   org-agenda-use-tag-inheritance nil              ;; Disable tag inheritance for agendas:
+                   org-agenda-show-log t
+                   org-agenda-skip-scheduled-if-done t
+                   org-agenda-skip-deadline-if-done t
+                   org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
 
-    (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)")))
+                   org-agenda-time-grid
+                   '((daily today require-timed)
+                    (800 1000 1200 1400 1600 1800 2000)
+                    "......" "----------------"))
+            (setq
+                org-agenda-start-on-weekday 0                       ;; Weekday start on Sunday
+                 org-treat-S-cursor-todo-selection-as-state-change nil;; S-R,S-L skip the note/log info[used when fixing the state]
+                  org-agenda-tags-column -100                     ;; Set tags far to the right
+                  org-clock-out-remove-zero-time-clocks t         ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+                  org-clock-persist t                             ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+                  org-use-fast-todo-selection t                   ;; from any todo state to any other state; using it keys
+                 org-agenda-window-setup 'only-window)              ;; Always open my agenda in fullscreen
+            (setq org-agenda-prefix-format
+              '((agenda . " %i %-12:c%?-12t% s")
+                (todo   . " ")
+                (tags   . " %i %-12:c")
+                (search . " %i %-12:c")))
 
-    (defun log-todo-next-creation-date (&rest ignore)
-      "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
-      (when (and (string= (org-get-todo-state) "NEXT")
-                 (not (org-entry-get nil "ACTIVATED")))
-        (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
+            (setq org-todo-keywords
+              '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)")))
 
-    (add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
-    (add-hook 'org-agenda-mode-hook                        ;; disable line-number when i open org-agenda view
-               (lambda() (display-line-numbers-mode -1)))
+            (defun log-todo-next-creation-date (&rest ignore)
+              "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
+              (when (and (string= (org-get-todo-state) "NEXT")
+                         (not (org-entry-get nil "ACTIVATED")))
+                (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
 
-    ;; (define-key global-map (kbd "C-c c") 'org-capture)
-    ;; (define-key global-map (kbd "C-c a") 'org-agenda)
+            (add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
+            (add-hook 'org-agenda-mode-hook                        ;; disable line-number when i open org-agenda view
+                       (lambda() (display-line-numbers-mode -1)))
+
+            ;; (define-key global-map (kbd "C-c c") 'org-capture)
+            ;; (define-key global-map (kbd "C-c a") 'org-agenda)
   #+end_src
-
 *** org agenda
     #+begin_src emacs-lisp
-      (setq org-agenda-block-separator 9472)     ; use 'straight line' as a block-agenda divider
+
+      (setq org-agenda-block-separator  9472)     ; use 'straight line' as a block-agenda divider
       (setq org-agenda-custom-commands
             '(("g" "Get Things Done (GTD)"
                ((agenda ""
                       ((org-agenda-overriding-header "Tasks")
                        (org-agenda-prefix-format "  %i %-12:c [%e] ")
 
-                         (org-agenda-files '("~/org/gtd/next.org"))
                          (org-deadline-warning-days 0)
                          (org-agenda-skip-function
                           '(org-agenda-skip-entry-if 'deadline))
