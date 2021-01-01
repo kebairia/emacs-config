@@ -32,6 +32,7 @@
 (load-user-file "nano/nano-base-colors.el")
 (load-user-file "nano/nano-faces.el")
 (load-user-file "nano/nano-theme-dark.el")
+(load-user-file "nano/nano-theme.el")
 
 ;; (load-user-file "clean-theme/clean.el")
 ;; (load-user-file "clean-theme/defaults.el")
