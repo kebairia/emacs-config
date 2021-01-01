@@ -5,7 +5,7 @@
 #+ARCHIVE: ~/org/config_archive.org::
 
 * BOOTSTRAP
-  :Properties:
+  :PROPERTIES:
   :header-args: :tangle ~/.config/emacs/init.el
   :header-args: :results none
   :END:
@@ -336,59 +336,62 @@
   :header-args: :results none
   :END:
 ** GTD
-  #+begin_src emacs-lisp
-    ;; ;; Adding a separator line between days in Emacs Org-mode calender view (prettier)
+*** Global
+   #+begin_src emacs-lisp
+     ;; ;; Adding a separator line between days in Emacs Org-mode calender view (prettier)
 
-    ;;     (setq org-agenda-format-date (lambda (date) (concat "\n"
-    ;;                                                         (make-string (window-width) 9472)
-    ;;                                                         "\n"
-    ;;                                                         (org-agenda-format-date-aligned date))))
-    (setq org-agenda-directory "~/org/gtd/"
-	  org-agenda-files '("~/org/gtd" ))                    ;; org-agenda-files
+     ;;     (setq org-agenda-format-date (lambda (date) (concat "\n"
+     ;;                                                         (make-string (window-width) 9472)
+     ;;                                                         "\n"
+     ;;                                                         (org-agenda-format-date-aligned date))))
+     (setq org-agenda-directory "~/org/gtd/"
+	   org-agenda-files '("~/org/gtd" ))                    ;; org-agenda-files
 
-     (setq org-agenda-dim-blocked-tasks nil                    ;; Do not dim blocked tasks
-	   org-agenda-span 'day                                ;; show me one day
-	   org-agenda-inhibit-startup t                        ;; Stop preparing agenda buffers on startup:
-	   org-agenda-use-tag-inheritance nil                  ;; Disable tag inheritance for agendas:
-	   org-agenda-show-log t
-	   org-agenda-skip-scheduled-if-done t
-	   org-agenda-skip-deadline-if-done t
-	   org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+      (setq org-agenda-dim-blocked-tasks nil                    ;; Do not dim blocked tasks
+	    org-agenda-span 'day                                ;; show me one day
+	    org-agenda-inhibit-startup t                        ;; Stop preparing agenda buffers on startup:
+	    org-agenda-use-tag-inheritance nil                  ;; Disable tag inheritance for agendas:
+	    org-agenda-show-log t
+	    org-agenda-skip-scheduled-if-done t
+	    org-agenda-skip-deadline-if-done t
+	    org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
 
-	   org-agenda-time-grid
-	   '((daily today require-timed)
-	    (800 1000 1200 1400 1600 1800 2000)
-	    "......" "----------------"))
-    (setq
-	org-agenda-start-on-weekday 0                          ;; Weekday start on Sunday
-	 org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R,S-L skip the note/log info[used when fixing the state]
-	  org-agenda-tags-column -100                          ;; Set tags far to the right
-	  org-clock-out-remove-zero-time-clocks t              ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
-	  org-clock-persist t                                  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-	  org-use-fast-todo-selection t                        ;; from any todo state to any other state; using it keys
-	 org-agenda-window-setup 'only-window)                 ;; Always open my agenda in fullscreen
+	    org-agenda-time-grid
+	    '((daily today require-timed)
+	     (800 1000 1200 1400 1600 1800 2000)
+	     "......" "----------------"))
+     (setq
+	 org-agenda-start-on-weekday 0                          ;; Weekday start on Sunday
+	  org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R,S-L skip the note/log info[used when fixing the state]
+	   org-agenda-tags-column -100                          ;; Set tags far to the right
+	   org-clock-out-remove-zero-time-clocks t              ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+	   org-clock-persist t                                  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+	   org-use-fast-todo-selection t                        ;; from any todo state to any other state; using it keys
+	  org-agenda-window-setup 'only-window)                 ;; Always open my agenda in fullscreen
 
-    (setq org-agenda-prefix-format
-      '((agenda . " %i %-12:c%?-12t% s")
-	(todo   . " ")
-	(tags   . " %i %-12:c")
-	(search . " %i %-12:c")))
+     (setq org-agenda-prefix-format
+       '((agenda . " %i %-12:c%?-12t% s")
+	 (todo   . " ")
+	 (tags   . " %i %-12:c")
+	 (search . " %i %-12:c")))
+     ;; define org's states
+     (setq org-todo-keywords
+       '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED(c)")))
 
-    (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED(c)")))
+     ;;Thanks to Erik Anderson, we can also add a hook that will log when we activate
+     ;;a task by creating an “ACTIVATED” property the first time the task enters the NEXT state:
+     (defun log-todo-next-creation-date (&rest ignore)
+       "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
+       (when (and (string= (org-get-todo-state) "NEXT")
+		  (not (org-entry-get nil "ACTIVATED")))
+	 (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
 
-    (defun log-todo-next-creation-date (&rest ignore)
-      "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
-      (when (and (string= (org-get-todo-state) "NEXT")
-		 (not (org-entry-get nil "ACTIVATED")))
-	(org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
+     (add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
+     (add-hook 'org-agenda-mode-hook                            ;; disable line-number when i open org-agenda view
+		(lambda() (display-line-numbers-mode -1)))
 
-    (add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
-    (add-hook 'org-agenda-mode-hook                            ;; disable line-number when i open org-agenda view
-	       (lambda() (display-line-numbers-mode -1)))
-
-    ;; (define-key global-map (kbd "C-c c") 'org-capture)
-    ;; (define-key global-map (kbd "C-c a") 'org-agenda)
+     ;; (define-key global-map (kbd "C-c c") 'org-capture)
+     ;; (define-key global-map (kbd "C-c a") 'org-agenda)
   #+end_src
 
 *** ORG AGENDA
@@ -399,7 +402,7 @@
 	    '(("g" "Get Things Done (GTD)"
 	       ((agenda ""
 		      ((org-agenda-overriding-header "Tasks")
-		       (org-agenda-prefix-format "  %i %-12:c [%e] ")
+		       (org-agenda-prefix-format "  %i %-12:c %t [%e] ")
 		       (org-agenda-use-time-grid t)
 
 			 (org-deadline-warning-days 365)
@@ -423,7 +426,10 @@
 		(todo "DONE"
 		      ((org-agenda-overriding-header "Completed today")
 		    (org-agenda-files
-		      '("~/org/gtd/projects.org" "~/org/gtd/inbox.org" "~/org/gtd/next.org" "~/org/gtd/habits.org"))
+		     '("~/org/gtd/projects.org"
+		       "~/org/gtd/inbox.org"
+		       "~/org/gtd/next.org"
+		       "~/org/gtd/habits.org"))
 		       (org-agenda-prefix-format "  %?-12t% s")))
 
 		  ))))
@@ -433,7 +439,7 @@
     #+end_src
 
     #+RESULTS:
-    | g | Get Things Done (GTD) | ((agenda  ((org-agenda-overriding-header Tasks) (org-agenda-prefix-format   %i %-12:c [%e] ) (org-agenda-use-time-grid t) (org-deadline-warning-days 365) (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline)))) (agenda nil ((org-agenda-overriding-header Deadlines) (org-agenda-entry-types '(:deadline)) (org-agenda-format-date ) (org-deadline-warning-days 7) (org-agenda-prefix-format   %?-12t% s) (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp \* NEXT)))) (todo TODO ((org-agenda-overriding-header Inbox) (org-agenda-files '(~/org/gtd/inbox.org)) (org-agenda-prefix-format   %?-12t% s))) (todo DONE ((org-agenda-overriding-header Completed today) (org-agenda-files '(~/org/gtd/projects.org ~/org/gtd/inbox.org ~/org/gtd/next.org ~/org/gtd/habits.org)) (org-agenda-prefix-format   %?-12t% s)))) |
+    | g | Get Things Done (GTD) | ((agenda  ((org-agenda-overriding-header Tasks) (org-agenda-prefix-format   %i %-12:c %t [%e] ) (org-agenda-use-time-grid t) (org-deadline-warning-days 365) (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline)))) (agenda nil ((org-agenda-overriding-header Deadlines) (org-agenda-entry-types '(:deadline)) (org-agenda-format-date ) (org-deadline-warning-days 7) (org-agenda-prefix-format   %?-12t% s) (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp \* NEXT)))) (todo TODO ((org-agenda-overriding-header Inbox) (org-agenda-files '(~/org/gtd/inbox.org)) (org-agenda-prefix-format   %?-12t% s))) (todo DONE ((org-agenda-overriding-header Completed today) (org-agenda-files '(~/org/gtd/projects.org ~/org/gtd/inbox.org ~/org/gtd/next.org ~/org/gtd/habits.org)) (org-agenda-prefix-format   %?-12t% s)))) |
 
 *** Habit
     #+BEGIN_SRC emacs-lisp
@@ -443,18 +449,20 @@
       (setq org-habit-show-habits-only-for-today t)
     #+END_SRC
 
-*** refiling
+*** Refiling
     #+begin_src emacs-lisp
       ;; Refiling [need reading]
+      ;;tell org-mode we want to specify a refile target using the file path.
       (setq org-refile-use-outline-path 'file
        org-outline-path-complete-in-steps nil)
       (setq org-refile-allow-creating-parent-nodes 'confirm)
       (setq org-refile-targets '(("~/org/gtd/next.org" :level . 0)
-                                 ("~/org/links.org" :level . 1)
-                                 ("~/org/ideas.org" :level . 1)
-                                 ("someday.org" :level . 0)
-                                 ("~/org/gtd/projects.org" :maxlevel . 2)))
+				("~/org/ideas.org" :level . 1)
+				("projects.org" :regexp . "\\(?:Tasks\\)"))) 
+				;;("~/org/links.org" :level . 1)
+				;;("someday.org" :level . 0)
     #+end_src
+
 ** org capture
    #+begin_src emacs-lisp
      (setq org-capture-templates
@@ -558,6 +566,7 @@
          "biber %b"
          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
    ;; syntex-highlighting
    (use-package htmlize)
    ;;Don’t include a footer...etc in exported HTML document.
@@ -567,10 +576,6 @@
    (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
    (add-hook 'org-mode-hook 'org-display-inline-images)
  #+end_src
-
- #+RESULTS:
- | org-display-inline-images | evil-org-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
-
 ** Reveal-js
    #+begin_src emacs-lisp
      (use-package ox-reveal
