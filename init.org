@@ -208,6 +208,35 @@
               ;;"s" 'zk/gen-scratch-buffer
    #+END_SRC
 
+** Deft
+   #+BEGIN_SRC emacs-lisp
+     ;; disable linum-mode (line number)
+     (add-hook 'deft
+     '(lambda () (linum-mode nil)))
+      (use-package deft
+         :commands (deft)
+         :custom       (deft-directory "~/org/notes" )
+                       (deft-recursive t)
+                       (deft-extensions '("org" "md" "txt") )
+                       (deft-use-filename-as-title t)
+                       (deft-file-naming-rules
+                         '((noslash . "-")
+                           (nospace . "-")
+                           (case-fn . downcase))
+                       deft-org-mode-title-prefix t
+                       deft-text-mode 'org-mode))
+
+
+   #+END_SRC
+
+** Zetteldeft
+   #+begin_src emacs-lisp
+     (use-package zetteldeft
+       :ensure t
+       :after deft
+       :config (zetteldeft-set-classic-keybindings))
+
+   #+end_src
 
 ** Minions
    #+BEGIN_SRC emacs-lisp
