@@ -1,8 +1,15 @@
-#+TITLE: My Emacs's Configuration
-#+AUTHOR: Kebairia Zakaria
-#+STARTUP: overview
-#+PROPERTY: header-args :results none
+# ------------------------------------------------------------------------------
+#+TITLE:     My Emacs's Configuration
+#+SUBTITLE:  Kebairia Zakaria - January 2021
+#+AUTHOR:    Kebairia Zakaria
+#+EMAIL:     4.kebairia@gmail.com
+#+LANGUAGE:  en
+#+STARTUP:   content showstars indent inlineimages hideblocks
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/home/zakaria/org/conf/rouger.css" />
+#+OPTIONS:   toc:2 html-scripts:nil num:nil html-postamble:nil html-style:nil ^:nil
+#+PROPERTY:  header-args :results none
 #+ARCHIVE: ~/org/config_archive.org::
+# ------------------------------------------------------------------------------
 
 * BOOTSTRAP
   :PROPERTIES:
@@ -392,52 +399,52 @@
      ;; (define-key global-map (kbd "C-c a") 'org-agenda)
   #+end_src
 
+  #+RESULTS:
+  | lambda | nil | (display-line-numbers-mode -1) |
+
 *** ORG AGENDA
     #+begin_src emacs-lisp
 
       (setq org-agenda-block-separator  9472)                  ;; use 'straight line' as a block-agenda divider
       (setq org-agenda-custom-commands
-	    '(("g" "Get Things Done (GTD)"
-	       ((agenda ""
-		      ((org-agenda-overriding-header "Tasks")
-		       (org-agenda-prefix-format "  %i %-12:c %t [%e] ")
-		       (org-agenda-use-time-grid t)
+            '(("g" "Get Things Done (GTD)"
+               ((agenda ""
+                      ((org-agenda-overriding-header "My Day")
+                       (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                       (org-agenda-use-time-grid t)
+                       (org-deadline-warning-days 0)
+                         (org-agenda-skip-function
+                          '(org-agenda-skip-entry-if 'deadline))
+                               ))
 
-			 (org-deadline-warning-days 365)
-			 (org-agenda-skip-function
-			  '(org-agenda-skip-entry-if 'deadline))
-			       ))
+                (agenda nil
+                        ((org-agenda-overriding-header "Deadlines")
+                         (org-agenda-entry-types '(:deadline))
+                         (org-agenda-format-date "")
+                         (org-deadline-warning-days 7)
+                         (org-agenda-prefix-format "  %?-12t% s")
+                         (org-agenda-skip-function
+                          '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))))
 
-		(agenda nil
-			((org-agenda-overriding-header "Deadlines")
-			 (org-agenda-entry-types '(:deadline))
-			 (org-agenda-format-date "")
-			 (org-deadline-warning-days 7)
-			 (org-agenda-prefix-format "  %?-12t% s")
-			 (org-agenda-skip-function
-			  '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))))
 
-		(todo "TODO"
-			   ((org-agenda-overriding-header "Inbox")
-			    (org-agenda-files '("~/org/gtd/inbox.org"))
-			    (org-agenda-prefix-format "  %?-12t% s")))
-		(todo "DONE"
-		      ((org-agenda-overriding-header "Completed today")
-		    (org-agenda-files
-		     '("~/org/gtd/projects.org"
-		       "~/org/gtd/inbox.org"
-		       "~/org/gtd/next.org"
-		       "~/org/gtd/habits.org"))
-		       (org-agenda-prefix-format "  %?-12t% s")))
+                (todo "TODO"
+                           ((org-agenda-overriding-header "Inbox")
+                            (org-agenda-files '("~/org/gtd/inbox.org"))
+                            (org-agenda-prefix-format "  %?-12t% s")))
+                (todo "DONE"
+                      ((org-agenda-overriding-header "Completed today")
+                    (org-agenda-files
+                     '("~/org/gtd/projects.org"
+                       "~/org/gtd/inbox.org"
+                       "~/org/gtd/next.org"
+                       "~/org/gtd/habits.org"))
+                       (org-agenda-prefix-format "  %?-12t% s")))
 
-		  ))))
-		;; (tags "CLOSED>=\"<today>\""
-		;;       ((org-agenda-overriding-header "Completed today")
-		;;        (org-agenda-prefix-format "  %?-12t% s")
+                  ))))
+                ;; (tags "CLOSED>=\"<today>\""
+                ;;       ((org-agenda-overriding-header "Completed today")
+                ;;        (org-agenda-prefix-format "  %?-12t% s")
     #+end_src
-
-    #+RESULTS:
-    | g | Get Things Done (GTD) | ((agenda  ((org-agenda-overriding-header Tasks) (org-agenda-prefix-format   %i %-12:c %t [%e] ) (org-agenda-use-time-grid t) (org-deadline-warning-days 365) (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline)))) (agenda nil ((org-agenda-overriding-header Deadlines) (org-agenda-entry-types '(:deadline)) (org-agenda-format-date ) (org-deadline-warning-days 7) (org-agenda-prefix-format   %?-12t% s) (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp \* NEXT)))) (todo TODO ((org-agenda-overriding-header Inbox) (org-agenda-files '(~/org/gtd/inbox.org)) (org-agenda-prefix-format   %?-12t% s))) (todo DONE ((org-agenda-overriding-header Completed today) (org-agenda-files '(~/org/gtd/projects.org ~/org/gtd/inbox.org ~/org/gtd/next.org ~/org/gtd/habits.org)) (org-agenda-prefix-format   %?-12t% s)))) |
 
 *** Habit
     #+BEGIN_SRC emacs-lisp
