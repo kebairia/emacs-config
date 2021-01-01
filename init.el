@@ -28,8 +28,13 @@
 ;;(load-user-file "DEFAULTS.el")
 (load-user-file "modules/KEYBIDING.el")
 (load-user-file "modules/PACKAGES.el")
-(load-user-file "clean-theme/clean.el")
-(load-user-file "clean-theme/defaults.el")
+(load-user-file "nano/nano.el")
+(load-user-file "nano/nano-base-colors.el")
+(load-user-file "nano/nano-faces.el")
+(load-user-file "nano/nano-theme-dark.el")
+
+;; (load-user-file "clean-theme/clean.el")
+;; (load-user-file "clean-theme/defaults.el")
 (load-user-file "modules/ORG.el")
 
 ;; Hist, Backup and auto-save ..etc

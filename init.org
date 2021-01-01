@@ -40,8 +40,13 @@
      ;;(load-user-file "DEFAULTS.el")
      (load-user-file "modules/KEYBIDING.el")
      (load-user-file "modules/PACKAGES.el")
-     (load-user-file "clean-theme/clean.el")
-     (load-user-file "clean-theme/defaults.el")
+     (load-user-file "nano/nano.el")
+     (load-user-file "nano/nano-base-colors.el")
+     (load-user-file "nano/nano-faces.el")
+     (load-user-file "nano/nano-theme-dark.el")
+
+     ;; (load-user-file "clean-theme/clean.el")
+     ;; (load-user-file "clean-theme/defaults.el")
      (load-user-file "modules/ORG.el")
 
    #+end_src
@@ -95,6 +100,7 @@
      ;; Reload buffer with <F5>
      (global-set-key [f5] '(lambda () (interactive) (revert-buffer nil t nil)))
    #+end_src
+
 ** win-movements
    #+begin_src emacs-lisp
        (defun zk/split-go-right()
@@ -200,7 +206,9 @@
               ;;"B" 'zetteldeft-backlink-add
               ;;"s" 'zk/gen-scratch-buffer
    #+END_SRC
-** COMMENT Minions
+
+
+** Minions
    #+BEGIN_SRC emacs-lisp
      ;;Use minions to hide all minor modes
      (use-package minions
@@ -297,65 +305,6 @@
   :header-args: :tangle ~/.config/emacs/modules/ORG.el
   :header-args: :results none
   :END:
-** COMMENT Look & Feel
-   #+begin_src emacs-lisp
-     (use-package org
-       :mode ("\\.org\\'" . org-mode)
-       :custom
-       (org-src-window-setup 'current-window)
-       :custom-face
-        (org-done ((t (:strike-through t :weight bold))))
-        ;;(org-document-title ((t (:weight bold :height 1.1 :underline t))))
-        ;;(org-document-info ((t (:height 1.0 ))))
-        ;;(org-document-info-keyword ((t (:foreground "#928374" :slant italic :height 1.0 ))))
-        (org-level-1 ((t (:weight bold))))
-        (org-level-2 ((t (:weight bold))))
-        (org-level-3 ((t (:weight bold))))
-        (org-level-4 ((t (:weight bold))))
-        (org-level-5 ((t (:weight bold))))
-        (org-level-6 ((t (:weight bold))))
-        (org-level-7 ((t (:weight bold))))
-        (font-lock-comment-face ((t (:forground "#928374" :slant italic t))))
-        (org-date-selected ((t (:foreground "#00b0d1" :weight bold :height 1.1 :underline t))))
-        (org-done ((t (:foreground "#16a637" :strike-through t :weight bold))))
-        (org-headline-done ((t (:foreground "#16a637" :strike-through t ))))
-        (org-date ((t (:foreground "#458588" :underline t))))
-        (org-drawer ((t (:foreground "#fabd2f" ))))
-        (org-agenda-clocking ((t (:foreground "#dcdccc" :weight bold))))
-        ;;(org-link ((t (:foreground "SpringGreen3" :underline t)))))
-        ;;(org-link ((t (:foreground "SeaGreen3" :underline t))))
-     (setq org-fontify-done-headline t
-           org-hide-leading-stars nil
-           org-pretty-entities t
-           org-image-actual-width nil
-           org-hide-emphasis-markers t
-           org-log-into-drawer t
-           org-log-done '(time)
-           org-log-reschedule '(time)
-           org-babel-min-lines-for-block-output 0
-           org-deadline-warning-days 0
-           org-emphasis-alist
-              '(("*" (bold ))
-                 ("/" italic)
-                 ("_" underline)
-                 ("=" (:foreground "brown2" :weight bold))
-                 ("~" (:foreground "#928374" :slant italic))
-                 ("+" (:strike-through t))))
-     ;; When editing a code snippet, use the current window rather than popping open a new one
-     (setq org-src-window-setup 'current-window)
-     ;;(add-hook 'org-mode-hook 'org-indent-mode)
-     ;; Allow setting single tags without the menu
-     (setq org-fast-tag-selection-single-key 'expert)
-     ;; use '⌄/⌵⤵' instead of '...' in headlines
-     (setq org-ellipsis " ⌵")
-     ;; use '•' instead of '-' in lists
-     (font-lock-add-keywords 'org-mode
-                        '(("^ *\\([-]\\) "
-                           (0 (prog1 ()
-                                (compose-region
-                                 (match-beginning 1)
-                                 (match-end 1) "•"))))))
-   #+end_src
 ** GTD
   #+begin_src emacs-lisp
     ;; ;; Adding a separator line between days in Emacs Org-mode calender view (prettier)
@@ -410,6 +359,10 @@
             ;; (define-key global-map (kbd "C-c c") 'org-capture)
             ;; (define-key global-map (kbd "C-c a") 'org-agenda)
   #+end_src
+
+  #+RESULTS:
+  | lambda | nil | (display-line-numbers-mode -1) |
+
 *** org agenda
     #+begin_src emacs-lisp
 
@@ -508,6 +461,7 @@
            )))
 
    #+END_SRC
+
 ** todo faces
    #+begin_src emacs-lisp
     (setq org-todo-keywords
@@ -528,7 +482,7 @@
       ))
    #+end_src
 
-** COMMENT org-exports
+** org-exports
 *** Latex
  #+begin_src emacs-lisp
    (add-to-list 'org-latex-classes
@@ -582,6 +536,10 @@
    (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
    (add-hook 'org-mode-hook 'org-display-inline-images)
  #+end_src
+
+ #+RESULTS:
+ | org-display-inline-images | evil-org-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
+
 ** Reveal-js
    #+begin_src emacs-lisp
      (use-package ox-reveal
@@ -609,69 +567,3 @@
                ))
    #+END_SRC
 
-** COMMENT Look & Feel
-   #+begin_src emacs-lisp
-     (use-package org
-       :mode ("\\.org\\'" . org-mode)
-       :custom
-       (org-src-window-setup 'current-window)
-       :custom-face
-        (org-done ((t (:strike-through t :weight bold))))
-        ;;(org-document-title ((t (:weight bold :height 1.1 :underline t))))
-        ;;(org-document-info ((t (:height 1.0 ))))
-        (org-document-info-keyword ((t (:foreground "#928374" :slant italic :height 1.0 ))))
-        (org-level-1 ((t (:weight bold))))
-        (org-level-2 ((t (:weight bold))))
-        (org-level-3 ((t (:weight bold))))
-        (org-level-4 ((t (:weight bold))))
-        (org-level-5 ((t (:weight bold))))
-        (org-level-6 ((t (:weight bold))))
-        (org-level-7 ((t (:weight bold))))
-        (font-lock-comment-face ((t (:forground "#928374" :slant italic t))))
-        (org-date-selected ((t (:foreground "#00b0d1" :weight bold :height 1.1 :underline t))))
-        (org-done ((t (:foreground "#16a637" :strike-through t :weight bold))))
-        (org-headline-done ((t (:foreground "#16a637" :strike-through t ))))
-        (org-date ((t (:foreground "#458588" :underline t))))
-        (org-drawer ((t (:foreground "#fabd2f" ))))
-        (org-agenda-clocking ((t (:foreground "#dcdccc" :weight bold))))
-        (org-agenda-clocking ((t (:foreground "#dcdccc" :weight bold))))
-        (org-agenda-filter-tags ((t (:foreground "#458588" ))))
-        (org-priority ((t (:foreground "#ef5350" ))))
-        (org-time-grid ((t (:foreground "#ffcdd2" ))))
-        (org-block ((t (:foreground "#dcdccc" ))))
-        ;;(org-link ((t (:foreground "SpringGreen3" :underline t)))))
-        (org-link ((t (:foreground "SeaGreen3" :underline t)))))
-     (setq org-fontify-done-headline t
-           org-hide-leading-stars nil
-           org-pretty-entities t
-           org-image-actual-width nil
-           org-hide-emphasis-markers t
-           org-log-into-drawer t
-           org-log-done '(time)
-           org-log-reschedule '(time)
-           org-babel-min-lines-for-block-output 0
-           org-deadline-warning-days 0
-           org-emphasis-alist
-              '(("*" (bold ))
-                 ("/" italic)
-                 ("_" underline)
-                 ("=" (:foreground "brown2" :weight bold))
-                 ("~" (:foreground "#928374" :slant italic))
-                 ("+" (:strike-through t))))
-     ;; When editing a code snippet, use the current window rather than popping open a new one
-     (setq org-src-window-setup 'current-window)
-     ;;(add-hook 'org-mode-hook 'org-indent-mode)
-     ;; Allow setting single tags without the menu
-     (setq org-fast-tag-selection-single-key 'expert)
-     ;; use '⌄/⌵⤵' instead of '...' in headlines
-     (setq org-ellipsis " ⌵")
-     ;; use '•' instead of '-' in lists
-     (font-lock-add-keywords 'org-mode
-                        '(("^ *\\([-]\\) "
-                           (0 (prog1 ()
-                                (compose-region
-                                 (match-beginning 1)
-                                 (match-end 1) "•"))))))
-   #+end_src
-
-   #+RESULTS:
