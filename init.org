@@ -370,6 +370,10 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
   :header-args: :tangle ~/.config/emacs/modules/ORG.el
   :header-args: :results none
   :END:
+** GLOBAL
+#+begin_src elisp
+ (add-hook 'org-mode-hook 'org-indent-mode)
+#+end_src
 ** GTD
 *** Global
    #+begin_src emacs-lisp
