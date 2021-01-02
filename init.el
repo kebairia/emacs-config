@@ -1,5 +1,5 @@
 ;;; package --- SummarY
-;; Load configuration from ~/.config/emacs/settings.org
+;; Load configuration from ~/.config/emacs/modules/*.el
 
 ;;; Commentary:
 ;; Added by Package.el.  This must come before configurations of
@@ -39,7 +39,8 @@
 (load-user-file "modules/ORG.el")
 
 ;; Hist, Backup and auto-save ..etc
-(setq backup-directory-alist '(("." . "~/.config/emacs/recover/backup"))
+;;---------------------------------
+(setq backup-directory-alist '(("." . "~/.cache/emacs/backup"))
   backup-by-copying t                       ; Don't delink hardlinks
   version-control t                         ; Use version numbers on backups
   delete-old-versions t                     ; Automatically delete excess backups
@@ -48,9 +49,9 @@
   vc-make-backup-files t                    ; Even version controlled files get to be backed up.
   )
 (setq auto-save-file-name-transforms
-      '((".*" "~/.config/emacs/recover/undo/" t)))
+      '((".*" "~/.cache/emacs/undo/" t)))
 (setq undo-tree-history-directory-alist     ; Saving persistent tree-undo to a single directory
-      '(("." . "~/.config/emacs/recover/undo")))
+      '(("." . "~/.cache/emacs/undo")))
 
  (setq is-work nil)                         ; *--=~~ search for explanations ~~=--*
  ;; t means no truncation
@@ -59,7 +60,7 @@
 
  (savehist-mode 1)                           ; Saves your minibuffer histories
  (setq
-     savehist-file "~/.config/emacs/recover/savehist")    ; Set the savehist file
+     savehist-file "~/.cache/emacs/savehist")    ; Set the savehist file
  (setq savehist-save-minibuffer-history 1)
  (setq savehist-additional-variables         ; Save other histories and other variables as well
      '(kill-ring

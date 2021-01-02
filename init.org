@@ -12,88 +12,91 @@
 # ------------------------------------------------------------------------------
 
 * BOOTSTRAP
-  :PROPERTIES:
-  :header-args: :tangle ~/.config/emacs/init.el
-  :header-args: :results none
-  :END:
+:PROPERTIES:
+:header-args: :tangle ~/.config/emacs/init.el
+:header-args: :results none
+:END:
+** Deps
    #+begin_src emacs-lisp
-          ;;; package --- SummarY
-          ;; Load configuration from ~/.config/emacs/settings.org
+     ;;; package --- SummarY
+     ;; Load configuration from ~/.config/emacs/modules/*.el
 
-          ;;; Commentary:
-          ;; Added by Package.el.  This must come before configurations of
-          ;; installed packages.  Don't delete this line.  If you don't want it,
-          ;; just comment it out by adding a semicolon to the start of the line.
-          ;; You may delete these explanatory comments.
-          (require 'package)
-          (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-          (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-          (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+     ;;; Commentary:
+     ;; Added by Package.el.  This must come before configurations of
+     ;; installed packages.  Don't delete this line.  If you don't want it,
+     ;; just comment it out by adding a semicolon to the start of the line.
+     ;; You may delete these explanatory comments.
+     (require 'package)
+     (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+     (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
-          (package-initialize)
+     (package-initialize)
 
-          (defconst user-init-dir
-            (cond ((boundp 'user-emacs-directory)
-                   user-emacs-directory)
-                  ((boundp 'user-init-directory)
-                   user-init-directory)
-                  (t "~/.config/emacs")))
+     (defconst user-init-dir
+       (cond ((boundp 'user-emacs-directory)
+              user-emacs-directory)
+             ((boundp 'user-init-directory)
+              user-init-directory)
+             (t "~/.config/emacs")))
 
-          (defun load-user-file (file)
-            (interactive "f")
-            "Load a file in current user's configuration directory"
-            (load-file (expand-file-name file user-init-dir)))
+     (defun load-user-file (file)
+       (interactive "f")
+       "Load a file in current user's configuration directory"
+       (load-file (expand-file-name file user-init-dir)))
 
-          ;;(load-user-file "DEFAULTS.el")
-          (load-user-file "modules/KEYBIDING.el")
-          (load-user-file "modules/PACKAGES.el")
-          (load-user-file "nano/nano.el")
-          (load-user-file "nano/nano-base-colors.el")
-          (load-user-file "nano/nano-faces.el")
-          (load-user-file "nano/nano-theme-dark.el")
-          (load-user-file "nano/nano-theme.el")
+     ;;(load-user-file "DEFAULTS.el")
+     (load-user-file "modules/KEYBIDING.el")
+     (load-user-file "modules/PACKAGES.el")
+     (load-user-file "nano/nano.el")
+     (load-user-file "nano/nano-base-colors.el")
+     (load-user-file "nano/nano-faces.el")
+     (load-user-file "nano/nano-theme-dark.el")
+     (load-user-file "nano/nano-theme.el")
 
-          ;; (load-user-file "clean-theme/clean.el")
-          ;; (load-user-file "clean-theme/defaults.el")
-          (load-user-file "modules/ORG.el")
+     ;; (load-user-file "clean-theme/clean.el")
+     ;; (load-user-file "clean-theme/defaults.el")
+     (load-user-file "modules/ORG.el")
    #+end_src
 ** Hist, Backup and auto-save
-    check it here: [[https://github.com/bradwright/emacs.d]]
-   #+BEGIN_SRC emacs-lisp
-     ;; Hist, Backup and auto-save ..etc
-     (setq backup-directory-alist '(("." . "~/.config/emacs/recover/backup"))
-       backup-by-copying t                       ; Don't delink hardlinks
-       version-control t                         ; Use version numbers on backups
-       delete-old-versions t                     ; Automatically delete excess backups
-       kept-new-versions 3                       ; how many of the newest versions to keep
-       kept-old-versions 3                       ; and how many of the old
-       vc-make-backup-files t                    ; Even version controlled files get to be backed up.
-       )
-     (setq auto-save-file-name-transforms
-           '((".*" "~/.config/emacs/recover/undo/" t)))
-     (setq undo-tree-history-directory-alist     ; Saving persistent tree-undo to a single directory
-           '(("." . "~/.config/emacs/recover/undo")))
+     check it here: [[https://github.com/bradwright/emacs.d]]
+     use ~${HOME}/.cache/emacs~ for undo,backup and history
+    #+begin_src emacs-lisp
+      ;; Hist, Backup and auto-save ..etc
+      ;;---------------------------------
+      (setq backup-directory-alist '(("." . "~/.cache/emacs/backup"))
+        backup-by-copying t                       ; Don't delink hardlinks
+        version-control t                         ; Use version numbers on backups
+        delete-old-versions t                     ; Automatically delete excess backups
+        kept-new-versions 3                       ; how many of the newest versions to keep
+        kept-old-versions 3                       ; and how many of the old
+        vc-make-backup-files t                    ; Even version controlled files get to be backed up.
+        )
+      (setq auto-save-file-name-transforms
+            '((".*" "~/.cache/emacs/undo/" t)))
+      (setq undo-tree-history-directory-alist     ; Saving persistent tree-undo to a single directory
+            '(("." . "~/.cache/emacs/undo")))
 
-      (setq is-work nil)                         ; *--=~~ search for explanations ~~=--*
-      ;; t means no truncation
-      (setq history-length t)
-      (setq history-delete-duplicates t)
+       (setq is-work nil)                         ; *--=~~ search for explanations ~~=--*
+       ;; t means no truncation
+       (setq history-length t)
+       (setq history-delete-duplicates t)
 
-      (savehist-mode 1)                           ; Saves your minibuffer histories
-      (setq
-          savehist-file "~/.config/emacs/recover/savehist")    ; Set the savehist file
-      (setq savehist-save-minibuffer-history 1)
-      (setq savehist-additional-variables         ; Save other histories and other variables as well
-          '(kill-ring
-            search-ring
-            regexp-search-ring))
-   #+END_SRC
+       (savehist-mode 1)                           ; Saves your minibuffer histories
+       (setq
+           savehist-file "~/.cache/emacs/savehist")    ; Set the savehist file
+       (setq savehist-save-minibuffer-history 1)
+       (setq savehist-additional-variables         ; Save other histories and other variables as well
+           '(kill-ring
+             search-ring
+             regexp-search-ring))
+     #+end_src
 
 * KEYMAPS
-  :PROPERTIES:
-  :header-args: :tangle ~/.config/emacs/modules/KEYBIDING.el
-  :header-args: :results none
-  :END:
+:PROPERTIES:
+:header-args: :tangle ~/.config/emacs/modules/KEYBIDING.el
+:header-args: :results none
+:END:
 ** Files
    #+begin_src emacs-lisp
      ;; some shortcuts -- files
@@ -145,18 +148,6 @@
   :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
   :header-args: :results none
   :END:
-** COMMENT Theme
-   #+BEGIN_SRC emacs-lisp
-     (use-package gruvbox-theme
-      :init )
-      ;; the bellow is used so that emacs will trust the elisp code[the theme]
-      ;; in future
-     (custom-set-variables
-      '(custom-enabled-themes  '(gruvbox-dark-hard))
-      '(custom-safe-themes
-         '("4cf9ed30ea575fb0ca3cff6ef34b1b87192965245776afa9e9e20c17d115f3fb"
-            default)))
-   #+END_SRC
 ** evil mode
 #+BEGIN_SRC emacs-lisp
   (setq evil-want-keybinding nil)                   ;; this statement is required to enable evil/evil-colleciton mode
@@ -213,7 +204,7 @@
               ;;"s" 'zk/gen-scratch-buffer
    #+END_SRC
 
-** Deft
+** COMMENT Deft
    #+BEGIN_SRC emacs-lisp
      ;; disable linum-mode (line number)
      (add-hook 'deft
@@ -234,14 +225,29 @@
 
    #+END_SRC
 
-** Zetteldeft
+** COMMENT Zetteldeft
    #+begin_src emacs-lisp
      (use-package zetteldeft
        :ensure t
        :after deft
        :config (zetteldeft-set-classic-keybindings))
-
    #+end_src
+** COMMENT org roam
+#+begin_src emacs-lisp
+  (use-package org-roam
+        :ensure t
+        :hook
+        (after-init . org-roam-mode)
+        :custom
+        (org-roam-directory "/home/zakaria/org/test")
+        :bind (:map org-roam-mode-map
+                (("C-c n l" . org-roam)
+                 ("C-c n f" . org-roam-find-file)
+                 ("C-c n g" . org-roam-graph))
+                :map org-mode-map
+                (("C-c n i" . org-roam-insert))
+                (("C-c n I" . org-roam-insert-immediate))))
+#+end_src
 
 ** Minions
    #+BEGIN_SRC emacs-lisp
@@ -320,7 +326,7 @@
   (progn
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
-    (global-set-key "\C-s" 'swiper)
+    (global-set-key "\C-s" 'swiper-isearch)
     (global-set-key "\M-S" 'counsel-org-goto)
     (global-set-key (kbd "C-c g") 'counsel-git)
     (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -335,6 +341,7 @@
     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
     ))
 #+END_SRC
+
 * ORG
   :PROPERTIES:
   :header-args: :tangle ~/.config/emacs/modules/ORG.el
@@ -350,35 +357,35 @@
      ;;                                                         "\n"
      ;;                                                         (org-agenda-format-date-aligned date))))
      (setq org-agenda-directory "~/org/gtd/"
-	   org-agenda-files '("~/org/gtd" ))                    ;; org-agenda-files
+           org-agenda-files '("~/org/gtd" ))                    ;; org-agenda-files
 
       (setq org-agenda-dim-blocked-tasks nil                    ;; Do not dim blocked tasks
-	    org-agenda-span 'day                                ;; show me one day
-	    org-agenda-inhibit-startup t                        ;; Stop preparing agenda buffers on startup:
-	    org-agenda-use-tag-inheritance nil                  ;; Disable tag inheritance for agendas:
-	    org-agenda-show-log t
-	    org-agenda-skip-scheduled-if-done t
-	    org-agenda-skip-deadline-if-done t
-	    org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+            org-agenda-span 'day                                ;; show me one day
+            org-agenda-inhibit-startup t                        ;; Stop preparing agenda buffers on startup:
+            org-agenda-use-tag-inheritance nil                  ;; Disable tag inheritance for agendas:
+            org-agenda-show-log t
+            org-agenda-skip-scheduled-if-done t
+            org-agenda-skip-deadline-if-done t
+            org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
 
-	    org-agenda-time-grid
-	    '((daily today require-timed)
-	     (800 1000 1200 1400 1600 1800 2000)
-	     "......" "----------------"))
+            org-agenda-time-grid
+            '((daily today require-timed)
+             (800 1000 1200 1400 1600 1800 2000)
+             "......" "----------------"))
      (setq
-	 org-agenda-start-on-weekday 0                          ;; Weekday start on Sunday
-	  org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R,S-L skip the note/log info[used when fixing the state]
-	   org-agenda-tags-column -100                          ;; Set tags far to the right
-	   org-clock-out-remove-zero-time-clocks t              ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
-	   org-clock-persist t                                  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-	   org-use-fast-todo-selection t                        ;; from any todo state to any other state; using it keys
-	  org-agenda-window-setup 'only-window)                 ;; Always open my agenda in fullscreen
+         org-agenda-start-on-weekday 0                          ;; Weekday start on Sunday
+          org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R,S-L skip the note/log info[used when fixing the state]
+           org-agenda-tags-column -100                          ;; Set tags far to the right
+           org-clock-out-remove-zero-time-clocks t              ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+           org-clock-persist t                                  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+           org-use-fast-todo-selection t                        ;; from any todo state to any other state; using it keys
+          org-agenda-window-setup 'only-window)                 ;; Always open my agenda in fullscreen
 
      (setq org-agenda-prefix-format
        '((agenda . " %i %-12:c%?-12t% s")
-	 (todo   . " ")
-	 (tags   . " %i %-12:c")
-	 (search . " %i %-12:c")))
+         (todo   . " ")
+         (tags   . " %i %-12:c")
+         (search . " %i %-12:c")))
      ;; define org's states
      (setq org-todo-keywords
        '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED(c)")))
@@ -388,23 +395,19 @@
      (defun log-todo-next-creation-date (&rest ignore)
        "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
        (when (and (string= (org-get-todo-state) "NEXT")
-		  (not (org-entry-get nil "ACTIVATED")))
-	 (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
+                  (not (org-entry-get nil "ACTIVATED")))
+         (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
 
      (add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
      (add-hook 'org-agenda-mode-hook                            ;; disable line-number when i open org-agenda view
-		(lambda() (display-line-numbers-mode -1)))
+                (lambda() (display-line-numbers-mode -1)))
 
      ;; (define-key global-map (kbd "C-c c") 'org-capture)
      ;; (define-key global-map (kbd "C-c a") 'org-agenda)
   #+end_src
 
-  #+RESULTS:
-  | lambda | nil | (display-line-numbers-mode -1) |
-
 *** ORG AGENDA
     #+begin_src emacs-lisp
-
       (setq org-agenda-block-separator  9472)                  ;; use 'straight line' as a block-agenda divider
       (setq org-agenda-custom-commands
             '(("g" "Get Things Done (GTD)"
@@ -462,10 +465,10 @@
        org-outline-path-complete-in-steps nil)
       (setq org-refile-allow-creating-parent-nodes 'confirm)
       (setq org-refile-targets '(("~/org/gtd/next.org" :level . 0)
-				("~/org/ideas.org" :level . 1)
-				("projects.org" :regexp . "\\(?:Tasks\\)"))) 
-				;;("~/org/links.org" :level . 1)
-				;;("someday.org" :level . 0)
+                                 ("~/org/ideas.org" :level . 1)
+                                 ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
+                                ;;("~/org/links.org" :level . 1)
+                                ;;("someday.org" :level . 0)
     #+end_src
 
 ** org capture
@@ -584,11 +587,12 @@
 ** Reveal-js
    #+begin_src emacs-lisp
      (use-package ox-reveal
-       :ensure ox-reveal
-       )
-     (setq org-reveal-root "file:///home/zakaria/org/files/conf/revealJS/reveal.js-4.1.0")
+       :ensure ox-reveal)
+     (setq org-reveal-root
+           "file:///home/zakaria/org/files/conf/revealJS/reveal.js-4.1.0")
      (setq org-reveal-mathjax t)
    #+end_src
+
 ** Babel
    #+BEGIN_SRC emacs-lisp
      (eval-after-load "org"
@@ -599,12 +603,12 @@
            org-src-fontify-natively t
            org-confirm-babel-evaluate nil
            org-src-tab-acts-natively t)
-             (org-babel-do-load-languages
-             'org-babel-load-languages
-             '((python . t)
-               (shell . t)
-               (emacs-lisp . t)
-               (R . t)
-               ))
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((python . t)
+        (shell . t)
+        (emacs-lisp . t)
+        (R . t)
+        ))
    #+END_SRC
 
