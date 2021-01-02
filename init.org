@@ -91,7 +91,6 @@
              search-ring
              regexp-search-ring))
      #+end_src
-
 * KEYMAPS
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/KEYBIDING.el
@@ -184,7 +183,7 @@
               "a" 'zk/switch-to-agenda
               "w" 'org-agenda-week-view
               "m" 'org-agenda-month-view
-              ;; "d" 'deft
+              "d" 'deft
               ;; "I" 'zetteldeft-insert-list-links
               ;; "N" 'zetteldeft-new-file-and-link
               ;; "B" 'zetteldeft-new-file-and-backlink
@@ -224,7 +223,6 @@
 
 
    #+END_SRC
-
 ** COMMENT Zetteldeft
    #+begin_src emacs-lisp
      (use-package zetteldeft
@@ -239,7 +237,7 @@
         :hook
         (after-init . org-roam-mode)
         :custom
-        (org-roam-directory "/home/zakaria/org/test")
+        (org-roam-directory "/home/zakaria/org/notes")
         :bind (:map org-roam-mode-map
                 (("C-c n l" . org-roam)
                  ("C-c n f" . org-roam-find-file)
@@ -247,8 +245,8 @@
                 :map org-mode-map
                 (("C-c n i" . org-roam-insert))
                 (("C-c n I" . org-roam-insert-immediate))))
+  (org-roam-mode 1)
 #+end_src
-
 ** Minions
    #+BEGIN_SRC emacs-lisp
      ;;Use minions to hide all minor modes
