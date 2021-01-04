@@ -50,7 +50,7 @@
 
 ;; Hist, Backup and auto-save ..etc
 ;;---------------------------------
-(setq backup-directory-alist '(("." . "~/.cache/emacs/backup"))
+(setq backup-directory-alist '(("." . "~/.local/share/emacs/backup"))
   backup-by-copying t                       ; Don't delink hardlinks
   version-control t                         ; Use version numbers on backups
   delete-old-versions t                     ; Automatically delete excess backups
@@ -59,20 +59,22 @@
   vc-make-backup-files t                    ; Even version controlled files get to be backed up.
   )
 (setq auto-save-file-name-transforms
-      '((".*" "~/.cache/emacs/undo/" t)))
+      '((".*" "~/.local/share/emacs/undo/" t)))
 (setq undo-tree-history-directory-alist     ; Saving persistent tree-undo to a single directory
-      '(("." . "~/.cache/emacs/undo")))
+      '(("." . "~/.local/share/emacs/undo")))
 
- (setq is-work nil)                         ; *--=~~ search for explanations ~~=--*
- ;; t means no truncation
- (setq history-length t)
- (setq history-delete-duplicates t)
+(setq is-work nil)                         ; *--=~~ search for explanations ~~=--*
+;; t means no truncation
+(setq history-length t)
+(setq history-delete-duplicates t)
 
- (savehist-mode 1)                           ; Saves your minibuffer histories
- (setq
-     savehist-file "~/.cache/emacs/savehist")    ; Set the savehist file
- (setq savehist-save-minibuffer-history 1)
- (setq savehist-additional-variables         ; Save other histories and other variables as well
-     '(kill-ring
-       search-ring
-       regexp-search-ring))
+(savehist-mode 1)                           ; Saves your minibuffer histories
+(setq
+ savehist-file "~/.local/share/emacs/savehist")    ; Set the savehist file
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables         ; Save other histories and other variables as well
+      '(kill-ring
+        search-ring
+        regexp-search-ring))
+;; (setq auto-save-list-file-prefix       ("~/.local/share/emacs" "sessions/"))
+;; (setq recentf-save-file                ("~/.local/share/emacs/recentf-save.el"))
