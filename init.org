@@ -400,36 +400,39 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
      (setq org-agenda-directory "~/org/gtd/"
            org-agenda-files '("~/org/gtd" ))                    ;; org-agenda-files
 
-      (setq org-agenda-dim-blocked-tasks nil                    ;; Do not dim blocked tasks
-            org-agenda-span 'day                                ;; show me one day
-            org-agenda-inhibit-startup t                        ;; Stop preparing agenda buffers on startup:
-            org-agenda-use-tag-inheritance nil                  ;; Disable tag inheritance for agendas:
-            org-agenda-show-log t
-            org-agenda-skip-scheduled-if-done t
-            org-agenda-skip-deadline-if-done t
-            org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+     (setq org-agenda-dim-blocked-tasks nil                    ;; Do not dim blocked tasks
+           org-agenda-span 'day                                ;; show me one day
+           org-agenda-inhibit-startup t                        ;; Stop preparing agenda buffers on startup:
+           org-agenda-use-tag-inheritance nil                  ;; Disable tag inheritance for agendas:
+           org-agenda-show-log t
+           org-agenda-skip-scheduled-if-done t
+           org-agenda-skip-deadline-if-done t
+           org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+           org-agenda-deadline-leaders '("!D!: " "D%2d: " "")
+           org-agenda-scheduled-leaders '("" "S%3d: ")
 
-            org-agenda-time-grid
-            '((daily today require-timed)
+           org-agenda-time-grid
+           '((daily today require-timed)
              (800 1000 1200 1400 1600 1800 2000)
              "......" "----------------"))
      (setq
-         org-agenda-start-on-weekday 0                          ;; Weekday start on Sunday
-          org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R,S-L skip the note/log info[used when fixing the state]
-           org-agenda-tags-column -100                          ;; Set tags far to the right
-           org-clock-out-remove-zero-time-clocks t              ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
-           org-clock-persist t                                  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-           org-use-fast-todo-selection t                        ;; from any todo state to any other state; using it keys
-          org-agenda-window-setup 'only-window)                 ;; Always open my agenda in fullscreen
+      org-agenda-start-on-weekday 0                          ;; Weekday start on Sunday
+      org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R,S-L skip the note/log info[used when fixing the state]
+      org-agenda-tags-column -130                          ;; Set tags far to the right
+      org-clock-out-remove-zero-time-clocks t              ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+      org-clock-persist t                                  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+      org-use-fast-todo-selection t                        ;; from any todo state to any other state; using it keys
+      org-agenda-window-setup 'only-window)                 ;; Always open my agenda in fullscreen
 
      (setq org-agenda-prefix-format
-       '((agenda . " %i %-12:c%?-12t% s")
-         (todo   . " ")
-         (tags   . " %i %-12:c")
-         (search . " %i %-12:c")))
+           '((agenda . " %i %-12:c%?-12t %s")
+             (todo   . " ")
+             (tags   . " %i %-12:c")
+             (search . " %i %-12:c")))
      ;; define org's states
      (setq org-todo-keywords
-       '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED(c)")))
+           '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+             (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 
      ;;Thanks to Erik Anderson, we can also add a hook that will log when we activate
      ;;a task by creating an “ACTIVATED” property the first time the task enters the NEXT state:
@@ -453,43 +456,36 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
       (setq org-agenda-custom-commands
             '(("g" "Get Things Done (GTD)"
                ((agenda ""
-                      ((org-agenda-overriding-header "My Day")
-                       (org-agenda-prefix-format "  %i %-12:c [%e] ")
-                       (org-agenda-use-time-grid t)
-                       (org-deadline-warning-days 0)
-                         (org-agenda-skip-function
-                          '(org-agenda-skip-entry-if 'deadline))
-                               ))
-
-                (agenda nil
-                        ((org-agenda-overriding-header "Deadlines")
-                         (org-agenda-entry-types '(:deadline))
-                         (org-agenda-format-date "")
-                         (org-deadline-warning-days 7)
-                         (org-agenda-prefix-format "  %?-12t% s")
-                         (org-agenda-skip-function
-                          '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))))
-
+                        ((org-agenda-span 'day)
+                         (org-deadline-warning-days 365)))
+                (todo "TODO"
+                      ((org-agenda-overriding-header "inbox")
+                       (org-agenda-files '("~/org/gtd/inbox.org"))))
 
                 (todo "TODO"
-                           ((org-agenda-overriding-header "Inbox")
-                            (org-agenda-files '("~/org/gtd/inbox.org"))
-                            (org-agenda-prefix-format "  %?-12t% s")))
-                (todo "DONE"
-                      ((org-agenda-overriding-header "Completed today")
-                    (org-agenda-files
-                     '("~/org/gtd/projects.org"
-                       "~/org/gtd/inbox.org"
-                       "~/org/gtd/next.org"
-                       "~/org/gtd/habits.org"))
-                       (org-agenda-prefix-format "  %?-12t% s")))
+                      ((org-agenda-overriding-header "Emails")
+                       (org-agenda-files '("~/org/gtd/emails.org"))))
 
-                  ))))
-                ;; (tags "CLOSED>=\"<today>\""
-                ;;       ((org-agenda-overriding-header "Completed today")
-                ;;        (org-agenda-prefix-format "  %?-12t% s")
+                (todo "NEXT"
+                      ((org-agenda-overriding-header "In Progress")
+                       (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                       (org-agenda-files '("~/org/gtd/someday.org"
+                                           "~/org/gtd/projects.org"
+                                           "~/org/gtd/next.org"))
+                       ))
+                (todo "TODO"
+                      ((org-agenda-overriding-header "Projects")
+                       (org-agenda-files '("~/org/gtd/projects.org")))
+                      )
+
+                (todo "TODO"
+                      ((org-agenda-overriding-header "One-off Tasks")
+                       (org-agenda-files '("~/org/gtd/next.org"))
+                       (org-agenda-skip-function '(org-agenda-skip-entry-if
+                                                   'deadline 'scheduled))))
+                nil))))
+
     #+end_src
-
 *** Habit
     #+BEGIN_SRC emacs-lisp
       (require 'org-habit)
@@ -500,18 +496,18 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
 
 *** Refiling
     #+begin_src emacs-lisp
-      ;; Refiling [need reading]
-      ;;tell org-mode we want to specify a refile target using the file path.
-      (setq org-refile-use-outline-path 'file
-       org-outline-path-complete-in-steps nil)
-      (setq org-refile-allow-creating-parent-nodes 'confirm)
-      (setq org-refile-targets '(("~/org/gtd/next.org" :level . 0)
-                                 ("~/org/ideas.org" :level . 1)
-                                 ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
-                                ;;("~/org/links.org" :level . 1)
-                                ;;("someday.org" :level . 0)
+            ;; Refiling [need reading]
+            ;;tell org-mode we want to specify a refile target using the file path.
+            (setq org-refile-use-outline-path 'file
+             org-outline-path-complete-in-steps nil)
+            (setq org-refile-allow-creating-parent-nodes 'confirm)
+            (setq org-refile-targets '(("~/org/gtd/next.org" :level . 0)
+                                       ("~/org/ideas.org" :level . 1)
+                                       ("~/org/gtd/someday.org" :regexp . "\\(?:\\(?:Task\\|idea\\|p\\(?:\\(?:os\\|rojec\\)t\\)\\)s\\)")
+                                       ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
+            ;;("~/org/links.org" :level . 1)
+            ;;("someday.org" :level . 0)
     #+end_src
-
 ** org capture
    #+begin_src emacs-lisp
      (setq org-capture-templates
