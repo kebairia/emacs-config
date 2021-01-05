@@ -195,6 +195,7 @@
               "w" 'org-agenda-week-view
               "m" 'org-agenda-month-view
               "d" 'deft
+              "g" 'magit-status
               ;; "I" 'zetteldeft-insert-list-links
               ;; "N" 'zetteldeft-new-file-and-link
               ;; "B" 'zetteldeft-new-file-and-backlink
@@ -213,7 +214,6 @@
               ;;"B" 'zetteldeft-backlink-add
               ;;"s" 'zk/gen-scratch-buffer
    #+END_SRC
-
 ** COMMENT Deft
    #+BEGIN_SRC emacs-lisp
      ;; disable linum-mode (line number)
@@ -266,9 +266,6 @@
   (use-package evil-magit
     :after magit)
 #+end_src
-
-#+RESULTS:
-
 ** Minions
    #+BEGIN_SRC emacs-lisp
      ;;Use minions to hide all minor modes
