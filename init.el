@@ -46,6 +46,10 @@
 (load-user-file "modules/KEYBIDING.el")
 (load-user-file "modules/PACKAGES.el")
 (load-user-file "modules/ORG.el")
+;; Measure emacs startup time
+(add-to-list 'after-init-hook
+             (lambda ()
+               (message (concat "emacs (" (number-to-string (emacs-pid)) ") started in " (emacs-init-time)))))
 
 ;; Hist, Backup and auto-save ..etc
 ;;---------------------------------
