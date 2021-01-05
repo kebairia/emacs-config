@@ -1,4 +1,4 @@
-;;; package --- Summary
+;;; package --- Summary  
 ;; Load configuration from ~/.config/emacs/modules/*.el
 
          ;;; Commentary:

@@ -16,7 +16,7 @@
 :header-args: :tangle ~/.config/emacs/init.el
 :header-args: :results none
 :END:
-** DepS
+** Deps
    #+begin_src emacs-lisp
               ;;; package --- Summary  
      ;; Load configuration from ~/.config/emacs/modules/*.el
@@ -261,11 +261,10 @@
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit)
-    ;; :custom
-    ;; (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
   (use-package evil-magit
     :after magit)
 #+end_src
+
 ** Minions
    #+BEGIN_SRC emacs-lisp
      ;;Use minions to hide all minor modes
