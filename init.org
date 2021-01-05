@@ -522,10 +522,20 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
 ** org capture
    #+begin_src emacs-lisp
      (setq org-capture-templates
-        `(("i" "Inbox" entry  (file "~/org/gtd/inbox.org")
-         ,(concat "* TODO %?\n"
-                  "/Entered on/ %U"))))
+           `(("i" "Inbox" entry  (file "~/org/gtd/inbox.org")
+              ,(concat "* TODO %?\n"
+                       "/Entered on/ %U"))
+             ("l" "Link" entry (file+headline "~/org/gtd/inbox.org" "Links")
+              ,(concat "* TODO %a %?\n"
+                       "/Entered on/ %U") :immediate-finish t)
+             ))
    #+end_src
+
+** org protocol
+#+begin_src emacs-lisp
+(require 'org-protocol)
+#+end_src
+
 ** Other Functions
    #+BEGIN_SRC emacs-lisp
      (defun zk/switch-to-agenda ()
