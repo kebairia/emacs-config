@@ -1,4 +1,4 @@
-;;; package --- SummarY
+;;; package --- Summary
 ;; Load configuration from ~/.config/emacs/modules/*.el
 
          ;;; Commentary:
@@ -15,7 +15,6 @@
              (setq gc-cons-threshold 800000
                    gc-cons-percentage 0.1)
              (garbage-collect)) t)
-(setq-default scroll-conservatively 101)
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)

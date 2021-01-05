@@ -258,6 +258,17 @@
                 (("C-c n I" . org-roam-insert-immediate))))
   (org-roam-mode 1)
 #+end_src
+** Magit
+#+begin_src emacs-lisp
+  (use-package magit)
+    ;; :custom
+    ;; (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+  (use-package evil-magit
+    :after magit)
+#+end_src
+
+#+RESULTS:
+
 ** Minions
    #+BEGIN_SRC emacs-lisp
      ;;Use minions to hide all minor modes
