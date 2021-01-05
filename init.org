@@ -263,8 +263,11 @@
   (use-package magit)
   (use-package evil-magit
     :after magit)
+  "Display BUFFER in same-window"
+  (custom-set-variables
+   '(magit-display-buffer-function 'magit-display-buffer-traditional))
+  ;; '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 #+end_src
-
 ** Minions
    #+BEGIN_SRC emacs-lisp
      ;;Use minions to hide all minor modes
