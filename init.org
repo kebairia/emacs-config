@@ -523,11 +523,12 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
       (setq org-refile-allow-creating-parent-nodes 'confirm)
       (setq org-refile-targets '(("~/org/gtd/next.org" :level . 0)
                                  ("~/org/ideas.org" :level . 1)
-                                 ("~/org/links.org" :level . 1)
+                                 ("~/org/links.org" :level . 0)
                                  ("~/org/gtd/someday.org" :regexp . "\\(?:\\(?:Task\\|idea\\|p\\(?:\\(?:os\\|rojec\\)t\\)\\)s\\)")
                                  ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
       ;;("someday.org" :level . 0)
     #+end_src
+
 ** org capture
    #+begin_src emacs-lisp
      (setq org-capture-templates
