@@ -51,6 +51,11 @@
              (lambda ()
                (message (concat "emacs (" (number-to-string (emacs-pid)) ") started in " (emacs-init-time)))))
 
+(setq org-agenda-sorting-strategy '((agenda habit-down time-up  scheduled-down priority-down category-keep deadline-down)
+                                    (todo priority-down category-keep)
+                                    (tags priority-down category-keep)
+                                    (search category-keep)))
+
 ;; Hist, Backup and auto-save ..etc
 ;;---------------------------------
 (setq backup-directory-alist '(("." . "~/.local/share/emacs/backup"))
