@@ -15,12 +15,14 @@
              (setq gc-cons-threshold 800000
                    gc-cons-percentage 0.1)
              (garbage-collect)) t)
+;; package managers
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
-(package-initialize)
+;; emacs 27 now does'nt need a package-initialize
+(when (< emacs-major-version 27)
+  (package-initialize))
 
 (defconst user-init-dir
   (cond ((boundp 'user-emacs-directory)
@@ -35,54 +37,21 @@
   (load-file (expand-file-name file user-init-dir)))
 
 ;;(load-user-file "DEFAULTS.el")
-(load-user-file "nano/nano.el")
-(load-user-file "nano/nano-base-colors.el")
-(load-user-file "nano/nano-faces.el")
-(load-user-file "nano/nano-theme-dark.el")
-(load-user-file "nano/nano-theme.el")
+;; (load-user-file "nano/nano.el")
+;; (load-user-file "nano/nano-session.el")
+;; (load-user-file "nano/nano-base-colors.el")
+;; (load-user-file "nano/nano-faces.el")
+;; (load-user-file "nano/nano-theme-dark.el")
+;; (load-user-file "nano/nano-theme.el")
 
 ;; (load-user-file "clean-theme/clean.el")
 ;; (load-user-file "clean-theme/defaults.el")
-(load-user-file "modules/KEYBIDING.el")
+(load-user-file "modules/DEFAULTS.el")
+(load-user-file "modules/BINDINGS.el")
+;;(load-user-file "modules/THEME.el")
 (load-user-file "modules/PACKAGES.el")
 (load-user-file "modules/ORG.el")
 ;; Measure emacs startup time
 (add-to-list 'after-init-hook
              (lambda ()
                (message (concat "emacs (" (number-to-string (emacs-pid)) ") started in " (emacs-init-time)))))
-
-(setq org-agenda-sorting-strategy '((agenda habit-down time-up  scheduled-down priority-down category-keep deadline-down)
-                                    (todo priority-down category-keep)
-                                    (tags priority-down category-keep)
-                                    (search category-keep)))
-
-;; Hist, Backup and auto-save ..etc
-;;---------------------------------
-(setq backup-directory-alist '(("." . "~/.local/share/emacs/backup"))
-  backup-by-copying t                       ; Don't delink hardlinks
-  version-control t                         ; Use version numbers on backups
-  delete-old-versions t                     ; Automatically delete excess backups
-  kept-new-versions 3                       ; how many of the newest versions to keep
-  kept-old-versions 3                       ; and how many of the old
-  vc-make-backup-files t                    ; Even version controlled files get to be backed up.
-  )
-(setq auto-save-file-name-transforms
-      '((".*" "~/.local/share/emacs/undo/" t)))
-(setq undo-tree-history-directory-alist     ; Saving persistent tree-undo to a single directory
-      '(("." . "~/.local/share/emacs/undo")))
-
-(setq is-work nil)                         ; *--=~~ search for explanations ~~=--*
-;; t means no truncation
-(setq history-length t)
-(setq history-delete-duplicates t)
-
-(savehist-mode 1)                           ; Saves your minibuffer histories
-(setq
- savehist-file "~/.local/share/emacs/savehist")    ; Set the savehist file
-(setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables         ; Save other histories and other variables as well
-      '(kill-ring
-        search-ring
-        regexp-search-ring))
-;; (setq auto-save-list-file-prefix       ("~/.local/share/emacs" "sessions/"))
-;; (setq recentf-save-file                ("~/.local/share/emacs/recentf-save.el"))
