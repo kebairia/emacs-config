@@ -46,7 +46,7 @@
                   (garbage-collect)) t)
      ;; package managers
      (require 'package)
-     (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+     ;;(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
      (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
      (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
      ;; emacs 27 now does'nt need a package-initialize
@@ -308,8 +308,12 @@
 
   ;; Bookmarks
   (setq bookmark-default-file "~/.local/share/emacs/bookmark")
-
-
+  ;; Undo file
+  (setq auto-save-file-name-transforms
+        '((".*" "~/.local/share/emacs/undo/" t)))
+  ;; Saving persistent tree-undo to a single directory
+  (setq undo-tree-history-directory-alist     
+        '(("." . "~/.local/share/emacs/undo-tree")))
   ;; Backup
   (setq backup-directory-alist '(("." . "~/.local/share/emacs/backups"))
         make-backup-files t     ; backup of a file the first time it is saved.
@@ -325,8 +329,9 @@
                                           ;  (default: 30)
         auto-save-interval 200)  ; number of keystrokes between auto-saves
                                           ;  (default: 300)
-  ;; save bookmarks in ~/.cache/emacs
-  (setq bookmark-default-file "~/.local/share/emacs/bookmarks")
+  ;; Saving my sessions in another folder.
+  (setq auto-save-list-file-prefix            
+        "~/.local/share/emacs/sessions/session-")
   ;; display line number in text/prog & fundamental modes
   (setq-default
    display-line-numbers-current-absolute t ;  Enable the line nubmers
@@ -336,6 +341,7 @@
   (add-hook 'prog-mode-hook #'display-line-numbers-mode)
   (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
 #+end_src
+
 * BINDINGS              
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/BINDINGS.el
@@ -1409,41 +1415,4 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
   (add-hook 'text-mode-hook #'display-line-numbers-mode)
   (add-hook 'prog-mode-hook #'display-line-numbers-mode)
   (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
-#+end_src
-* TODO COMMENT Hist, Backup and auto-save
-check it here: [[https://github.com/bradwright/emacs.d]]
-use ~${HOME}/.cache/emacs~ for undo,backup and history
-#+begin_src emacs-lisp
-  ;; Hist, Backup and auto-save ..etc
-  ;;---------------------------------
-  ;; (setq backup-directory-alist '(("." . "~/.local/share/emacs/backup"))
-  ;;   backup-by-copying t                       ; Don't delink hardlinks
-  ;;   version-control t                         ; Use version numbers on backups
-  ;;   delete-old-versions t                     ; Automatically delete excess backups
-  ;;   kept-new-versions 3                       ; how many of the newest versions to keep
-  ;;   kept-old-versions 3                       ; and how many of the old
-  ;;   vc-make-backup-files t                    ; Even version controlled files get to be backed up.
-  ;;   )
-  (setq auto-save-file-name-transforms
-        '((".*" "~/.local/share/emacs/undo/" t)))
-  (setq undo-tree-history-directory-alist     ; Saving persistent tree-undo to a single directory
-        '(("." . "~/.local/share/emacs/undo")))
-  (setq auto-save-list-file-prefix            ; Saving my sessions in another folder.
-        "~/.local/share/emacs/sessions")
-
-  (setq is-work nil)                         ; *--=~~ search for explanations ~~=--*
-  ;; t means no truncation
-  (setq history-length t)
-  (setq history-delete-duplicates t)
-
-  ;; (savehist-mode 1)                           ; Saves your minibuffer histories
-  ;; (setq
-  ;;  savehist-file "~/.local/share/emacs/savehist")    ; Set the savehist file
-  ;; (setq savehist-save-minibuffer-history 1)
-  ;; (setq savehist-additional-variables         ; Save other histories and other variables as well
-  ;;       '(kill-ring
-  ;;         search-ring
-  ;;         regexp-search-ring))
-  ;; (setq auto-save-list-file-prefix       ("~/.local/share/emacs" "sessions/"))
-  ;; (setq recentf-save-file                ("~/.local/share/emacs/recentf-save.el"))
 #+end_src
