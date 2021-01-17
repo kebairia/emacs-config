@@ -532,8 +532,6 @@
   (org-roam-mode 1)
 #+end_src
 
-#+RESULTS:
-: t
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit)
@@ -651,8 +649,11 @@
       ))
 #+END_SRC
 
-** TODO Aggressive Indent
-The variable aggressive-indent-dont-indent-if lets you customize when you don't want indentation to happen.
+** Aggressive Indent
+:PROPERTIES:
+:ACTIVATED: [2021-01-16]
+:END:
+The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don't want indentation to happen.
 #+begin_example
 (add-to-list
  'aggressive-indent-dont-indent-if
@@ -667,105 +668,23 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
 
 ** COMMENT ELFEED  _move it into another file_
 #+begin_src emacs-lisp
-  ;; data is stored in ~/.elfeed
-  (setq elfeed-feeds
-        '(
-          ;; programming
-          ;;("https://news.ycombinator.com/rss" hacker)
-          ;;"--- TECH YOUTUBE ---"
-          ("https://invidious.snopyta.org/feed/channel/UC2eYFnH61tmytImy1mTYvhA" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCv1Kcz-CuGM6mxzL3B1_Eiw" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCld68syR8Wi-GY_n4CaoJGA" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UC7YOGHUfC1Tb6E4pudI9STA" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCsnGwSIHyoYN0kiINAGUKxg" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCjr2bPAyPV7t35MvcgT3W8Q" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCs6KfncB4OV6Vug4o_bzijg" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCXa6sE6cKXcQ97vI0Emn1XA" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UC0A3ldncnGQ1M_RU2Wb4L2A" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UC5UAwBUum7CPN5buc-_N1Fw" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCx-ljiKQcLSd8_4AFi_yaIw" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCR-DXc1voovS8nhAvccRZhg" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCVls1GmFKf6WlTraIb_IaJg" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCkf4VIqu3Acnfzuk3kRIFwA" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCzozMcF1kcR9dzsdEkRHdaw" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCZrrEuHiQjN2CUo84g5tk7w" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCf93fPKwotph47H3_KDcRyg" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCFzGyNKXPAglNq28qWYTDFA" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCMZxtiWIdrXUUbWMAe6D-Iw" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UC0vBXGSyV14uvJ4hECDOl0Q" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UC3jSNmKWYA04R47fDcc1ImA" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCDmXLiZTBaFuCOXjy6mdw5w" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCOWcZ6Wicl-1N34H0zZe38w" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCvA_wgsX6eFAOXI8Rbg_WiQ" yt tech)
-          ("https://invidious.snopyta.org/feed/channel/UCAiiOTio8Yu69c3XnR7nQBQ" yt tech) 
-          ))
-
+  ;; data is stored in ~/.elfeed by defaults
+  ;; use elfeed-org to handle your feed using org files
   (setq-default elfeed-search-filter "@2-days-ago +unread")
   (setq-default elfeed-search-title-max-width 100)
   (setq-default elfeed-search-title-min-width 100)
+#+end_src
 
+** COMMENT elfeed-org
+#+begin_src emacs-lisp
+  ;; Load elfeed-org
+  (use-package elfeed-org
+    :after elfeed)
 
-
-
-
-  "--- TECH BLOG ---"
-  ;; https://sachachua.com/blog/feed				"blog" "emacs" "tech" "~SachaChua"
-  ;; https://news.ycombinator.com/rss 			"blog" "tech" "~HackerNews"
-  ;; https://www.lisenet.com/feed/ 				"blog" "tech" "~Lisenet"
-  ;; # http://www.aaronsw.com/2002/feed/pgessays.rss 		"blog" "tech" 
-  ;; https://www.linuxjournal.com/news/feed "blog" 		"blog" "tech" 
-  ;; https://www.linuxjournal.com/node/feed "blog" 		"blog" "tech"
-  ;; https://www.darkreading.com/rss_simple.asp
-  ;; # https://everythingsysadmin.com/appearances.xml
-  ;; # https://sysadvent.blogspot.com/feed/posts/default
-  ;; http://lxer.com/module/newswire/headlines.rss
-  ;; https://sanctum.geek.nz/arabesque/feed/
-  ;; "--- PROG ---"
-  ;; https://www.archlinux.org/feeds/news/							"tech"
-  ;; https://github.com/gokcehan/lf/commits/master.atom 					"git" "tech"
-  ;; https://github.com/LukeSmithxyz/mutt-wizard/commits/master.atom				"git" "tech"
-  ;; https://git.suckless.org/dwm/atom.xml 							"git" "tech"
-  ;; https://git.suckless.org/st/atom.xml							"git" "tech"
-  ;; https://git.suckless.org/dmenu/atom.xml 						"git" "tech"
-  ;; https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/commits/20201201.atom 	"git" "tech" "dsg" 
-  ;; "--- POP-SCI YOUTUBE ---"
-  ;; https://invidious.snopyta.org/feed/channel/UCYO_jab_esuFRV4b17AJtAw "yt" "~3Blue1Brown"
-  ;; https://invidious.snopyta.org/feed/channel/UCBa659QWEk1AI4Tg--mrJ2A "yt" "~Tom Scott"
-  ;; https://invidious.snopyta.org/feed/channel/UCLM6JlQkQ9tltBL9Bipci9g "yt" "~Marie Cachet"
-  ;; https://invidious.snopyta.org/feed/channel/UCKzJFdi57J53Vr_BkTfN3uQ "yt" "~Primer"
-  ;; https://invidious.snopyta.org/feed/channel/UCGaVdbSav8xWuFWTadK6loA "yt" "~blogbrothers"
-  ;; https://invidious.snopyta.org/feed/channel/UCyFVq85PeDg3i6AOLmiLYsg "yt" "~I7timal"
-  ;; https://invidious.snopyta.org/feed/channel/UCM0kS9NuLHU-MVfWfi643eA "yt" "~Ripples"
-  ;; https://invidious.snopyta.org/feed/channel/UCFq4pOuTiZmfJyCxaYTT3Hg "yt" "~Hussin Abdellah"
-  ;; https://invidious.snopyta.org/feed/channel/UCuWr7A2GqbLPZuPcjMUqaJQ "yt" "~Youssef Houssein"
-  ;; https://invidious.snopyta.org/feed/channel/UCsXVk37bltHxD1rDPwtNM8Q "yt" "~Kurzgesagt - In a Nutshell"
-  ;; "---Anime---"
-  ;; https://invidious.snopyta.org/feed/channel/UC7dF9qfBMXrSlaaFFDvV_Yg "yt" "anime" "~Gigguk"
-  ;; https://invidious.snopyta.org/feed/channel/UCzs3FmQ5qPfBcZj-xSZDKcw "yt" "anime" "~Foxen Anime"
-  ;; https://invidious.snopyta.org/feed/channel/UCUUYiPd9TKE62mUn-lJ29AQ "yt" "anime" "~Aleczandxr"
-  ;; "--- G_YOUTUBE ---"
-  ;; https://invidious.snopyta.org/feed/channel/UCL4zvjSd1wE_NUQR-rnfTTA "yt" "~Maher Bajjour"
-  ;; https://invidious.snopyta.org/feed/channel/UCdttmnJddGQZsXRL_DbqgWA "yt" "~MahmoudIsmailTV"
-  ;; https://invidious.snopyta.org/feed/channel/UCiMplCEVdc5YflcI3GeDy-g "yt" "~The Caveman Talks"
-  ;; https://invidious.snopyta.org/feed/channel/UC3GvjNpoL10xEPKh3Rhc-eA "yt" "~Hichem's Talks"
-  ;; https://invidious.snopyta.org/feed/channel/UCO94PxO3TmChOqJ45ZQ9RLA "yt" "~Ahmed Sami"
-  ;; https://invidious.snopyta.org/feed/channel/UCimD4ca_NJotidnF-xGAMuA "yt" "~Adam Elmasri"
-  ;; https://invidious.snopyta.org/feed/channel/UCSclVQgEhTgdUNda3JTbz5A "yt" "~Ernest William"
-  ;; https://invidious.snopyta.org/feed/channel/UC4AIxAWgbw3zvOjHOVDADSA "yt" "~Herba Edition"
-  ;; "--- NEWS ---"
-  ;; https://www.slowernews.com/rss.xml "news" "~Slower News"
-  ;; "--- BLOGS ---"
-  ;; https://www.scotthyoung.com/blog/feed/ 			"blog"
-  ;; http://lukesmith.xyz/rss.xml 				"blog"
-  ;; https://notrelated.libsyn.com/rss 			"blog"
-  ;; https://bastian.rieck.me/blog/index.xml 		"blog"
-  ;; https://www.ida2at.com/feed/rss/ 			"blog" "~Ida2at"
-  ;; http://www.josiahzayner.com/feed/posts/default?alt=rss 	"blog" "~Science, Art, Beauty"
-  ;; https://www.sciwarepod.com/feed/ 			"blog" "~Sciware Podcast"
-  ;; "--- MANGA ---"
-  ;; https://mangadex.org/rss/zWh6ABYCsQmu7GRNxd4gvtnPprfwFyec/manga_id/23105?h=0 	"manga" "~Boruto"
-  ;; https://mangadex.org/rss/zWh6ABYCsQmu7GRNxd4gvtnPprfwFyec/manga_id/12714?h=0 	"manga" "~Boku no Hero Academia"
-  ;; https://mangadex.org/rss/zWh6ABYCsQmu7GRNxd4gvtnPprfwFyec/manga_id/429?h=0 	"manga" "~Shingeki no Kyojin"
+  ;; Optionally specify a number of files containing elfeed
+  ;; configuration. If not set then the location below is used.
+  ;; Note: The customize interface is also supported.
+  (setq rmh-elfeed-org-files (list "~/.local/share/emacs/elfeed.org"))
 #+end_src
 
 * ORG MODE            
@@ -849,10 +768,6 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
      ;; (define-key global-map (kbd "C-c c") 'org-capture)
      ;; (define-key global-map (kbd "C-c a") 'org-agenda)
   #+end_src
-
-  #+RESULTS:
-  | lambda | nil | (display-line-numbers-mode -1) |
-
 *** ORG AGENDA
     #+begin_src emacs-lisp
       (setq org-agenda-block-separator  9472)                  ;; use 'straight line' as a block-agenda divider
@@ -1038,10 +953,6 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
    (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
    (add-hook 'org-mode-hook 'org-display-inline-images)
  #+end_src
-
- #+RESULTS:
- | org-display-inline-images | org-indent-mode | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | evil-org-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
-
 ** Reveal-js
    #+begin_src emacs-lisp
      (use-package ox-reveal
@@ -1567,9 +1478,6 @@ The variable aggressive-indent-dont-indent-if lets you customize when you don't 
 
 
 #+end_src
-
-#+RESULTS:
-
 ** Sessions
 #+begin_src emacs-lisp
   ;; Save miscellaneous history

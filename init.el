@@ -49,6 +49,7 @@
 ;;(load-user-file "modules/THEME.el")
 (load-user-file "modules/PACKAGES.el")
 (load-user-file "modules/ORG.el")
+(load-user-file "modules/MU4E.el")
 ;; Measure emacs startup time
 (add-to-list 'after-init-hook
              (lambda ()
