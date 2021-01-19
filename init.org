@@ -696,7 +696,8 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :END:
 ** GLOBAL
 #+begin_src elisp
- (add-hook 'org-mode-hook 'org-indent-mode)
+  (add-hook 'org-mode-hook 'org-indent-mode)
+  ;(setq  org-ellipsis (if (char-displayable-p ?⃕) " ⃕" nil))
 #+end_src
 ** GTD
 *** Global
@@ -848,6 +849,15 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 ** org protocol
 #+begin_src emacs-lisp
 (require 'org-protocol)
+#+end_src
+** org ref
+#+begin_src emacs-lisp
+  (setq reftex-default-bibliography '("~/org/ref/org-ref.bib"))
+
+  ;; see org-ref for use of these variables
+  (setq org-ref-bibliography-notes "/tmp/test/notes.org"
+        org-ref-default-bibliography '("~/org/ref/org-ref.bib")
+        org-ref-pdf-directory "~/org/ref/pdfs")
 #+end_src
 ** Other Functions
    #+BEGIN_SRC emacs-lisp
