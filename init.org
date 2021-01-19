@@ -213,6 +213,8 @@
 
   ;; y/n for  answering yes/no questions
   (fset 'yes-or-no-p 'y-or-n-p)
+  ;; use ssh by default in tramp
+  (setq tramp-default-method "ssh")
 
   ;; No tabs
   (setq-default indent-tabs-mode nil)
