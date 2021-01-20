@@ -64,6 +64,7 @@
   (load "~/.config/emacs/modules/SESSIONS.el") 
   (load "~/.config/emacs/modules/BINDINGS.el") 
   (load "~/.config/emacs/modules/ORG.el") 
+  (load "~/.config/emacs/modules/MU4E.el") 
   (load "~/.config/emacs/nano/nano.el") 
   (load "~/.config/emacs/nano/nano-layout.el") 
   (load "~/.config/emacs/nano/nano-modeline.el") 
@@ -228,7 +229,14 @@
       ad-do-it))
   (ad-activate 'term-sentinel)
 
-  (provide 'nano-defaults)
+  ;; display line number in text/prog & fundamental modes
+  (setq-default
+   display-line-numbers-current-absolute t ;  Enable the line nubmers
+   display-line-numbers-width 2
+   display-line-numbers-widen t)
+  (add-hook 'text-mode-hook #'display-line-numbers-mode)
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+  (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
 #+end_src
 ** SESSIONS
 :PROPERTIES:
@@ -306,14 +314,6 @@
   ;; Saving my sessions in another folder.
   (setq auto-save-list-file-prefix            
         "~/.local/share/emacs/sessions/session-")
-  ;; display line number in text/prog & fundamental modes
-  (setq-default
-   display-line-numbers-current-absolute t ;  Enable the line nubmers
-   display-line-numbers-width 2
-   display-line-numbers-widen t)
-  (add-hook 'text-mode-hook #'display-line-numbers-mode)
-  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-  (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
 #+end_src
 
 ** BINDINGS              
@@ -887,7 +887,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         ))
    #+END_SRC
    
-* COMMENT MU4E 
+* MU4E 
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
 :header-args: :results none
@@ -1001,7 +1001,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :END:
 #+begin_src emacs-lisp
 #+end_src
-* COMMENT MU4E 
+* COMMENT MU4E old 
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
 :header-args: :results none
