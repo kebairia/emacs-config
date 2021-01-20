@@ -64,6 +64,7 @@
   (load "~/.config/emacs/modules/SESSIONS.el") 
   (load "~/.config/emacs/modules/BINDINGS.el") 
   (load "~/.config/emacs/modules/ORG.el") 
+  (load "~/.config/emacs/modules/MU4E.el") 
   (load "~/.config/emacs/nano/nano.el") 
   (load "~/.config/emacs/nano/nano-layout.el") 
   (load "~/.config/emacs/nano/nano-modeline.el") 
@@ -887,7 +888,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         ))
    #+END_SRC
    
-* COMMENT MU4E 
+* MU4E 
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
 :header-args: :results none
@@ -1001,7 +1002,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :END:
 #+begin_src emacs-lisp
 #+end_src
-* COMMENT MU4E 
+* COMMENT MU4E old 
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
 :header-args: :results none
