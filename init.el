@@ -25,7 +25,8 @@
 (when (< emacs-major-version 27)
   (package-initialize))
 ;; load files
-(load "~/.config/emacs/modules/DEFAULTS.el")
+(load "~/.config/emacs/modules/DEFAULTS.el") 
+(load "~/.config/emacs/modules/PACKAGES.el")
 
 ;; Measure emacs startup time
 (add-to-list 'after-init-hook

@@ -20,12 +20,12 @@
         (org-babel-tangle))))
       (add-hook 'org-mode-hook (lambda ()(add-hook 'after-save-hook #'zk/org-babel-tangle-config))) 
 #+end_src
-* Bootstrap
+* BOOTSTRAP
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/init.el
 :header-args: :results none
 :END:
-** DEPS
+** Deps
    #+begin_src emacs-lisp
      ;;; package --- Summary  
      ;; Load configuration from ~/.config/emacs/modules/*.el
@@ -60,6 +60,7 @@
     (package-initialize))
   ;; load files
   (load "~/.config/emacs/modules/DEFAULTS.el") 
+  (load "~/.config/emacs/modules/PACKAGES.el") 
 #+end_src
 *** Mesure emacs startup time
 #+begin_src emacs-lisp
@@ -223,6 +224,148 @@
 
   (provide 'nano-defaults)
 #+end_src
+* PACKAGES             
+  :PROPERTIES:
+  :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
+  :header-args: :results none
+  :END:
+** evil mode
+#+BEGIN_SRC emacs-lisp
+  (setq evil-want-keybinding nil)                   ;; this statement is required to enable evil/evil-colleciton mode
+  (evil-mode 1)                                     ;; enable evil-mode
+  (setq evil-want-abbrev-expand-on-insert-exit nil)
+  (use-package evil-collection                      ;; evil-friendly binding for many modes
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+  (use-package evil-org
+    :after org
+    :config
+    (add-hook 'org-mode-hook 'evil-org-mode)
+    (add-hook 'evil-org-mode-hook
+              (lambda () (evil-org-set-key-theme)))
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
+  (setq                                             ;;automatically use evil for ibuffer and dired
+   evil-emacs-state-modes
+      (delq 'ibuffer-mode evil-emacs-state-modes))
+#+END_SRC
+** Magit
+#+begin_src emacs-lisp
+  (use-package magit)
+  (use-package evil-magit
+    :after magit)
+  "Display BUFFER in same-window"
+  (custom-set-variables
+   '(magit-display-buffer-function 'magit-display-buffer-traditional))
+  ;; '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
+#+end_src
+** Ibuffer
+   #+BEGIN_SRC emacs-lisp
+     ;; disable linum-mode
+     (add-hook 'ibuffer-mode (lambda() (linum-mode -1)))
+     (global-set-key (kbd "C-x C-b") 'ibuffer) ;; Use Ibuffer for Buffer List
+     ;; create a function that define a group
+     (setq ibuffer-saved-filter-groups
+         '(("default"
+            ("Emacs"  (or
+                        (name . "^\\*Messages\\*$")
+                        (name . "^\\*scratch\\*$")
+            ))
+            ("Agenda"  (or
+                        (name . "inbox.org")
+                        (name . "next.org")
+                        (name . "someday.org")
+                        (name . "emails.org")
+                        (name . "archive.org")
+                        (name . "habits.org")
+                        (name . "projects.org")
+                        (name . "weekly_reviews.org")
+                ))
+
+            ("Org"  (name . "^.*org$"))
+            ("PDF"  (name . "^.*pdf"))
+            ("Python"  (name . "^.*py$"))
+            ("Elisp"  (name . "^.*el"))
+            ("Web"  (or
+                        (name . "^.*html$")
+                        (name . "^.*css")
+                        (name . "^.*php")
+                ))
+            ("Dired"  (mode . dired-mode))
+          ))
+       )
+
+     (add-hook 'ibuffer-mode-hook
+      '(lambda ()
+         (ibuffer-auto-mode 1)
+         (ibuffer-switch-to-saved-filter-groups "default"))) ;; use the group default
+
+   #+END_SRC
+** which-key
+    Which-key Package show me a helpful menu when i press "C-x" and wait
+#+BEGIN_SRC emacs-lisp
+   (use-package which-key
+    :ensure t
+    :config
+    (which-key-mode))
+#+END_SRC
+** ace-window
+#+BEGIN_SRC emacs-lisp
+  ;; it looks like counsel is a requirement for swiper
+  ;; counsel give us a nice looking interface when we use M-x
+  (use-package counsel
+    :ensure t)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x o") 'ace-window)
+#+END_SRC
+** Swiper
+#+BEGIN_SRC emacs-lisp
+  (use-package swiper
+    :ensure t
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (global-set-key "\C-s" 'swiper-isearch)
+      (global-set-key "\M-S" 'counsel-org-goto)
+      (global-set-key (kbd "C-c g") 'counsel-git)
+      (global-set-key (kbd "M-x") 'counsel-M-x)
+      (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+      (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+      (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+      (global-set-key (kbd "<f1> l") 'counsel-load-library)
+      (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+      (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+      (global-set-key (kbd "C-c j") 'counsel-git-grep)
+      (global-set-key (kbd "<f6>") 'ivy-resume)
+      (global-set-key (kbd "C-c i") 'counsel-imenu)
+      (global-set-key (kbd "C-x l") 'counsel-locate)
+      (global-set-key (kbd "C-x C-r") 'counsel-recentf)
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      ))
+#+END_SRC
+
+** Aggressive Indent
+:PROPERTIES:
+:ACTIVATED: [2021-01-16]
+:END:
+The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don't want indentation to happen.
+#+begin_example
+(add-to-list
+ 'aggressive-indent-dont-indent-if
+ '(and (derived-mode-p 'c++-mode)
+       (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+                           (thing-at-point 'line)))))
+#+end_example
+
+#+begin_src emacs-lisp
+  (global-aggressive-indent-mode 1)
+#+end_src
+
+
 * COMMENT BOOTSTRAP            
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/init.el
