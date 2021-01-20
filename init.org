@@ -20,7 +20,210 @@
         (org-babel-tangle))))
       (add-hook 'org-mode-hook (lambda ()(add-hook 'after-save-hook #'zk/org-babel-tangle-config))) 
 #+end_src
-* BOOTSTRAP            
+* Bootstrap
+:PROPERTIES:
+:header-args: :tangle ~/.config/emacs/init.el
+:header-args: :results none
+:END:
+** DEPS
+   #+begin_src emacs-lisp
+     ;;; package --- Summary  
+     ;; Load configuration from ~/.config/emacs/modules/*.el
+
+                   ;;; Commentary:
+     ;; Added by Package.el.  This must come before configurations of
+     ;; installed packages.  Don't delete this line.  If you don't want it,
+     ;; just comment it out by adding a semicolon to the start of the line.
+     ;; You may delete these explanatory comments.
+
+   #+end_src
+*** Faster Startup 
+#+begin_src emacs-lisp
+     ;; Speed up startup
+     (setq gc-cons-threshold 402653184
+           gc-cons-percentage 0.6)
+     (add-hook 'after-init-hook
+               `(lambda ()
+                  (setq gc-cons-threshold 800000
+                        gc-cons-percentage 0.1)
+                  (garbage-collect)) t)
+#+end_src
+*** Load files and initialize packages repositories
+#+begin_src emacs-lisp
+  ;; package managers
+  (require 'package)
+  ;;(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  ;; emacs 27 now does'nt need a package-initialize
+  (when (< emacs-major-version 27)
+    (package-initialize))
+  ;; load files
+  (load "~/.config/emacs/modules/DEFAULTS.el") 
+#+end_src
+*** Mesure emacs startup time
+#+begin_src emacs-lisp
+  ;; Measure emacs startup time
+  (add-to-list 'after-init-hook
+               (lambda ()
+                 (message (concat "emacs ("
+                                  (number-to-string (emacs-pid))
+                                  ") started in "
+                                  (emacs-init-time)))))
+#+end_src
+
+** DEFAULTS
+:PROPERTIES:
+:header-args: :tangle ~/.config/emacs/modules/DEFAULTS.el
+:header-args: :results none
+:END:
+#+begin_src emacs-lisp
+
+  ;; User name
+  (setq user-full-name "Kebairia Zakaria")
+  ;; User mail address
+  (setq user-mail-address "4.kebairia@gmail.com")
+  ;; No startup  screen
+  (setq inhibit-startup-screen t)
+  ;; No startup message
+  (setq inhibit-startup-message t)
+  (setq inhibit-startup-echo-area-message t)
+  ;; No message in scratch buffer
+  (setq initial-scratch-message nil)
+  ;; Initial buffer 
+  (setq initial-buffer-choice nil)
+  ;; No frame title
+  (setq frame-title-format nil)
+  ;; No file fialog
+  (setq use-file-dialog nil)
+  ;; No dialog box
+  (setq use-dialog-box nil)
+  ;; No popup windows
+  (setq pop-up-windows nil)
+  ;; No empty line indicators
+  (setq indicate-empty-lines nil)
+  ;; No cursor in inactive windows
+  (setq cursor-in-non-selected-windows nil)
+  ;; fundamental mode is initial mode
+  ;;(setq initial-major-mode 'fundamental-mode)
+
+  ;; Text mode is default major mode
+  ;;(setq default-major-mode 'text-mode)
+
+  ;; Moderate font lock
+  (setq font-lock-maximum-decoration nil)
+
+  ;; No limite on font lock
+  (setq font-lock-maximum-size nil)
+
+  ;; No line breat space points
+  (setq auto-fill-mode nil)
+
+  ;; Fill column at 80
+  (setq fill-column 80)
+
+  ;; No confirmation for visiting non-existent files
+  (setq confirm-nonexistent-file-or-buffer nil)
+
+  ;; Completion style, see
+  ;; gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
+  (setq completion-styles '(basic substring))
+
+  ;; Mouse active in terminal
+  (unless (display-graphic-p)
+    (xterm-mouse-mode 1)
+    (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
+    (global-set-key (kbd "<mouse-5>") 'scroll-up-line))
+  ;; No scroll bars
+  (scroll-bar-mode 0)
+  ;; No toolbar
+  (tool-bar-mode 0)
+  ;; No menu bar
+  (menu-bar-mode -1)
+  ;; (if (display-graphic-p)
+  ;;     (menu-bar-mode t) ;; When nil, focus problem on OSX
+  ;;   (menu-bar-mode -1))
+  ;; Navigate windows using shift+direction
+  (windmove-default-keybindings)
+  ;; Paren mode
+  (show-paren-mode 1)
+  ;; Electric pair mode
+  (electric-pair-mode 1)
+  ;; Tab behavior
+  (setq tab-always-indent 'complete)
+  (global-company-mode)
+  (define-key company-mode-map [remap indent-for-tab-command]
+    #'company-indent-or-complete-common)
+  ;; Pixel scroll (as opposed to char scrool)
+  (pixel-scroll-mode t)
+  ;; Mac specific
+  ;; (setq ns-use-native-fullscreen t
+  ;;       mac-option-key-is-meta nil
+  ;;       mac-command-key-is-meta t
+  ;;       mac-command-modifier 'meta
+  ;;       mac-option-modifier nil
+  ;;       mac-use-title-bar nil)
+
+  ;; Make sure clipboard works properly in tty mode on OSX
+                                          ;(defun copy-from-osx ()
+                                          ;(shell-command-to-string "pbpaste"))
+                                          ;(defun paste-to-osx (text &optional push)
+                                          ;(let ((process-connection-type nil))
+                                          ;(let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+                                          ;(process-send-string proc text)
+                                          ;(process-send-eof proc))))
+                                          ;(if (not (display-graphic-p))
+                                          ;(progn (setq interprogram-cut-function 'paste-to-osx)
+                                          ;(setq interprogram-paste-function 'copy-from-osx)))
+
+  ;; y/n for  answering yes/no questions
+  (fset 'yes-or-no-p 'y-or-n-p)
+  ;; use ssh by default in tramp
+  (setq tramp-default-method "ssh")
+
+  ;; No tabs
+  (setq-default indent-tabs-mode nil)
+
+  ;; Tab.space equivalence
+  (setq tab-width 4)
+
+  ;; Size of temporary buffers
+  (temp-buffer-resize-mode)
+  (setq temp-buffer-max-height 8)
+
+  ;; Minimum window height
+  (setq window-min-height 1)
+
+  ;; Buffer encoding
+  (prefer-coding-system       'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-language-environment   'utf-8)
+
+  ;; Unique buffer names
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'reverse
+        uniquify-separator " • "
+        uniquify-after-kill-buffer-p t
+        uniquify-ignore-buffers-re "^\\*")
+
+  ;; Default shell in term
+  (setq-default shell-file-name "/bin/zsh")
+  (setq explicit-shell-file-name "/bin/zsh")
+
+  ;; Kill term buffer when exiting
+  (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
+    (if (memq (process-status proc) '(signal exit))
+        (let ((buffer (process-buffer proc)))
+          ad-do-it
+          (kill-buffer buffer))
+      ad-do-it))
+  (ad-activate 'term-sentinel)
+
+  (provide 'nano-defaults)
+#+end_src
+* COMMENT BOOTSTRAP            
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/init.el
 :header-args: :results none
@@ -395,7 +598,7 @@
         (global-set-key (kbd "M-o") 'delete-other-windows)
         (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
    #+end_src
-* PACKAGES             
+* COMMENT PACKAGES             
   :PROPERTIES:
   :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
   :header-args: :results none
@@ -688,7 +891,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (setq rmh-elfeed-org-files (list "~/.local/share/emacs/elfeed.org"))
 #+end_src
 
-* ORG MODE            
+* COMMENT ORG MODE            
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/ORG.el
 :header-args: :results none
@@ -994,7 +1197,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         (R . t)
         ))
    #+END_SRC
-* MU4E 
+* COMMENT MU4E 
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
 :header-args: :results none
@@ -1101,7 +1304,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   ;; don't ask when quitting
   (setq mu4e-confirm-quit nil)
 #+end_src
-* PYTHON
+* COMMENT PYTHON
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/PYTHON.el
 :header-args: :results none
@@ -1279,347 +1482,4 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                                               ("/4.kebairia@gmail.com/[Gmail].Starred"   . ?r)
                                               ("/4.kebairia@gmail.com/[Gmail].Drafts"    . ?d)
                                               ))))))
-#+end_src
-
-* COMMENT THEME                                                     :ARCHIVE:
-:PROPERTIES:
-:header-args: :tangle ~/.config/emacs/modules/THEME.el
-:header-args: :results none
-:END:
-** COMMENT global
-#+begin_src emacs-lisp
-  ;;(package-initialize)
-  ;; Path to nano emacs modules (mandatory)
-  (add-to-list 'load-path "/home/zakaria/.config/emacs/nano")
-  (add-to-list 'load-path ".")
-
-  ;; Default layout (optional)
-  (require 'nano-layout)
-
-  ;; Theming Command line options (this will cancel warning messages)
-  (add-to-list 'command-switch-alist '("-dark"   . (lambda (args))))
-  ;; (add-to-list 'command-switch-alist '("-light"  . (lambda (args))))
-  ;; (add-to-list 'command-switch-alist '("-default"  . (lambda (args))))
-  ;; (add-to-list 'command-switch-alist '("-no-splash" . (lambda (args))))
-  ;; (add-to-list 'command-switch-alist '("-no-help" . (lambda (args))))
-  (add-to-list 'command-switch-alist '("-compact" . (lambda (args))))
-
-
-  (cond
-   ((member "-default" command-line-args) t)
-   ((member "-dark" command-line-args) (require 'nano-theme-dark))
-   (t (require 'nano-theme-light)))
-
-  ;; ;; Customize support for 'emacs -q' (Optional)
-  ;; ;; You can enable customizations by creating the nano-custom.el file
-  ;; ;; with e.g. `touch nano-custom.el` in the folder containing this file.
-  ;; (let* ((this-file  (or load-file-name (buffer-file-name)))
-  ;;        (this-dir  (file-name-directory this-file))
-  ;;        (custom-path  (concat this-dir "nano-custom.el")))
-  ;;   (when (and (eq nil user-init-file)
-  ;;              (eq nil custom-file)
-  ;;              (file-exists-p custom-path))
-  ;;     (setq user-init-file this-file)
-  ;;     (setq custom-file custom-path)
-  ;;     (load custom-file)))
-
-  ;; Theme
-  (require 'nano-faces)
-  (nano-faces)
-
-  (require 'nano-theme)
-  (nano-theme)
-  (require 'nano-base-colors)
-  (require 'nano-theme-dark)
-
-  ;; Nano default settings (optional)
-  ;;(require 'nano-defaults)
-
-  ;; Nano session saving (optional)
-  ;;(require 'nano-session)
-
-  ;; Nano header & mode lines (optional)
-  (require 'nano-modeline)
-
-  ;; ;; Nano key bindings modification (optional)
-  ;; (require 'nano-bindings)
-
-  ;; Compact layout (need to be loaded after nano-modeline)
-  (when (member "-compact" command-line-args)
-    (require 'nano-compact))
-
-  ;; Nano counsel configuration (optional)
-  ;; Needs "counsel" package to be installed (M-x: package-install)
-  ;; (require 'nano-counsel)
-
-  ;; Welcome message (optional)
-  ;; (let ((inhibit-message t))
-  ;;   (message "Welcome to GNU Emacs / N Λ N O edition")
-  ;;   (message (format "Initialization time: %s" (emacs-init-time))))
-
-  ;; ;; Splash (optional)
-  ;; (unless (member "-no-splash" command-line-args)
-  ;;   (require 'nano-splash))
-
-  ;; ;; Help (optional)
-  ;; (unless (member "-no-help" command-line-args)
-  ;;   (require 'nano-help))
-
-  (provide 'nano)
-#+end_src
-** COMMENT modeline
-** theme /dark theme
-* COMMENT DEFAULTS                                                  :ARCHIVE:
-:PROPERTIES:
-:header-args: :tangle ~/.config/emacs/modules/DEFAULTS.el
-:header-args: :results none
-:END:
-#+begin_src emacs-lisp
-  ;; No startup  screen
-  (setq inhibit-startup-screen t)
-
-  ;; No startup message
-  (setq inhibit-startup-message t)
-  (setq inhibit-startup-echo-area-message t)
-
-  ;; No message in scratch buffer
-  (setq initial-scratch-message nil)
-
-  ;; Initial buffer 
-  (setq initial-buffer-choice nil)
-
-  ;; No frame title
-  (setq frame-title-format nil)
-  ;; modeline at top
-  (setq-default header-line-format mode-line-format)
-
-  ;; No file fialog
-  (setq use-file-dialog nil)
-
-  ;; No dialog box
-  (setq use-dialog-box nil)
-
-  ;; No popup windows
-  (setq pop-up-windows nil)
-
-  ;; User name
-  (setq user-full-name "Kebairia Zakaria")
-
-  ;; User mail address
-  (setq user-mail-address "4.kebairia@gmail.com")
-
-  ;; No empty line indicators
-  (setq indicate-empty-lines nil)
-
-  ;; No cursor in inactive windows
-  (setq cursor-in-non-selected-windows nil)
-
-  ;; Text mode is initial mode
-  (setq initial-major-mode 'fundamental-mode)
-
-  ;; Text mode is default major mode
-  (setq default-major-mode 'fundamental-mode)
-
-  ;; Moderate font lock
-  (setq font-lock-maximum-decoration nil)
-
-  ;; No limite on font lock
-  (setq font-lock-maximum-size nil)
-
-  ;; No line breat space points
-  (setq auto-fill-mode nil)
-
-  ;; Fill column at 80
-  (setq fill-column 80)
-
-  ;; activate paren-mode
-  (show-paren-mode 1)
-
-  ;; activate electric pair
-  (electric-pair-mode 1)
-
-  ;; highlight current line
-  ;; it's on nano-layout
-                                          ;(global-hl-line-mode 1)
-
-  ;; No confirmation for visiting non-existent files
-  (setq confirm-nonexistent-file-or-buffer nil)
-
-  ;; Completion style, see
-  ;; gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
-  (setq completion-styles '(basic substring))
-
-  ;; Mouse active in terminal
-  (unless (display-graphic-p)
-    (xterm-mouse-mode 1)
-    (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
-    (global-set-key (kbd "<mouse-5>") 'scroll-up-line))
-
-  ;; No scroll bars
-  (scroll-bar-mode 0)
-
-  ;; No toolbar
-  (tool-bar-mode 0)
-
-  ;; No menubar
-  (menu-bar-mode 0)
-  ;;; No menu bar
-                                          ;(if (display-graphic-p)
-                                          ;(menu-bar-mode t) ;; When nil, focus problem on OSX
-                                          ;(menu-bar-mode -1))
-
-  ;; Navigate windows using shift+direction
-  (windmove-default-keybindings)
-
-  ;; Tab behavior
-  (setq tab-always-indent 'complete)
-  (global-company-mode)
-  (define-key company-mode-map [remap indent-for-tab-command]
-    #'company-indent-or-complete-common)
-
-  ;; Pixel scroll (as opposed to char scrool)
-  (pixel-scroll-mode t)
-
-  ;; Mac specific
-  (setq ns-use-native-fullscreen t
-        mac-option-key-is-meta nil
-        mac-command-key-is-meta t
-        mac-command-modifier 'meta
-        mac-option-modifier nil
-        mac-use-title-bar nil)
-
-  ;; Make sure clipboard works properly in tty mode on OSX
-                                          ;(defun copy-from-osx ()
-                                          ;(shell-command-to-string "pbpaste"))
-                                          ;(defun paste-to-osx (text &optional push)
-                                          ;(let ((process-connection-type nil))
-                                          ;(let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-                                          ;(process-send-string proc text)
-                                          ;(process-send-eof proc))))
-                                          ;(if (not (display-graphic-p))
-                                          ;(progn (setq interprogram-cut-function 'paste-to-osx)
-                                          ;(setq interprogram-paste-function 'copy-from-osx)))
-
-  ;; y/n for  answering yes/no questions
-  (fset 'yes-or-no-p 'y-or-n-p)
-
-  ;; No tabs
-  (setq-default indent-tabs-mode nil)
-
-  ;; Tab.space equivalence
-  (setq tab-width 4)
-
-  ;; Size of temporary buffers
-  (temp-buffer-resize-mode)
-  (setq temp-buffer-max-height 8)
-
-  ;; Minimum window height
-  (setq window-min-height 1)
-
-  ;; Buffer encoding
-  (prefer-coding-system       'utf-8)
-  (set-default-coding-systems 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-language-environment   'utf-8)
-
-  ;; Unique buffer names
-  (require 'uniquify)
-  (setq uniquify-buffer-name-style 'reverse
-        uniquify-separator " • "
-        uniquify-after-kill-buffer-p t
-        uniquify-ignore-buffers-re "^\\*")
-
-  ;; Default shell in term
-  (setq-default shell-file-name "/bin/zsh")
-  (setq explicit-shell-file-name "/bin/zsh")
-  ;; activate eterm-256color-mode when starting term
-  (add-hook 'term-mode-hook #'eterm-256color-mode)
-
-  ;; Kill term buffer when exiting
-  (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
-    (if (memq (process-status proc) '(signal exit))
-        (let ((buffer (process-buffer proc)))
-          ad-do-it
-          (kill-buffer buffer))
-      ad-do-it))
-  (ad-activate 'term-sentinel)
-
-
-#+end_src
-** Sessions
-#+begin_src emacs-lisp
-  ;; Save miscellaneous history
-  (setq savehist-additional-variables
-        '(kill-ring
-          command-history
-          set-variable-value-history
-          custom-variable-history   
-          query-replace-history     
-          read-expression-history   
-          minibuffer-history        
-          read-char-history         
-          face-name-history         
-          bookmark-history          
-          ivy-history               
-          counsel-M-x-history       
-          file-name-history         
-          counsel-minibuffer-history))
-  (setq history-length 250)
-  (setq kill-ring-max 25)
-  (put 'minibuffer-history         'history-length 50)
-  (put 'file-name-history          'history-length 50)
-  (put 'set-variable-value-history 'history-length 25)
-  (put 'custom-variable-history    'history-length 25)
-  (put 'query-replace-history      'history-length 25)
-  (put 'read-expression-history    'history-length 25)
-  (put 'read-char-history          'history-length 25)
-  (put 'face-name-history          'history-length 25)
-  (put 'bookmark-history           'history-length 25)
-  (put 'ivy-history                'history-length 25)
-  (put 'counsel-M-x-history        'history-length 25)
-  (put 'counsel-minibuffer-history 'history-length 25)
-  (setq savehist-file "~/.local/share/emacs/savehist")
-  (savehist-mode 1)
-
-  ;; Remove text properties for kill ring entries
-  ;; See https://emacs.stackexchange.com/questions/4187
-  (defun unpropertize-kill-ring ()
-    (setq kill-ring (mapcar 'substring-no-properties kill-ring)))
-  (add-hook 'kill-emacs-hook 'unpropertize-kill-ring)
-
-  ;; Recentf files 
-  (setq recentf-max-menu-items 25)
-  (setq recentf-save-file     "~/.local/share/emacs/recentf")
-  (recentf-mode 1)
-
-  ;; Bookmarks
-  (setq bookmark-default-file "~/.local/share/emacs/bookmark")
-
-
-  ;; Backup
-  (setq backup-directory-alist '(("." . "~/.local/share/emacs/backups"))
-        make-backup-files t     ; backup of a file the first time it is saved.
-        backup-by-copying t     ; don't clobber symlinks
-        version-control t       ; version numbers for backup files
-        delete-old-versions t   ; delete excess backup files silently
-        kept-old-versions 6     ; oldest versions to keep when a new numbered
-                                          ;  backup is made (default: 2)
-        kept-new-versions 9     ; newest versions to keep when a new numbered
-                                          ;  backup is made (default: 2)
-        auto-save-default t     ; auto-save every buffer that visits a file
-        auto-save-timeout 20    ; number of seconds idle time before auto-save
-                                          ;  (default: 30)
-        auto-save-interval 200)  ; number of keystrokes between auto-saves
-                                          ;  (default: 300)
-  ;; save bookmarks in ~/.cache/emacs
-  (setq bookmark-default-file "~/.local/share/emacs/bookmarks")
-  ;; display line number in text/prog & fundamental modes
-  (setq-default
-   display-line-numbers-current-absolute t ;  Enable the line nubmers
-   display-line-numbers-width 2
-   display-line-numbers-widen t)
-  (add-hook 'text-mode-hook #'display-line-numbers-mode)
-  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-  (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
 #+end_src
