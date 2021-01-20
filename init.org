@@ -1054,10 +1054,13 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                 (string-prefix-p "/4.kebairia" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address . "4.kebairia@gmail.com")
                     (user-full-name    . "Kebairia Zakaria")
+                    (smtpmail-starttls-credentials . (("smtp.gmail.com" 587 nil nil)))
                     (smtpmail-smtp-server  . "smtp.gmail.com")
                     (smtpmail-smtp-service . 587)
                     (smtpmail-stream-type  . tls)
                     (smtpmail-auth-credentials . (expand-file-name "~/.local/share/emacs/authinfo"))
+                    (smtpmail-debug-info . t)
+                    (smtpmail-debug-verbose . t)
                     (mu4e-drafts-folder  . "/4.kebairia@gmail.com/[Gmail].Drafts")
                     (mu4e-sent-folder  . "/4.kebairia@gmail.com/[Gmail].Sent")
                     (mu4e-refile-folder  . "/4.kebairia@gmail.com/[Gmail].Archive")
@@ -1074,6 +1077,16 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
               (org-mu4e-compose-org-mode)
               (use-hard-newlines -1)
               (flyspell-mode)))
+
+  (add-hook 'mu4e-headers-mode-hook
+            (defun my/mu4e-change-headers ()
+              (interactive)
+              (setq mu4e-headers-fields
+                    `((:human-date . 10) ;; alternatively, use :date
+                      (:flags . 6)
+                      (:from . 22)
+                      (:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
+                      (:size . 7)))))
   (setq org-mu4e-convert-to-html t)
   ;;from the info manual
   (setq mu4e-attachment-dir  "~/dwn")
