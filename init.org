@@ -79,14 +79,12 @@
                                   ") started in "
                                   (emacs-init-time)))))
 #+end_src
-
 ** DEFAULTS
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/DEFAULTS.el
 :header-args: :results none
 :END:
 #+begin_src emacs-lisp
-
   ;; User name
   (setq user-full-name "Kebairia Zakaria")
   ;; User mail address
@@ -114,13 +112,10 @@
   (setq cursor-in-non-selected-windows nil)
   ;; fundamental mode is initial mode
   ;;(setq initial-major-mode 'fundamental-mode)
-
   ;; Text mode is default major mode
   ;;(setq default-major-mode 'text-mode)
-
   ;; Moderate font lock
   (setq font-lock-maximum-decoration nil)
-
   ;; No limite on font lock
   (setq font-lock-maximum-size nil)
 
@@ -329,13 +324,12 @@
      (global-set-key (kbd "C-c C") (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
      (global-set-key (kbd "C-c b") (lambda() (interactive)(find-file "~/org/books.org")))
      (global-set-key (kbd "C-c I") (lambda() (interactive)(find-file "~/org/gtd/inbox.org")))
-     ;;(global-set-key (kbd "C-c L") (lambda() (interactive)(find-file "~/org/links.org")))
-     ;;(global-set-key (kbd "C-c E") (lambda() (interactive)(find-file "~/org/gtd/emails.org")))
+     (global-set-key (kbd "C-c L") (lambda() (interactive)(find-file "~/org/links.org")))
+     (global-set-key (kbd "C-c E") (lambda() (interactive)(find-file "~/org/gtd/emails.org")))
      (global-set-key (kbd "<f12>") (lambda() (interactive)(find-file "~/org/files/org.pdf")))
      ;; Reload buffer with <F5>
      (global-set-key [f5] '(lambda () (interactive) (revert-buffer nil t nil)))
    #+end_src
-
 *** win-movements
    #+begin_src emacs-lisp
        (defun zk/split-go-right()
@@ -467,7 +461,6 @@
                 (("C-c n I" . org-roam-insert-immediate))))
   (org-roam-mode 1)
 #+end_src
-
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit)
@@ -488,7 +481,6 @@
          undo-tree-visualizer-timestamps 1; Show diffs when browsing through the undo tree
          undo-tree-visualizer-diff 1)
    #+END_SRC
-
 ** Ibuffer
    #+BEGIN_SRC emacs-lisp
      ;; disable linum-mode
@@ -577,11 +569,9 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
        (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
                            (thing-at-point 'line)))))
 #+end_example
-
 #+begin_src emacs-lisp
   (global-aggressive-indent-mode 1)
 #+end_src
-
 * ORG MODE            
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/ORG.el
@@ -894,8 +884,9 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
 :header-args: :results none
 :END:
+checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4e for Dummies]] on reddit
 #+begin_src emacs-lisp
-  (require 'org-mime)
+  ;(require 'org-mime)
   (use-package mu4e
     :ensure nil
     :config
@@ -930,6 +921,10 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                 (string-prefix-p "/ESI" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address . "z.kebairia@esi-sba.dz")
                     (user-full-name    . "Kebairia Zakaria, ISI, G03")
+                    (message-send-mail-function . smtpmail-send-it)
+                    (smtpmail-smtp-user . "z.kebairia@esi-sba.dz")
+                    (smtpmail-starttls-credentials . (("smtp.gmail.com" 587 nil nil)))
+                    (smtpmail-default-smtp-server . "smtp.gmail.com")
                     (smtpmail-smtp-server  . "smtp.gmail.com")
                     (smtpmail-smtp-service . 587)
                     (smtpmail-stream-type  . tls)
@@ -949,7 +944,10 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                 (string-prefix-p "/4.kebairia" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address . "4.kebairia@gmail.com")
                     (user-full-name    . "Kebairia Zakaria")
+                    (message-send-mail-function . smtpmail-send-it)
+                    (smtpmail-smtp-user . "4.kebairia@gmail.com")
                     (smtpmail-starttls-credentials . (("smtp.gmail.com" 587 nil nil)))
+                    (smtpmail-default-smtp-server . "smtp.gmail.com")
                     (smtpmail-smtp-server  . "smtp.gmail.com")
                     (smtpmail-smtp-service . 587)
                     (smtpmail-stream-type  . tls)
@@ -977,7 +975,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
             (defun my/mu4e-change-headers ()
               (interactive)
               (setq mu4e-headers-fields
-                    `((:human-date . 10) ;; alternatively, use :date
+                    `((:human-date . 15) ;; alternatively, use :date
                       (:flags . 6)
                       (:from . 22)
                       (:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
@@ -1038,176 +1036,4 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
       )
     #+END_SRC
 #+begin_src emacs-lisp
-#+end_src
-* COMMENT MU4E old 
-:PROPERTIES:
-:header-args: :tangle ~/.config/emacs/modules/MU4E.el
-:header-args: :results none
-:END:
-#+begin_src emacs-lisp
-  (require 'org-mime)
-
-  (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e/")
-  (require 'mu4e)
-  ;;store link to message if in header view, not to header query
-  (setq org-mu4e-link-query-in-headers-mode nil)
-
-  (setq mu4e-maildir (expand-file-name "~/.local/share/mail"))
-                                          ; get mail
-  (setq mu4e-get-mail-command "mbsync -c ~/.config/isync/mbsyncrc -a"
-        ;; mu4e-html2text-command "w3m -T text/html" ;;using the default mu4e-shr2text
-        mu4e-view-prefer-html t
-        mu4e-update-interval 180
-        mu4e-headers-auto-update t
-        mu4e-compose-signature-auto-include nil
-        mu4e-compose-format-flowed t)
-
-  ;; to view selected message in the browser, no signin, just html mail
-  (add-to-list 'mu4e-view-actions
-               '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-
-  ;; enable inline images
-  (setq mu4e-view-show-images t)
-  ;; use imagemagick, if available
-  (when (fboundp 'imagemagick-register-types)
-    (imagemagick-register-types))
-
-  ;; every new email composition gets its own frame!
-  (setq mu4e-compose-in-new-frame t)
-
-  ;; don't save message to Sent Messages, IMAP takes care of this
-  (setq mu4e-sent-messages-behavior 'delete)
-
-  (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
-
-  ;; <tab> to navigate to links, <RET> to open them in browser
-  (add-hook 'mu4e-view-mode-hook
-            (lambda()
-              ;; try to emulate some of the eww key-bindings
-              (local-set-key (kbd "<RET>") 'mu4e~view-browse-url-from-binding)
-              (local-set-key (kbd "<tab>") 'shr-next-link)
-              (local-set-key (kbd "<backtab>") 'shr-previous-link)))
-
-  ;; from https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/elgoumx
-  (add-hook 'mu4e-headers-mode-hook
-            (defun my/mu4e-change-headers ()
-              (interactive)
-              (setq mu4e-headers-fields
-                    `((:human-date . 25) ;; alternatively, use :date
-                      (:flags . 6)
-                      (:from . 22)
-                      (:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
-                      (:size . 7)))))
-
-  ;; if you use date instead of human-date in the above, use this setting
-  ;; give me ISO(ish) format date-time stamps in the header list
-                                          ;(setq mu4e-headers-date-format "%Y-%m-%d %H:%M")
-
-  ;; spell check
-  (add-hook 'mu4e-compose-mode-hook
-            (defun my-do-compose-stuff ()
-              "My settings for message composition."
-              (visual-line-mode)
-              (org-mu4e-compose-org-mode)
-              (use-hard-newlines -1)
-              (flyspell-mode)))
-
-  (require 'smtpmail)
-
-  ;;rename files when moving
-  ;;NEEDED FOR MBSYNC
-  (setq mu4e-change-filenames-when-moving t)
-
-  ;;set up queue for offline email
-  ;;use mu mkdir  ~/Maildir/acc/queue to set up first
-  (setq smtpmail-queue-mail t)  ;; start in normal mode
-
-  ;;from the info manual
-  (setq mu4e-attachment-dir  "~/dwn")
-
-  (setq message-kill-buffer-on-exit t)
-  (setq mu4e-compose-dont-reply-to-self t)
-
-  (require 'org-mu4e)
-
-  ;; convert org mode to HTML automatically
-  (setq org-mu4e-convert-to-html t)
-
-  ;;from vxlabs config
-  ;; show full addresses in view message (instead of just names)
-  ;; toggle per name with M-RET
-  (setq mu4e-view-show-addresses 't)
-
-  ;; don't ask when quitting
-  (setq mu4e-confirm-quit nil)
-
-  ;; mu4e-context
-  (setq mu4e-context-policy 'pick-first)
-  (setq mu4e-compose-context-policy 'always-ask)
-  (setq mu4e-contexts
-        (list
-         (make-mu4e-context
-          :name "college" ;;for acc1-gmail
-          :enter-func (lambda () (mu4e-message "Entering context work"))
-          :leave-func (lambda () (mu4e-message "Leaving context work"))
-          :match-func (lambda (msg)
-                        (when msg
-                          (mu4e-message-contact-field-matches
-                           msg '(:from :to :cc :bcc) "z.kebairia@esi-sba.dz")))
-          :vars '((user-mail-address . "z.kebairia@esi-sba.dz")
-                  (user-full-name . "Zakaria Kebairia")
-                  (mu4e-sent-folder . "/z.kebairia@esi-sba.dz/[Gmail].Sent Mail")
-                  (mu4e-drafts-folder . "/z.kebairia@esi-sba.dz/[Gmail].Drafts")
-                  (mu4e-trash-folder . "/z.kebairia@esi-sba.dz/[Gmail].Trash")
-                  (mu4e-compose-signature . (concat "Formal Signature\n" "Emacs 25, org-mode 9, mu4e 1.0\n"))
-                  (mu4e-compose-format-flowed . t)
-                  (smtpmail-queue-dir . "~/.local/share/mail/z.kebairia@esi-sba.dz/queue/cur")
-                  (message-send-mail-function . smtpmail-send-it)
-                  (smtpmail-smtp-user . "esi")
-                  (smtpmail-starttls-credentials . (("smtp.gmail.com" 587 nil nil)))
-                  (smtpmail-auth-credentials . (expand-file-name "~/.local/share/emacs/authinfo.gpg"))
-                  (smtpmail-default-smtp-server . "smtp.gmail.com")
-                  (smtpmail-smtp-server . "smtp.gmail.com")
-                  (smtpmail-smtp-service . 587)
-                  (smtpmail-debug-info . t)
-                  (smtpmail-debug-verbose . t)
-                  (mu4e-maildir-shortcuts . ( ("/z.kebairia@esi-sba.dz/INBOX"             . ?i)
-                                              ("/z.kebairia@esi-sba.dz/[Gmail].Sent Mail" . ?s)
-                                              ("/z.kebairia@esi-sba.dz/[Gmail].Trash"     . ?t)
-                                              ("/z.kebairia@esi-sba.dz/[Gmail].All Mail"  . ?a)
-                                              ("/z.kebairia@esi-sba.dz/[Gmail].Starred"   . ?r)
-                                              ("/z.kebairia@esi-sba.dz/[Gmail].Drafts"    . ?d)
-                                              ))))
-         (make-mu4e-context
-          :name "personal" ;;for acc2-gmail
-          :enter-func (lambda () (mu4e-message "Entering context personal"))
-          :leave-func (lambda () (mu4e-message "Leaving context personal"))
-          :match-func (lambda (msg)
-                        (when msg
-                          (mu4e-message-contact-field-matches
-                           msg '(:from :to :cc :bcc) "4.kebairia@gmail.com")))
-          :vars '((user-mail-address . "4.kebairia@gmail.com")
-                  (user-full-name . "Kebairia Zakaria")
-                  (mu4e-sent-folder . "/4.kebairia@gmail.com/[Gmail].Sent Mail")
-                  (mu4e-drafts-folder . "/4.kebairia@gmail.com/[Gmail].Drafts")
-                  (mu4e-trash-folder . "/4.kebairia@gmail.com/[Gmail].Trash")
-                  (mu4e-compose-signature . (concat "Informal Signature\n" "Emacs is awesome!\n"))
-                  (mu4e-compose-format-flowed . t)
-                  (smtpmail-queue-dir . "~/.local/share/mail/4.kebairia@gmail.com/queue/cur")
-                  (message-send-mail-function . smtpmail-send-it)
-                  (smtpmail-smtp-user . "4kebairia")
-                  (smtpmail-starttls-credentials . (("smtp.gmail.com" 587 nil nil)))
-                  (smtpmail-auth-credentials . (expand-file-name "~/.local/share/emacs/authinfo.gpg"))
-                  (smtpmail-default-smtp-server . "smtp.gmail.com")
-                  (smtpmail-smtp-server . "smtp.gmail.com")
-                  (smtpmail-smtp-service . 587)
-                  (smtpmail-debug-info . t)
-                  (smtpmail-debug-verbose . t)
-                  (mu4e-maildir-shortcuts . ( ("/4.kebairia@gmail.com/INBOX"            . ?i)
-                                              ("/4.kebairia@gmail.com/[Gmail].Sent Mail" . ?s)
-                                              ("/4.kebairia@gmail.com/[Gmail].Trash"     . ?t)
-                                              ("/4.kebairia@gmail.com/[Gmail].All Mail"  . ?a)
-                                              ("/4.kebairia@gmail.com/[Gmail].Starred"   . ?r)
-                                              ("/4.kebairia@gmail.com/[Gmail].Drafts"    . ?d)
-                                              ))))))
 #+end_src
