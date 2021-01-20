@@ -219,6 +219,8 @@
   ;; Default shell in term
   (setq-default shell-file-name "/bin/zsh")
   (setq explicit-shell-file-name "/bin/zsh")
+  ;; activate eterm-256color-mode when starting term
+  (add-hook 'term-mode-hook #'eterm-256color-mode)
 
   ;; Kill term buffer when exiting
   (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
@@ -980,7 +982,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                       (:from . 22)
                       (:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
                       (:size . 7)))))
-  (setq org-mu4e-convert-to-html t)
   ;;from the info manual
   (setq mu4e-attachment-dir  "~/dwn")
 
@@ -990,7 +991,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (require 'org-mu4e)
 
   ;; convert org mode to HTML automatically
-  (setq org-mu4e-convert-to-html t)
+  ;(setq org-mu4e-convert-to-html t)
   ;; don't ask when quitting
   (setq mu4e-confirm-quit nil)
 #+end_src
