@@ -29,6 +29,7 @@
 (load "~/.config/emacs/modules/PACKAGES.el") 
 (load "~/.config/emacs/modules/SESSIONS.el") 
 (load "~/.config/emacs/modules/BINDINGS.el") 
+(load "~/.config/emacs/modules/ORG.el") 
 (load "~/.config/emacs/nano/nano.el") 
 (load "~/.config/emacs/nano/nano-layout.el") 
 (load "~/.config/emacs/nano/nano-modeline.el")
