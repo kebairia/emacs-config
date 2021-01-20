@@ -994,11 +994,48 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   ;; don't ask when quitting
   (setq mu4e-confirm-quit nil)
 #+end_src
-* COMMENT PYTHON
+* PYTHON
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/PYTHON.el
 :header-args: :results none
 :END:
+** COMMENT python-mode and lsp
+#+begin_src emacs-lisp
+  (use-package python-mode
+    :ensure nil
+    :hook (python-mode . lsp-defferd)
+    )
+
+#+end_src
+** Jedi
+    #+BEGIN_SRC emacs-lisp
+      (use-package jedi
+       :ensure t
+       :init
+        (add-hook 'python-mode-hook 'jedi:setup)
+        (add-hook 'python-mode-hook 'jedi:ac-setup)
+       )
+      (setq jedi:complete-on-dot t)
+
+      ;; (add-to-list 'company-backends 'company-jedi)
+
+      ;; (add-hook 'python-mode-hook 'jedi:setup)
+      ;; (setq jedi:complete-on-dot t)
+    #+END_SRC
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+#+END_SRC
+** Elpy
+    #+BEGIN_SRC emacs-lisp
+      (use-package elpy
+        :init
+        :disabled t
+        (elpy-enable)
+      )
+    #+END_SRC
 #+begin_src emacs-lisp
 #+end_src
 * COMMENT MU4E old 
