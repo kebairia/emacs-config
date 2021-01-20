@@ -67,7 +67,7 @@
   (load "~/.config/emacs/modules/MU4E.el") 
   (load "~/.config/emacs/nano/nano.el") 
   (load "~/.config/emacs/nano/nano-layout.el") 
-  (load "~/.config/emacs/nano/nano-modeline.el") 
+  ;;(load "~/.config/emacs/nano/nano-modeline.el") 
 #+end_src
 *** Mesure emacs startup time
 #+begin_src emacs-lisp
@@ -137,6 +137,8 @@
     (xterm-mouse-mode 1)
     (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
     (global-set-key (kbd "<mouse-5>") 'scroll-up-line))
+  ;; modeline at top
+  (setq-default header-line-format mode-line-format)
   ;; No scroll bars
   (scroll-bar-mode 0)
   ;; No toolbar
