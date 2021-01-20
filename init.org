@@ -25,7 +25,7 @@
 :header-args: :tangle ~/.config/emacs/init.el
 :header-args: :results none
 :END:
-** Deps
+** DEPS
    #+begin_src emacs-lisp
               ;;; package --- Summary  
      ;; Load configuration from ~/.config/emacs/modules/*.el
@@ -86,7 +86,7 @@
 
    #+end_src
 
-* DEFAULTS
+** DEFAULTS
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/DEFAULTS.el
 :header-args: :results none
@@ -183,10 +183,10 @@
   (electric-pair-mode 1)
 
   ;; Tab behavior
-  ;; (setq tab-always-indent 'complete)
-  ;; (global-company-mode)
-  ;; (define-key company-mode-map [remap indent-for-tab-command]
-  ;;   #'company-indent-or-complete-common)
+  (setq tab-always-indent 'complete)
+  (global-company-mode)
+  (define-key company-mode-map [remap indent-for-tab-command]
+    #'company-indent-or-complete-common)
 
   ;; Pixel scroll (as opposed to char scrool)
   (pixel-scroll-mode t)
@@ -258,8 +258,7 @@
 
   (provide 'nano-defaults)
 #+end_src
-
-* SESSIONS
+** SESSIONS
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/SESSIONS.el
 :header-args: :results none
@@ -345,12 +344,12 @@
   (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
 #+end_src
 
-* BINDINGS              
+** BINDINGS              
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/BINDINGS.el
 :header-args: :results none
 :END:
-** Files
+*** Files
    #+begin_src emacs-lisp
      ;; some shortcuts -- files
      (global-set-key (kbd "C-c C") (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
@@ -363,7 +362,7 @@
      (global-set-key [f5] '(lambda () (interactive) (revert-buffer nil t nil)))
    #+end_src
 
-** win-movements
+*** win-movements
    #+begin_src emacs-lisp
        (defun zk/split-go-right()
          (interactive)
@@ -1044,9 +1043,8 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                     (mu4e-sent-folder  . "/z.kebairia@esi-sba.dz/[Gmail].Sent Mail")
                     (mu4e-refile-folder  . "/z.kebairia@esi-sba.dz/[Gmail].All Mail")
                     (mu4e-trash-folder  . "/z.kebairia@esi-sba.dz/[Gmail].Trash")
+
                     ))
-
-
            ;; Personal account
            (make-mu4e-context
             :name "Personal"
