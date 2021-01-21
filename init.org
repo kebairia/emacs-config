@@ -994,6 +994,80 @@ checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4
 
 
 #+end_src
+** INFO
+*** Headers Mode
+
+Key Bindings:
+|-----+-------+-------------------------------------+--------------------------------------|
+| Key | Evil  | Command                             | Description                          |
+|-----+-------+-------------------------------------+--------------------------------------|
+|     |       | Movement                            |                                      |
+|-----+-------+-------------------------------------+--------------------------------------|
+| C-n | j     | next-line                           | Moves to the next header line        |
+| C-p | k     | previous-line                       | Moves to the previous header line    |
+| [[  | [[    | mu4e-headers-prev-unread            | Moves to previous unread message     |
+| ]]  | ]]    | mu4e-headers-next-unread            | Moves to next unread message         |
+| j   | J     | mu4e~headers-jump-to-maildir        | Jump to another mail directory       |
+|     |       |                                     |                                      |
+|-----+-------+-------------------------------------+--------------------------------------|
+|     |       | Toggles                             |                                      |
+|-----+-------+-------------------------------------+--------------------------------------|
+| P   | zt    | mu4e-headers-toggle-threading       | Toggles threaded message display     |
+| W   | zr    | mu4e-headers-toggle-include-related | Toggles related message display      |
+|     |       |                                     |                                      |
+|-----+-------+-------------------------------------+--------------------------------------|
+|     |       | Marking                             |                                      |
+|-----+-------+-------------------------------------+--------------------------------------|
+| d   | d     | mu4e-headers-mark-for-trash         | Marks message for deletion           |
+| m   | m     | mu4e-headers-mark-for-move          | Marks message for move to folder     |
+| +   | +     | mu4e-headers-mark-for-flag          | Marks message for flagging           |
+| -   | -     | mu4e-headers-mark-for-unflag        | Marks message for unflagging         |
+| %   | %     | mu4e-headers-mark-pattern           | Marks based on a regex pattern       |
+| u   | u     | mu4e-headers-mark-for-unmark        | Removes mark for message             |
+| U   | U     | mu4e-mark-unmark-all                | Unmarks all marks in the view        |
+| x   | x     | mu4e-mark-execute-all               | Executes all marks in the view       |
+|-----+-------+-------------------------------------+--------------------------------------|
+|     |       | Searching                           |                                      |
+|-----+-------+-------------------------------------+--------------------------------------|
+| s   | s     | mu4e-headers-search                 | Search all e-mails                   |
+| S   | S     | mu4e-headers-search-edit            | Edit current search (useful!)        |
+| /   | /     | mu4e-headers-search-narrow          | Narrow down the current results      |
+| b   | b     | mu4e-headers-search-bookmark        | Select a bookmark to search with     |
+| B   | B     | mu4e-headers-search-bookmark-edit   | Edit bookmark before search          |
+| g   | gr    | mu4e-rerun-search                   | Rerun the current search             |
+|-----+-------+-------------------------------------+--------------------------------------|
+|     |       | Composing                           |                                      |
+|-----+-------+-------------------------------------+--------------------------------------|
+| C   | C, cc | mu4e-compose-new                    | Compose a new e-mail                 |
+| R   | R, cr | mu4e-compose-reply                  | Compose a reply to selected email    |
+| F   | F, cf | mu4e-compose-forward                | Compose a forward for selected email |
+| E   | E, ce | mu4e-compose-edit                   | Edit selected draft message          |
+|     |       |                                     |                                      |
+|     |       | Other Actions                       |                                      |
+| q   | q     | mu4e~headers-quit-buffer            | Quit the headers view                |
+|-----+-------+-------------------------------------+--------------------------------------|
+
+Controlling the number of messages visible:
+
+    ~mu4e-headers-results-limit~: The number of messages to display in mail listings (default 500)
+    ~mu4e-headers-full-search~: If t, shows all messages, ignoring limit
+
+You can toggle ~mu4e-headers-full-search~ with ~M-x mu4e-headers-toggle-full-search~!
+
+*** View Mode
+
+Many of the same keybindings work! Marking keys work on the currently viewed message.
+| Key | Evil | Command                  | Description                            |
+|-----+------+--------------------------+----------------------------------------|
+|     |      | Movement                 |                                        |
+| C-n | j    | next-line                | Moves to the next line in message      |
+| C-p | k    | previous-line            | Moves to the previous line in message  |
+| n   | C-j  | mu4e-view-headers-next   | Moves to next email in header list     |
+| p   | C-k  | mu4e-view-headers-prev   | Moves to previous email in header list |
+| [[  | [[   | mu4e-headers-prev-unread | Moves to previous unread message       |
+| ]]  | ]]   | mu4e-headers-next-unread | Moves to next unread message           |
+|-----+------+--------------------------+----------------------------------------|
+
 * PYTHON
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/PYTHON.el
