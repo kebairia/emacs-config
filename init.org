@@ -67,7 +67,7 @@
   (load "~/.config/emacs/modules/MU4E.el") 
   (load "~/.config/emacs/nano/nano.el") 
   (load "~/.config/emacs/nano/nano-layout.el") 
-  ;;(load "~/.config/emacs/nano/nano-modeline.el") 
+  (load "~/.config/emacs/nano/nano-modeline.el") 
 #+end_src
 *** Mesure emacs startup time
 #+begin_src emacs-lisp
@@ -334,36 +334,37 @@
    #+end_src
 *** win-movements
    #+begin_src emacs-lisp
-       (defun zk/split-go-right()
-         (interactive)
-         (split-window-horizontally)
-         (windmove-right))
-       (defun zk/split-go-down()
-         (interactive)
-         (split-window-vertically)
-         (windmove-down))
-        ;; try to go to the other window automaticly
-        (global-set-key (kbd "C-x i") 'zk/split-go-right)
-        (global-set-key (kbd "C-x m") 'zk/split-go-down)
+     (global-set-key (kbd "<f12>" ) 'flyspell-auto-correct-previous-word)
+     (defun zk/split-go-right()
+       (interactive)
+       (split-window-horizontally)
+       (windmove-right))
+     (defun zk/split-go-down()
+       (interactive)
+       (split-window-vertically)
+       (windmove-down))
+     ;; try to go to the other window automaticly
+     (global-set-key (kbd "C-x i") 'zk/split-go-right)
+     (global-set-key (kbd "C-x m") 'zk/split-go-down)
 
-        ;; Move between buffer
-        (global-set-key (kbd "M-n") 'switch-to-next-buffer)
-        (global-set-key (kbd "M-p") 'switch-to-prev-buffer)
+     ;; Move between buffer
+     (global-set-key (kbd "M-n") 'switch-to-next-buffer)
+     (global-set-key (kbd "M-p") 'switch-to-prev-buffer)
 
-        ;; Move between Windows
-        (global-set-key (kbd "C-x k") 'windmove-up)
-        (global-set-key (kbd "C-x j") 'windmove-down)
-        (global-set-key (kbd "C-x l") 'windmove-right)
-        (global-set-key (kbd "C-x h") 'windmove-left)
+     ;; Move between Windows
+     (global-set-key (kbd "C-x k") 'windmove-up)
+     (global-set-key (kbd "C-x j") 'windmove-down)
+     (global-set-key (kbd "C-x l") 'windmove-right)
+     (global-set-key (kbd "C-x h") 'windmove-left)
 
-        ;; Resize windows
-        (global-set-key (kbd "C-M-l") 'shrink-window-horizontally)
-        (global-set-key (kbd "C-M-h") 'enlarge-window-horizontally)
-        (global-set-key (kbd "C-M-j") 'shrink-window)
-        (global-set-key (kbd "C-M-k") 'enlarge-window)
+     ;; Resize windows
+     (global-set-key (kbd "C-M-l") 'shrink-window-horizontally)
+     (global-set-key (kbd "C-M-h") 'enlarge-window-horizontally)
+     (global-set-key (kbd "C-M-j") 'shrink-window)
+     (global-set-key (kbd "C-M-k") 'enlarge-window)
 
-        (global-set-key (kbd "M-o") 'delete-other-windows)
-        (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
+     (global-set-key (kbd "M-o") 'delete-other-windows)
+     (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
    #+end_src
 * PACKAGES             
   :PROPERTIES:
@@ -888,7 +889,8 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :END:
 checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4e for Dummies]] on reddit
 #+begin_src emacs-lisp
-  ;(require 'org-mime)
+                                          ;(require 'org-mime)
+  (require 'org-mu4e)
   (use-package mu4e
     :ensure nil
     :config
@@ -897,18 +899,14 @@ checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4
 
     ;; Refresh mail using isync every 10 minutes
     ;;(setq mu4e-update-interval (* 10 60))
-    (setq mu4e-get-mail-command "mbsync -a"
-          ;; mu4e-html2text-command "w3m -T text/html" ;;using the default mu4e-shr2text
-          mu4e-view-prefer-html t
-          mu4e-update-interval 180
-          mu4e-headers-auto-update t
+    (setq mu4e-get-mail-command "mbsync -c /home/zakaria/.config/isync/mbsyncrc -a"
           mu4e-compose-signature-auto-include t
           mu4e-compose-signature 
           (concat "Kebairia Zakaria\n"
                   "Github: www.github.com/kebairia\n"
                   "linkedIn: www.linkedin.com/in/zakaria-kebairia\n")
-          mu4e-compose-format-flowed t ;; Make sure plain text mails flow correctly for recipients
-          )
+          mu4e-compose-format-flowed t) ;; Make sure plain text mails flow correctly for recipients
+
 
     (setq mu4e-maildir (expand-file-name "~/.local/share/mail"))
 
@@ -923,14 +921,11 @@ checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4
                 (string-prefix-p "/ESI" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address . "z.kebairia@esi-sba.dz")
                     (user-full-name    . "Kebairia Zakaria, ISI, G03")
-                    (message-send-mail-function . smtpmail-send-it)
-                    (smtpmail-smtp-user . "z.kebairia@esi-sba.dz")
-                    (smtpmail-starttls-credentials . (("smtp.gmail.com" 587 nil nil)))
-                    (smtpmail-default-smtp-server . "smtp.gmail.com")
-                    (smtpmail-smtp-server  . "smtp.gmail.com")
-                    (smtpmail-smtp-service . 587)
-                    (smtpmail-stream-type  . tls)
                     (smtpmail-auth-credentials . (expand-file-name "~/.local/share/emacs/authinfo"))
+                    (smtpmail-smtp-user . "z.kebairia@esi-sba.dz")
+                    (smtpmail-smtp-server  . "smtp.gmail.com")
+                    (smtpmail-smtp-service . 465)
+                    (smtpmail-stream-type  . tls)
                     (mu4e-drafts-folder  . "/z.kebairia@esi-sba.dz/[Gmail].Drafts")
                     (mu4e-sent-folder  . "/z.kebairia@esi-sba.dz/[Gmail].Sent Mail")
                     (mu4e-refile-folder  . "/z.kebairia@esi-sba.dz/[Gmail].All Mail")
@@ -946,16 +941,11 @@ checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4
                 (string-prefix-p "/4.kebairia" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address . "4.kebairia@gmail.com")
                     (user-full-name    . "Kebairia Zakaria")
-                    (message-send-mail-function . smtpmail-send-it)
-                    (smtpmail-smtp-user . "4.kebairia@gmail.com")
-                    (smtpmail-starttls-credentials . (("smtp.gmail.com" 587 nil nil)))
-                    (smtpmail-default-smtp-server . "smtp.gmail.com")
-                    (smtpmail-smtp-server  . "smtp.gmail.com")
-                    (smtpmail-smtp-service . 587)
-                    (smtpmail-stream-type  . tls)
                     (smtpmail-auth-credentials . (expand-file-name "~/.local/share/emacs/authinfo"))
-                    (smtpmail-debug-info . t)
-                    (smtpmail-debug-verbose . t)
+                    (smtpmail-smtp-user . "4.kebairia@gmail.com")
+                    (smtpmail-smtp-server  . "smtp.gmail.com")
+                    (smtpmail-smtp-service . 465)
+                    (smtpmail-stream-type  . tls)
                     (mu4e-drafts-folder  . "/4.kebairia@gmail.com/[Gmail].Drafts")
                     (mu4e-sent-folder  . "/4.kebairia@gmail.com/[Gmail].Sent")
                     (mu4e-refile-folder  . "/4.kebairia@gmail.com/[Gmail].Archive")
@@ -963,6 +953,13 @@ checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4
                     )))))
   ;; Configure the function to use for sending mail
   (setq message-send-mail-function 'smtpmail-send-it)
+  ;; need checking 
+  (setq mu4e-maildir-shortcuts
+        '(("/INBOX"             . ?i)
+          ("/[Gmail]/Sent Mail" . ?s)
+          ("/[Gmail]/Trash"     . ?t)
+          ("/[Gmail]/Drafts"    . ?d)
+          ("/[Gmail]/All Mail"  . ?a)))
 
   ;; spell check
   (add-hook 'mu4e-compose-mode-hook
@@ -988,12 +985,13 @@ checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4
   (setq message-kill-buffer-on-exit t)
   (setq mu4e-compose-dont-reply-to-self t)
 
-  (require 'org-mu4e)
-
   ;; convert org mode to HTML automatically
-  ;(setq org-mu4e-convert-to-html t)
+  (setq org-mu4e-convert-to-html t)
+
   ;; don't ask when quitting
   (setq mu4e-confirm-quit nil)
+
+
 #+end_src
 * PYTHON
 :PROPERTIES:
