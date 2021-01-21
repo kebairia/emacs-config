@@ -237,7 +237,7 @@
   (add-hook 'prog-mode-hook #'display-line-numbers-mode)
   (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
 #+end_src
-** SESSIONS
+** BACKUPS/SESSIONS ..etc
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/SESSIONS.el
 :header-args: :results none
@@ -313,6 +313,11 @@
   ;; Saving my sessions in another folder.
   (setq auto-save-list-file-prefix            
         "~/.local/share/emacs/sessions/session-")
+  (setq auth-sources '("~/.local/share/emacs/authinfo"
+                       "~/.local/share/emacs/authinfo.gpg"
+                       "~/.authinfo"
+                       "~/.authinfo.gpg"
+                       "~/.netrc" ))
 #+end_src
 
 ** BINDINGS              
