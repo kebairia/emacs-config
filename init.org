@@ -376,6 +376,20 @@
   :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
   :header-args: :results none
   :END:
+** Dired  
+#+begin_src emacs-lisp
+  (use-package dired-single)
+  (use-package dired
+    :ensure nil
+    :commands (dired dired-jump)
+    :bind (("C-x C-j" . dired-jump))
+    :custom ((dired-listing-switches "-gho --group-directories-first"))
+    :config
+    (evil-collection-define-key 'normal 'dired-mode-map
+      "h" 'dired-single-up-directory
+      "l" 'dired-find-file))
+
+#+end_src
 ** evil mode
 #+BEGIN_SRC emacs-lisp
   (setq evil-want-keybinding nil)                   ;; this statement is required to enable evil/evil-colleciton mode
