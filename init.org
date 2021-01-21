@@ -547,7 +547,7 @@
       (ivy-mode 1)
       (setq ivy-use-virtual-buffers t)
       (global-set-key "\C-s" 'swiper-isearch)
-      (global-set-key "\C-c i" 'counsel-org-goto)
+      (global-set-key "\C-i" 'counsel-org-goto-all)
       (global-set-key (kbd "\C-c g") 'counsel-git)
       (global-set-key (kbd "M-x") 'counsel-M-x)
       (global-set-key (kbd "\C-x C-f") 'counsel-find-file)
@@ -583,7 +583,8 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 ** GLOBAL
 #+begin_src elisp
   (add-hook 'org-mode-hook 'org-indent-mode)
-  ;(setq  org-ellipsis (if (char-displayable-p ?⃕) " ⃕" nil))
+  ;; use '⤵' instead of '...' in headlines
+  ;;(setq org-ellipsis "⤵")
 #+end_src
 ** GTD
 *** Global
