@@ -1080,7 +1080,6 @@ You can also use logic statements like and , not:
 =”maildir:/Inbox” and from:eli and docs=
 
 Documentation: https://www.djcbsoftware.nl/code/mu/mu4e/Queries.html
-
 * PYTHON
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/PYTHON.el
