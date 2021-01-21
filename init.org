@@ -887,7 +887,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         (R . t)
         ))
    #+END_SRC
-   
 * MU4E 
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
@@ -905,7 +904,7 @@ checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4
 
     ;; Refresh mail using isync every 10 minutes
     ;;(setq mu4e-update-interval (* 10 60))
-    (setq mu4e-get-mail-command "mbsync -c /home/zakaria/.config/isync/mbsyncrc -a"
+    (setq mu4e-get-mail-command "mbsync -a"
           mu4e-compose-signature-auto-include t
           mu4e-compose-signature 
           (concat "Kebairia Zakaria\n"
