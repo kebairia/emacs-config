@@ -33,7 +33,7 @@
 (load "~/.config/emacs/modules/MU4E.el") 
 (load "~/.config/emacs/nano/nano.el") 
 (load "~/.config/emacs/nano/nano-layout.el") 
-(load "~/.config/emacs/nano/nano-modeline.el")
+;(load "~/.config/emacs/nano/nano-modeline.el")
 
 ;; Measure emacs startup time
 (add-to-list 'after-init-hook

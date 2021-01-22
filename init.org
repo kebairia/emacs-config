@@ -67,7 +67,7 @@
   (load "~/.config/emacs/modules/MU4E.el") 
   (load "~/.config/emacs/nano/nano.el") 
   (load "~/.config/emacs/nano/nano-layout.el") 
-  (load "~/.config/emacs/nano/nano-modeline.el") 
+  ;(load "~/.config/emacs/nano/nano-modeline.el") 
 #+end_src
 *** Mesure emacs startup time
 #+begin_src emacs-lisp
@@ -907,6 +907,13 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :header-args: :results none
 :END:
 checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4e for Dummies]] on reddit
+
+1. you need to create your authinfo file, ~authinfo~ is where you keep your email's password so mu4e can reach it
+2. simply create a file in your ~.emacs.d/~ folder, or any other folder you want, in my case i use ~~/.local/share/emacs/~ folder
+3. put your password in it using the authinfo syntax
+4. we need to make this file encrypted, so that this private information ca be safely stored.
+   1. use gpg : ~gpg2 --output ~~/.local/share/emacs/authinfo.gpg --symmetric ~~/.local/share/emacs/authinfo~
+5. remote the old file 
 #+begin_src emacs-lisp
                                           ;(require 'org-mime)
   (require 'org-mu4e)
