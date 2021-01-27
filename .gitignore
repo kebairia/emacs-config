@@ -1,8 +1,7 @@
 *
-!*/
 !.gitignore
 !init.el
 !init.org
 !README.org
 !modules/*.el
-!nane/*.el
+!nano/*.el
