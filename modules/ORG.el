@@ -74,13 +74,6 @@
          ((agenda ""
                   ((org-agenda-span 'day)
                    (org-deadline-warning-days 365)))
-          (todo "TODO"
-                ((org-agenda-overriding-header "inbox")
-                 (org-agenda-files '("~/org/gtd/inbox.org"))))
-
-          (todo "TODO"
-                ((org-agenda-overriding-header "Emails")
-                 (org-agenda-files '("~/org/gtd/emails.org"))))
 
           (todo "NEXT"
                 ((org-agenda-overriding-header "In Progress")
@@ -89,6 +82,14 @@
                                      "~/org/gtd/projects.org"
                                      "~/org/gtd/next.org"))
                  ))
+          (todo "TODO"
+                ((org-agenda-overriding-header "inbox")
+                 (org-agenda-files '("~/org/gtd/inbox.org"))))
+
+          (todo "TODO"
+                ((org-agenda-overriding-header "Emails")
+                 (org-agenda-files '("~/org/gtd/emails.org"))))
+
           (todo "TODO"
                 ((org-agenda-overriding-header "Projects")
                  (org-agenda-files '("~/org/gtd/projects.org")))
@@ -142,33 +143,6 @@
       org-ref-default-bibliography '("~/org/ref/org-ref.bib")
       org-ref-pdf-directory "~/org/ref/pdfs")
 
-(defun zk/switch-to-agenda ()
-     (interactive)
-     (org-agenda nil "g"))
-;; PS: check out the original code from here:
-;; https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
-
-;;clocking-out changes NEXT to HOLD
-;;clocking-in changes HOLD to NEXT
-(setq org-clock-in-switch-to-state 'zk/clock-in-to-next)
-(setq org-clock-out-switch-to-state 'zk/clock-out-to-hold)
-(defun zk/clock-in-to-next (kw)
-  "Switch a task from TODO to NEXT when clocking in.
-   Skips capture tasks, projects, and subprojects.
-   Switch projects and subprojects from NEXT back to TODO"
-  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
-    (cond
-     ((and (member (org-get-todo-state) (list "TODO")))
-      "NEXT")
-     ((and (member (org-get-todo-state) (list "HOLD")))
-      "NEXT")
-      )))
-(defun zk/clock-out-to-hold (kw)
-  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
-    (cond
-     ((and (member (org-get-todo-state) (list "NEXT")))  "HOLD")
-      )))
-
 (setq org-todo-keywords
   '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED")))
 (setq org-todo-keyword-faces
@@ -212,6 +186,40 @@
    (R . t)
    ))
 
+(defun zk/switch-to-agenda ()
+     (interactive)
+     (org-agenda nil "g"))
+;; PS: check out the original code from here:
+;; https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
+
+;;clocking-out changes NEXT to HOLD
+;;clocking-in changes HOLD to NEXT
+(setq org-clock-in-switch-to-state 'zk/clock-in-to-next)
+(setq org-clock-out-switch-to-state 'zk/clock-out-to-hold)
+(defun zk/clock-in-to-next (kw)
+  "Switch a task from TODO to NEXT when clocking in.
+   Skips capture tasks, projects, and subprojects.
+   Switch projects and subprojects from NEXT back to TODO"
+  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+    (cond
+     ((and (member (org-get-todo-state) (list "TODO")))
+      "NEXT")
+     ((and (member (org-get-todo-state) (list "HOLD")))
+      "NEXT")
+      )))
+(defun zk/clock-out-to-hold (kw)
+  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+    (cond
+     ((and (member (org-get-todo-state) (list "NEXT")))  "HOLD")
+      )))
+
 (add-hook 'org-mode-hook 'org-indent-mode)
 ;; use '⤵' instead of '...' in headlines
 ;;(setq org-ellipsis "⤵")
+
+(use-package org-appear
+ :load-path "~/.config/emacs/modules/org-appear/")
+(add-hook 'org-mode-hook 'org-appear-mode)
+(setq
+ org-appear-autolinks t
+ org-appear-autosubmarkers t)

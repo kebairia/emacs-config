@@ -151,7 +151,7 @@
   (progn
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
-    (global-set-key "\C-s" 'swiper-isearch)
+    (global-set-key "\C-s" 'swiper)
     ;(global-set-key "\C-i" 'counsel-org-goto-all)
     (global-set-key (kbd "\C-c g") 'counsel-git)
     (global-set-key (kbd "M-x") 'counsel-M-x)

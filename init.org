@@ -553,6 +553,18 @@
     :config
     (which-key-mode))
 #+END_SRC
+** COMMENT selectrum 
+#+begin_src emacs-lisp
+  (use-package selectrum
+    :ensure t)
+  (selectrum-mode +1)
+  ;; to make sorting and filtering more intelligent
+  (selectrum-prescient-mode +1)
+
+  ;; to save your command history on disk, so the sorting gets more
+  ;; intelligent over time
+  (prescient-persist-mode +1)
+#+end_src
 ** Swiper
 #+BEGIN_SRC emacs-lisp
   ;; it looks like counsel is a requirement for swiper
@@ -565,7 +577,7 @@
     (progn
       (ivy-mode 1)
       (setq ivy-use-virtual-buffers t)
-      (global-set-key "\C-s" 'swiper-isearch)
+      (global-set-key "\C-s" 'swiper)
       ;(global-set-key "\C-i" 'counsel-org-goto-all)
       (global-set-key (kbd "\C-c g") 'counsel-git)
       (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -579,6 +591,12 @@
       (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
       ))
 #+END_SRC
+** COMMENT CTRLF
+#+begin_src emacs-lisp
+  (use-package ctrlf
+    :ensure t)
+  (ctrlf-mode +1)
+#+end_src
 ** Aggressive Indent
 :PROPERTIES:
 :ACTIVATED: [2021-01-16]
@@ -686,13 +704,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                ((agenda ""
                         ((org-agenda-span 'day)
                          (org-deadline-warning-days 365)))
-                (todo "TODO"
-                      ((org-agenda-overriding-header "inbox")
-                       (org-agenda-files '("~/org/gtd/inbox.org"))))
-
-                (todo "TODO"
-                      ((org-agenda-overriding-header "Emails")
-                       (org-agenda-files '("~/org/gtd/emails.org"))))
 
                 (todo "NEXT"
                       ((org-agenda-overriding-header "In Progress")
@@ -701,6 +712,14 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                                            "~/org/gtd/projects.org"
                                            "~/org/gtd/next.org"))
                        ))
+                (todo "TODO"
+                      ((org-agenda-overriding-header "inbox")
+                       (org-agenda-files '("~/org/gtd/inbox.org"))))
+
+                (todo "TODO"
+                      ((org-agenda-overriding-header "Emails")
+                       (org-agenda-files '("~/org/gtd/emails.org"))))
+
                 (todo "TODO"
                       ((org-agenda-overriding-header "Projects")
                        (org-agenda-files '("~/org/gtd/projects.org")))
@@ -736,6 +755,15 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
       ;;("someday.org" :level . 0)
     #+end_src
 
+** org-appear
+#+begin_src shell
+  (use-package org-appear
+   :load-path "~/.config/emacs/modules/org-appear/")
+  (add-hook 'org-mode-hook 'org-appear-mode)
+  (setq
+   org-appear-autolinks t
+   org-appear-autosubmarkers t)
+#+end_src
 ** org capture
    #+begin_src emacs-lisp
      (setq org-capture-templates
@@ -766,37 +794,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         org-ref-default-bibliography '("~/org/ref/org-ref.bib")
         org-ref-pdf-directory "~/org/ref/pdfs")
 #+end_src
-** Other Functions
-   #+BEGIN_SRC emacs-lisp
-     (defun zk/switch-to-agenda ()
-          (interactive)
-          (org-agenda nil "g"))
-     ;; PS: check out the original code from here:
-     ;; https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
-
-     ;;clocking-out changes NEXT to HOLD
-     ;;clocking-in changes HOLD to NEXT
-     (setq org-clock-in-switch-to-state 'zk/clock-in-to-next)
-     (setq org-clock-out-switch-to-state 'zk/clock-out-to-hold)
-     (defun zk/clock-in-to-next (kw)
-       "Switch a task from TODO to NEXT when clocking in.
-        Skips capture tasks, projects, and subprojects.
-        Switch projects and subprojects from NEXT back to TODO"
-       (when (not (and (boundp 'org-capture-mode) org-capture-mode))
-         (cond
-          ((and (member (org-get-todo-state) (list "TODO")))
-           "NEXT")
-          ((and (member (org-get-todo-state) (list "HOLD")))
-           "NEXT")
-           )))
-     (defun zk/clock-out-to-hold (kw)
-       (when (not (and (boundp 'org-capture-mode) org-capture-mode))
-         (cond
-          ((and (member (org-get-todo-state) (list "NEXT")))  "HOLD")
-           )))
-
-   #+END_SRC
-
 ** todo faces
    #+begin_src emacs-lisp
     (setq org-todo-keywords
@@ -912,6 +909,37 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         (R . t)
         ))
    #+END_SRC
+** Other Functions
+   #+BEGIN_SRC emacs-lisp
+     (defun zk/switch-to-agenda ()
+          (interactive)
+          (org-agenda nil "g"))
+     ;; PS: check out the original code from here:
+     ;; https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
+
+     ;;clocking-out changes NEXT to HOLD
+     ;;clocking-in changes HOLD to NEXT
+     (setq org-clock-in-switch-to-state 'zk/clock-in-to-next)
+     (setq org-clock-out-switch-to-state 'zk/clock-out-to-hold)
+     (defun zk/clock-in-to-next (kw)
+       "Switch a task from TODO to NEXT when clocking in.
+        Skips capture tasks, projects, and subprojects.
+        Switch projects and subprojects from NEXT back to TODO"
+       (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+         (cond
+          ((and (member (org-get-todo-state) (list "TODO")))
+           "NEXT")
+          ((and (member (org-get-todo-state) (list "HOLD")))
+           "NEXT")
+           )))
+     (defun zk/clock-out-to-hold (kw)
+       (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+         (cond
+          ((and (member (org-get-todo-state) (list "NEXT")))  "HOLD")
+           )))
+
+   #+END_SRC
+
 * MU4E 
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
@@ -1027,7 +1055,7 @@ Documentation: https://www.djcbsoftware.nl/code/mu/mu4e/Queries.html
           mu4e-compose-signature-auto-include t
           mu4e-compose-signature 
           (concat "Kebairia Zakaria\n"
-                  "5th year student higher school of computer science 8 may 1945 SBA"
+                  "5th year student higher school of computer science 8 may 1945 SBA\n"
                   "Github: www.github.com/kebairia\n"
                   "linkedIn: www.linkedin.com/in/zakaria-kebairia\n")
           mu4e-compose-format-flowed t) ;; Make sure plain text mails flow correctly for recipients

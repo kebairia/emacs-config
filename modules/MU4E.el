@@ -12,7 +12,7 @@
         mu4e-compose-signature-auto-include t
         mu4e-compose-signature 
         (concat "Kebairia Zakaria\n"
-                "5th year student higher school of computer science 8 may 1945 SBA"
+                "5th year student higher school of computer science 8 may 1945 SBA\n"
                 "Github: www.github.com/kebairia\n"
                 "linkedIn: www.linkedin.com/in/zakaria-kebairia\n")
         mu4e-compose-format-flowed t) ;; Make sure plain text mails flow correctly for recipients
