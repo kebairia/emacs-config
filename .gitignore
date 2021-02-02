@@ -5,3 +5,4 @@
 !README.org
 !modules/*.el
 !nano/*.el
+!nano/org-appear

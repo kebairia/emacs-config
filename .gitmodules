@@ -1,3 +1,6 @@
 [submodule "nano"]
 	path = nano
 	url = https://github.com/kebairia/micro-emacs/
+[submodule "org-appear"]
+	path = org-appear
+    url = https://github.com/awth13/org-appear
