@@ -1,6 +1,8 @@
 (use-package mu4e
   :ensure nil
   :config
+  ;; Pull in org helpers
+  (require 'mu4e-org)
   ;; This is set to 't' to avoid mail syncing issues when using mbsync
   (setq mu4e-change-filenames-when-moving t)
                                         ; allow fancy icons for mail threads
@@ -62,6 +64,9 @@
                   (mu4e-trash-folder  . "/4.kebairia@gmail.com/[Gmail].Trash")
                   )))))
 
+;; use org-htmlize by default when sending an email
+(add-hook 'message-send-hook 'org-mime-htmlize)
+
 ;; Configure the function to use for sending mail
 (setq message-send-mail-function 'smtpmail-send-it)
 (use-package org-mime
@@ -79,7 +84,7 @@
           (defun my-do-compose-stuff ()
             "My settings for message composition."
             (visual-line-mode)
-            (org-mu4e-compose-org-mode)
+            ;;(mu4e-org-mode)
             (use-hard-newlines -1)
             (flyspell-mode)))
 
