@@ -26,27 +26,33 @@
 :header-args: :results none
 :END:
 ** DEPS
-   #+begin_src emacs-lisp
-     ;;; package --- Summary  
-     ;; Load configuration from ~/.config/emacs/modules/*.el
+#+begin_src emacs-lisp
+  ;;; package --- Summary  
+  ;; Load configuration from ~/.config/emacs/modules/*.el
 
-                   ;;; Commentary:
-     ;; Added by Package.el.  This must come before configurations of
-     ;; installed packages.  Don't delete this line.  If you don't want it,
-     ;; just comment it out by adding a semicolon to the start of the line.
-     ;; You may delete these explanatory comments.
+                ;;; Commentary:
+  ;; Added by Package.el.  This must come before configurations of
+  ;; installed packages.  Don't delete this line.  If you don't want it,
+  ;; just comment it out by adding a semicolon to the start of the line.
+  ;; You may delete these explanatory comments.
 
-   #+end_src
+#+end_src
+- ~gc-cons-threshold~ is the number of bytes of consing before a garbage collection is invoked.
+  It's normally set at 800,000 bytes, but for me that invokes the GC 39 times!!! during startup ~(gcs-done)~ ,
+  and the GC is sloooow. I've set it to ~384M above.
+  And now no GC invocations during startup.
+  source:  [[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][2 easy little known steps to speed up Emacs start up time]]
+- reset the ~gc-cons-threshold~ to its defaults values after startup
 *** Faster Startup 
 #+begin_src emacs-lisp
-     ;; Speed up startup
-     (setq gc-cons-threshold 402653184
-           gc-cons-percentage 0.6)
-     (add-hook 'after-init-hook
-               `(lambda ()
-                  (setq gc-cons-threshold 800000
-                        gc-cons-percentage 0.1)
-                  (garbage-collect)) t)
+  ;; Speed up startup
+  (setq gc-cons-threshold 402653184
+        gc-cons-percentage 0.6)
+  (add-hook 'after-init-hook
+            `(lambda ()
+               (setq gc-cons-threshold 800000
+                     gc-cons-percentage 0.1)
+               (garbage-collect)) t)
 #+end_src
 *** Load files and initialize packages repositories
 #+begin_src emacs-lisp
@@ -371,6 +377,7 @@
      (global-set-key (kbd "M-o") 'delete-other-windows)
      (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
    #+end_src
+
 * PACKAGES             
   :PROPERTIES:
   :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
