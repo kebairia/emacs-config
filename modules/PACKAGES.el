@@ -142,28 +142,46 @@
  :config
  (which-key-mode))
 
-;; it looks like counsel is a requirement for swiper
-;; counsel give us a nice looking interface when we use M-x
-(use-package counsel
+(use-package selectrum
   :ensure t)
-(use-package swiper
-  :ensure t
-  :config
-  (progn
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-    (global-set-key "\C-s" 'swiper)
-    ;(global-set-key "\C-i" 'counsel-org-goto-all)
-    (global-set-key (kbd "\C-c g") 'counsel-git)
-    (global-set-key (kbd "M-x") 'counsel-M-x)
-    (global-set-key (kbd "\C-x C-f") 'counsel-find-file)
-    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-    (global-set-key (kbd "<f1> l") 'counsel-load-library)
-    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-    (global-set-key (kbd "\C-c j") 'counsel-git-grep)
-    (global-set-key (kbd "<f6>") 'ivy-resume)
-    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-    ))
+(selectrum-mode +1)
+;; to make sorting and filtering more intelligent
+(selectrum-prescient-mode +1)
+
+;; to save your command history on disk, so the sorting gets more
+;; intelligent over time
+(prescient-persist-mode +1)
+;; In Emacs 27 there is also a flex style which you might like.
+(setq completion-styles '(substring partial-completion))
+(setq selectrum-show-indices t)
 
 (global-aggressive-indent-mode 1)
+
+(use-package pdf-tools
+:ensure t
+:config
+(pdf-tools-install))
+ ;; open pdfs scaled to fit page
+(setq-default pdf-view-display-size 'fit-page)
+ ;; exchange isearch -- occur, occur -- isearch
+(define-key pdf-view-mode-map (kbd "C-s") 'occur)
+(define-key pdf-view-mode-map (kbd "M-s o") 'isearch-forward)
+;; turn off cua so copy works
+(add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
+;; more fine-grained zooming
+(setq pdf-view-resize-factor 1.1)
+
+(use-package org-pdfview
+:ensure t)
+;; Set the pdf-view incompatible-modes[linum mode: line numbers]
+(add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+
+;; org noter configuration
+(use-package org-noter
+ :after org
+ :ensure t
+ :config (setq org-noter-auto-save-last-location t
+               org-noter-doc-split-fraction (quote (0.7 . 0.7))
+               org-noter-notes-window-behavior nil
+               org-noter-always-create-frame nil
+               org-noter-separate-notes-from-heading t))
