@@ -562,7 +562,7 @@
     :config
     (which-key-mode))
 #+END_SRC
-** COMMENT selectrum 
+** selectrum 
 #+begin_src emacs-lisp
   (use-package selectrum
     :ensure t)
@@ -573,8 +573,11 @@
   ;; to save your command history on disk, so the sorting gets more
   ;; intelligent over time
   (prescient-persist-mode +1)
+  ;; In Emacs 27 there is also a flex style which you might like.
+  (setq completion-styles '(substring partial-completion))
+  (setq selectrum-show-indices t)
 #+end_src
-** Swiper
+** COMMENT Swiper
 #+BEGIN_SRC emacs-lisp
   ;; it looks like counsel is a requirement for swiper
   ;; counsel give us a nice looking interface when we use M-x
@@ -924,7 +927,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
      (use-package ox-reveal
        :ensure ox-reveal)
      (setq org-reveal-root
-           "file:///home/zakaria/org/files/conf/revealJS/reveal.js-4.1.0")
+           "file:///home/zakaria/org/conf/revealJS/reveal.js-4.1.0")
      (setq org-reveal-mathjax t)
    #+end_src
 ** Babel
