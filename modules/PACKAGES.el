@@ -42,9 +42,9 @@
          "q" 'kill-current-buffer)
          ;;"l" 'org-store-link
          ;; "B" 'zetteldeft-new-file-and-backlink
-         ;; "f" 'pdf-links-action-perform
+         "F" 'pdf-links-action-perform
          ;; "b" 'ibuffer
-         ;; "n" 'org-noter
+         "n" 'org-noter
         (evil-leader-mode 1)
         (global-evil-leader-mode 1))
          ;;"B" 'zetteldeft-backlink-add
@@ -79,7 +79,7 @@
               :map org-mode-map
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
-;;(setq org-roam-completion-system 'ivy)
+;; (setq org-roam-completion-system 'ivy)
 (org-roam-mode 1)
 
 (use-package magit)
