@@ -155,6 +155,30 @@
 (setq completion-styles '(substring partial-completion))
 (setq selectrum-show-indices t)
 
+;; it looks like counsel is a requirement for swiper
+;; counsel give us a nice looking interface when we use M-x
+(use-package counsel
+  :ensure t)
+(use-package swiper
+  :ensure t
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (global-set-key "\C-s" 'swiper)
+    ;(global-set-key "\C-i" 'counsel-org-goto-all)
+    (global-set-key (kbd "\C-c g") 'counsel-git)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "\C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    (global-set-key (kbd "<f1> l") 'counsel-load-library)
+    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    (global-set-key (kbd "\C-c j") 'counsel-git-grep)
+    (global-set-key (kbd "<f6>") 'ivy-resume)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
+
 (global-aggressive-indent-mode 1)
 
 (use-package pdf-tools

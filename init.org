@@ -577,7 +577,7 @@
   (setq completion-styles '(substring partial-completion))
   (setq selectrum-show-indices t)
 #+end_src
-** COMMENT Swiper
+** Swiper
 #+BEGIN_SRC emacs-lisp
   ;; it looks like counsel is a requirement for swiper
   ;; counsel give us a nice looking interface when we use M-x
