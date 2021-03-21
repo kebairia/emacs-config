@@ -155,6 +155,7 @@
 
 (use-package ctrlf
   :ensure t)
+  ;:bind (("" . ctrlf-forward-fuzzy-regexp)))
 (ctrlf-mode +1)
 
 (global-aggressive-indent-mode 1)
