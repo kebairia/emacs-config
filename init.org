@@ -429,8 +429,6 @@
              (evil-leader/set-key
               "e" 'mu4e
               "a" 'zk/switch-to-agenda
-              "w" 'org-agenda-week-view
-              "m" 'org-agenda-month-view
               "d" 'deft
               "g" 'magit-status
               "i" 'org-roam-insert
@@ -577,7 +575,7 @@
   (setq completion-styles '(substring partial-completion))
   (setq selectrum-show-indices t)
 #+end_src
-** Swiper
+** COMMENT Swiper
 #+BEGIN_SRC emacs-lisp
   ;; it looks like counsel is a requirement for swiper
   ;; counsel give us a nice looking interface when we use M-x
@@ -603,7 +601,7 @@
       (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
       ))
 #+END_SRC
-** COMMENT CTRLF
+** CTRLF
 #+begin_src emacs-lisp
   (use-package ctrlf
     :ensure t)
