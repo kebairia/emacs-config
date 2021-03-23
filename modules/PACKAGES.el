@@ -66,36 +66,36 @@
 
 (require 'org-roam-protocol)
 (setq ivy-use-selectable-prompt t )
-      (use-package org-roam
-        :ensure t
-        :hook
-        (after-init . org-roam-mode)
-        :custom
-        (org-roam-directory "/home/zakaria/org/notes")
-        :bind (:map org-roam-mode-map
-                    (("C-c n l" . org-roam)
-                     ("C-c n f" . org-roam-find-file)
-                     ("C-c n d" . org-roam-dailies-capture-today)
-                     ("C-c n D" . org-roam-dailies-find-today)
-                     ("C-c n g" . org-roam-graph))
-                    :map org-mode-map
-                    (("C-c n i" . org-roam-insert))
-                    (("C-c n t" . org-roam-tag-add))
-                    (("C-c n I" . org-roam-insert-immediate))))
-      ;; (setq org-roam-completion-system 'ivy)
-      (org-roam-mode 1)
-    ;; 
-  (setq org-roam-dailies-directory "/home/zakaria/org/daily/")
+(use-package org-roam
+  :ensure t
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "/home/zakaria/org/notes")
+  :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n d" . org-roam-dailies-capture-today)
+               ("C-c n D" . org-roam-dailies-find-today)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n t" . org-roam-tag-add))
+              (("C-c n I" . org-roam-insert-immediate))))
+;; (setq org-roam-completion-system 'ivy)
+(org-roam-mode 1)
+;; 
+(setq org-roam-dailies-directory "/home/zakaria/org/daily/")
 
-  (setq org-roam-dailies-capture-templates
-        '(("d" "default" entry
-           #'org-roam-capture--get-point
-           "* %?"
-           :file-name "/home/zakaria/org/daily/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n\n")))
-  (winner-mode +1)
-  (define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
-  (define-key winner-mode-map (kbd "<M-right>") #'winner-redo)
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         #'org-roam-capture--get-point
+         "* %?"
+         :file-name "/home/zakaria/org/daily/%<%Y-%m-%d>"
+         :head "#+title: %<%Y-%m-%d>\n\n")))
+(winner-mode +1)
+(define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
+(define-key winner-mode-map (kbd "<M-right>") #'winner-redo)
 
 (use-package magit)
 ;;(use-package evil-magit
@@ -172,6 +172,7 @@
 
 (use-package ctrlf
   :ensure t)
+  ;:bind (("" . ctrlf-forward-fuzzy-regexp)))
 (ctrlf-mode +1)
 
 (global-aggressive-indent-mode 1)
