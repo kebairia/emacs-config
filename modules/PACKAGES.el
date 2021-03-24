@@ -19,83 +19,35 @@
     (delq 'ibuffer-mode evil-emacs-state-modes))
 
 (use-package evil-leader
-;; needs to be enabled before M-x evil-mode!
-    :ensure t
-    :config
-        (evil-leader/set-leader ",")
-        (evil-leader/set-key
-         "e" 'mu4e
-         "a" 'zk/switch-to-agenda
-         "d" 'deft
-         "g" 'magit-status
-         "i" 'org-roam-insert
-         "I" 'org-roam-insert-immediate
-         "f" 'org-roam-capture
-         "l" 'org-roam
-         "t" 'term
-         "c" 'org-capture
-         "r" 'counsel-recentf
-         "b" 'bookmark-bmenu-list
-         "L" 'org-insert-link
-         "q" 'kill-current-buffer
-         "F" 'pdf-links-action-perform
-         "n" 'org-noter)
-        (evil-leader-mode 1)
-        (global-evil-leader-mode 1))
+  ;; needs to be enabled before M-x evil-mode!
+  :ensure t
+  :config
+  (evil-leader/set-leader ",")
+  (evil-leader/set-key
+    "e" 'mu4e
+    "a" 'zk/switch-to-agenda
+    "d" 'deft
+    "g" 'magit-status
+    "i" 'org-roam-insert
+    "I" 'org-roam-insert-immediate
+    "f" 'org-roam-capture
+    "D" 'org-roam-dailies-capture-today
+    "l" 'org-roam
+    "t" 'term
+    "c" 'org-capture
+    "r" 'counsel-recentf
+    "b" 'bookmark-bmenu-list
+    "L" 'org-insert-link
+    "q" 'kill-current-buffer
+    "F" 'pdf-links-action-perform
+    "n" 'org-noter)
+  (evil-leader-mode 1)
+  (global-evil-leader-mode 1))
          ;; "b" 'ibuffer
          ;;"l" 'org-store-link
          ;; "B" 'zetteldeft-new-file-and-backlink
          ;;"B" 'zetteldeft-backlink-add
          ;;"s" 'zk/gen-scratch-buffer
-
-;; disable linum-mode (line number)
-(add-hook 'deft
-'(lambda () (linum-mode nil)))
- (use-package deft
-    :commands (deft)
-    :custom       (deft-directory "~/org/notes" )
-                  (deft-recursive t)
-                  (deft-extensions '("org" "md" "txt") )
-                  (deft-use-filename-as-title t)
-                  (deft-file-naming-rules
-                    '((noslash . "-")
-                      (nospace . "-")
-                      (case-fn . downcase))
-                  deft-org-mode-title-prefix t
-                  deft-text-mode 'org-mode))
-
-(require 'org-roam-protocol)
-(setq ivy-use-selectable-prompt t )
-(use-package org-roam
-  :ensure t
-  :hook
-  (after-init . org-roam-mode)
-  :custom
-  (org-roam-directory "/home/zakaria/org/notes")
-  :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n d" . org-roam-dailies-capture-today)
-               ("C-c n D" . org-roam-dailies-find-today)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n t" . org-roam-tag-add))
-              (("C-c n I" . org-roam-insert-immediate))))
-;; (setq org-roam-completion-system 'ivy)
-(org-roam-mode 1)
-;; 
-(setq org-roam-dailies-directory "/home/zakaria/org/daily/")
-
-(setq org-roam-dailies-capture-templates
-      '(("d" "default" entry
-         #'org-roam-capture--get-point
-         "* %?"
-         :file-name "/home/zakaria/org/daily/%<%Y-%m-%d>"
-         :head "#+title: %<%Y-%m-%d>\n\n")))
-(winner-mode +1)
-(define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
-(define-key winner-mode-map (kbd "<M-right>") #'winner-redo)
 
 (use-package magit)
 ;;(use-package evil-magit
