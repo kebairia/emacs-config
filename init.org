@@ -1093,7 +1093,7 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
         :disabled t
         (elpy-enable))
     #+END_SRC
-* COMMENT MU4E 
+* COMMENT MU4E                                                      :ARCHIVE:
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
 :header-args: :results none
