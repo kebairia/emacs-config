@@ -126,6 +126,8 @@
         ("l" "Link" entry (file+headline "~/org/gtd/inbox.org" "Links")
          ,(concat "* TODO %a %?\n"
                   "/Entered on/ %U") :immediate-finish t)
+        ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+         "** %<%H:%M> %?\n")
         ("e" "email" entry (file+headline "~/org/gtd/emails.org" "Emails")
          "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
 
