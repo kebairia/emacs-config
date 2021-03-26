@@ -8,7 +8,7 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/home/zakaria/org/conf/rouger.css" />
 #+OPTIONS:   toc:2 html-scripts:nil num:nil html-postamble:nil html-style:nil ^:nil
 #+PROPERTY:  header-args :results none
-#+ARCHIVE: ~/org/config_archive.org::
+#+ARCHIVE: ~/org/archive/config_archive.org::
 # ------------------------------------------------------------------------------
 - automatically tangle our ~init.org~ config file when we save it
 #+begin_src emacs-lisp
