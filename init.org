@@ -1012,20 +1012,20 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+begin_src emacs-lisp
   ;; org roam daily configuration
   ;; org roam daily used for literature and fleet notes
-  (setq org-roam-dailies-directory "/home/zakaria/org/daily/")
+  (setq org-roam-dailies-directory "/home/zakaria/org/daily_notes/")
 
   (setq org-roam-dailies-capture-templates
         '(("l" "literature note" entry
            #'org-roam-capture--get-point
            "* %?"
-           :file-name "/home/zakaria/org/daily/%<%Y-%m-%d>"
+           :file-name "/home/zakaria/org/daily_notes/%<%Y-%m-%d>"
            :head "#+title: %<%Y-%m-%d>\n"
            :olp ("Literature notes"))
 
           ("f" "fleet note" entry
            #'org-roam-capture--get-point
            "* %?"
-           :file-name "/home/zakaria/org/daily/%<%Y-%m-%d>"
+           :file-name "/home/zakaria/org/daily_notes/%<%Y-%m-%d>"
            :head "#+title: %<%Y-%m-%d>\n"
            :olp ("Fleet notes"))))
 #+end_src
