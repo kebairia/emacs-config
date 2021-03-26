@@ -378,6 +378,18 @@
      (global-set-key (kbd "M-o") 'delete-other-windows)
      (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
    #+end_src
+*** other
+   #+begin_src emacs-lisp
+     (global-set-key (kbd "C-c i") 'consult-outline)
+   #+end_src
+** FUNCTIONS 
+#+begin_src emacs-lisp
+    (defun zk/gen-scratch-buffer()
+    "Create and switch to a temporary scratch buffer with a random
+           name."
+      (interactive)
+      (switch-to-buffer (make-temp-name "scratch-")))
+#+end_src
 
 * PACKAGES             
   :PROPERTIES:
@@ -439,7 +451,7 @@
          "l" 'org-roam
          "t" 'term
          "c" 'org-capture
-         "r" 'counsel-recentf
+         "r" 'consult-recent-file
          "b" 'bookmark-bmenu-list
          "L" 'org-insert-link
          "q" 'kill-current-buffer
@@ -536,7 +548,7 @@
   (prescient-persist-mode +1)
   ;; In Emacs 27 there is also a flex style which you might like.
   (setq completion-styles '(substring partial-completion))
-  (setq selectrum-show-indices t)
+  ;;(setq selectrum-show-indices nil)
 #+end_src
 ** CTRLF
 #+begin_src emacs-lisp
@@ -544,6 +556,12 @@
     :ensure t)
     ;:bind (("" . ctrlf-forward-fuzzy-regexp)))
   (ctrlf-mode +1)
+#+end_src
+** orderless
+#+begin_src emacs-lisp
+(use-package orderless
+  :ensure t
+  :custom (completion-styles '(orderless)))
 #+end_src
 ** Aggressive Indent
 :PROPERTIES:

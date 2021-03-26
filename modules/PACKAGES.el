@@ -35,7 +35,7 @@
     "l" 'org-roam
     "t" 'term
     "c" 'org-capture
-    "r" 'counsel-recentf
+    "r" 'consult-recent-file
     "b" 'bookmark-bmenu-list
     "L" 'org-insert-link
     "q" 'kill-current-buffer
@@ -120,12 +120,16 @@
 (prescient-persist-mode +1)
 ;; In Emacs 27 there is also a flex style which you might like.
 (setq completion-styles '(substring partial-completion))
-(setq selectrum-show-indices t)
+;;(setq selectrum-show-indices nil)
 
 (use-package ctrlf
   :ensure t)
   ;:bind (("" . ctrlf-forward-fuzzy-regexp)))
 (ctrlf-mode +1)
+
+(use-package orderless
+  :ensure t
+  :custom (completion-styles '(orderless)))
 
 (global-aggressive-indent-mode 1)
 

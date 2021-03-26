@@ -39,3 +39,5 @@
 
 (global-set-key (kbd "M-o") 'delete-other-windows)
 (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
+
+(global-set-key (kbd "C-c i") 'consult-outline)
