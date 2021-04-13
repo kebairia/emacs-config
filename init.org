@@ -396,7 +396,7 @@
   :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
   :header-args: :results none
   :END:
-** COMMENT Dired  
+** Dired  
 #+begin_src emacs-lisp
   (use-package dired-single)
   (use-package dired
@@ -456,6 +456,7 @@
          "L" 'org-insert-link
          "q" 'kill-current-buffer
          "F" 'pdf-links-action-perform
+         "s" 'zk/gen-scratch-buffer
          "n" 'org-noter)
        (evil-leader-mode 1)
        (global-evil-leader-mode 1))
@@ -601,14 +602,19 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 
      ;; org noter configuration
      (use-package org-noter
-      :after org
-      :ensure t
-      :config (setq org-noter-auto-save-last-location t
-                    org-noter-doc-split-fraction (quote (0.7 . 0.7))
-                    org-noter-notes-window-behavior nil
-                    org-noter-always-create-frame nil
-                    org-noter-separate-notes-from-heading t))
+       :after org
+       :ensure t
+       :config (setq org-noter-auto-save-last-location t
+                     org-noter-doc-split-fraction (quote (0.7 . 0.7))
+                     org-noter-notes-window-behavior nil
+                     org-noter-always-create-frame nil
+                     org-noter-separate-notes-from-heading t))
    #+END_SRC
+** COMMENT zathura
+#+begin_src emacs-lisp
+  (add-to-list 'TeX-view-program-selection
+  '(output-pdf "Zathura"))
+#+end_src
 ** COMMENT Swiper
 #+BEGIN_SRC emacs-lisp
   ;; it looks like counsel is a requirement for swiper
@@ -643,8 +649,17 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 ** GLOBAL
 #+begin_src elisp
   (add-hook 'org-mode-hook 'org-indent-mode)
+  (setq org-log-into-drawer t)
   ;; use '⤵' instead of '...' in headlines
   ;;(setq org-ellipsis "⤵")
+
+  ;; use '•' instead of '-' in lists
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 ()
+                                  (compose-region
+                                   (match-beginning 1)
+                                   (match-end 1) "•"))))))
 #+end_src
 ** GTD
 *** Global
@@ -980,10 +995,10 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
     :hook
     (after-init . org-roam-mode)
     :custom
-    (org-roam-directory "/home/zakaria/org/notes")
+    (org-roam-directory "/home/zakaria/dox/braindump/org-files")
     :bind (:map org-roam-mode-map
                 (("C-c n l" . org-roam)
-                 ("C-c n f" . org-roam-find-file)
+                 ("C-c n f" . org-roam-capture)
                  ("C-c n d" . org-roam-dailies-capture-today)
                  ("C-c n D" . org-roam-dailies-find-today)
                  ("C-c n g" . org-roam-graph))
@@ -1111,7 +1126,7 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
         :disabled t
         (elpy-enable))
     #+END_SRC
-* COMMENT MU4E                                                      :ARCHIVE:
+* MU4E
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
 :header-args: :results none
