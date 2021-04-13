@@ -216,8 +216,17 @@
       )))
 
 (add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-log-into-drawer t)
 ;; use '⤵' instead of '...' in headlines
 ;;(setq org-ellipsis "⤵")
+
+;; use '•' instead of '-' in lists
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 ()
+                                (compose-region
+                                 (match-beginning 1)
+                                 (match-end 1) "•"))))))
 
 (use-package org-appear
  :load-path "~/.config/emacs/modules/org-appear/")
