@@ -1,3 +1,14 @@
+(use-package dired-single)
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump))
+  :custom ((dired-listing-switches "-gho --group-directories-first"))
+  :config
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "l" 'dired-find-file))
+
 (setq evil-want-keybinding nil)                   ;; this statement is required to enable evil/evil-colleciton mode
 (evil-mode 1)                                     ;; enable evil-mode
 (setq evil-want-abbrev-expand-on-insert-exit nil)
@@ -40,6 +51,7 @@
     "L" 'org-insert-link
     "q" 'kill-current-buffer
     "F" 'pdf-links-action-perform
+    "s" 'zk/gen-scratch-buffer
     "n" 'org-noter)
   (evil-leader-mode 1)
   (global-evil-leader-mode 1))
@@ -154,10 +166,10 @@
 
 ;; org noter configuration
 (use-package org-noter
- :after org
- :ensure t
- :config (setq org-noter-auto-save-last-location t
-               org-noter-doc-split-fraction (quote (0.7 . 0.7))
-               org-noter-notes-window-behavior nil
-               org-noter-always-create-frame nil
-               org-noter-separate-notes-from-heading t))
+  :after org
+  :ensure t
+  :config (setq org-noter-auto-save-last-location t
+                org-noter-doc-split-fraction (quote (0.7 . 0.7))
+                org-noter-notes-window-behavior nil
+                org-noter-always-create-frame nil
+                org-noter-separate-notes-from-heading t))
