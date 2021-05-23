@@ -72,7 +72,7 @@
   (load "~/.config/emacs/modules/ORG.el") 
   (load "~/.config/emacs/modules/ORG-ROAM.el") 
   ;(load "~/.config/emacs/modules/MU4E.el") 
-  (load "~/.config/emacs/nano/nano.el") 
+  (load "~/.config/emacs/nano/nano.el") 	;
   (load "~/.config/emacs/nano/nano-layout.el") 
   (load "~/.config/emacs/nano/nano-modeline.el") 
 #+end_src
@@ -396,7 +396,7 @@
   :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
   :header-args: :results none
   :END:
-** Dired  
+** COMMENT Dired  
 #+begin_src emacs-lisp
   (use-package dired-single)
   (use-package dired
@@ -1126,7 +1126,7 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
         :disabled t
         (elpy-enable))
     #+END_SRC
-* MU4E
+* COMMENT MU4E
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/MU4E.el
 :header-args: :results none
