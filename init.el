@@ -31,10 +31,12 @@
 (load "~/.config/emacs/modules/BINDINGS.el") 
 (load "~/.config/emacs/modules/ORG.el") 
 (load "~/.config/emacs/modules/ORG-ROAM.el") 
-;(load "~/.config/emacs/modules/MU4E.el") 
+                                        ;(load "~/.config/emacs/modules/MU4E.el") 
 (load "~/.config/emacs/nano/nano.el") 	;
 (load "~/.config/emacs/nano/nano-layout.el") 
-(load "~/.config/emacs/nano/nano-modeline.el")
+(load "~/.config/emacs/nano/nano-modeline.el") 
+(add-to-list 'load-path "~/.config/emacs/emacs-reveal")
+(require 'emacs-reveal)
 
 ;; Measure emacs startup time
 (add-to-list 'after-init-hook

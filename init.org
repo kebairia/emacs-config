@@ -71,10 +71,13 @@
   (load "~/.config/emacs/modules/BINDINGS.el") 
   (load "~/.config/emacs/modules/ORG.el") 
   (load "~/.config/emacs/modules/ORG-ROAM.el") 
-  ;(load "~/.config/emacs/modules/MU4E.el") 
+                                          ;(load "~/.config/emacs/modules/MU4E.el") 
   (load "~/.config/emacs/nano/nano.el") 	;
   (load "~/.config/emacs/nano/nano-layout.el") 
   (load "~/.config/emacs/nano/nano-modeline.el") 
+  (add-to-list 'load-path "~/.config/emacs/emacs-reveal")
+  (require 'emacs-reveal)
+  
 #+end_src
 *** Mesure emacs startup time
 #+begin_src emacs-lisp
@@ -927,7 +930,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
      (use-package ox-reveal
        :ensure ox-reveal)
      (setq org-reveal-root
-           "file:///home/zakaria/org/conf/revealJS/reveal.js-4.1.0")
+           "file:///home/zakaria/org/conf/revealJS/reveal.js-4.1.2")
      (setq org-reveal-mathjax t)
    #+end_src
 ** Babel
