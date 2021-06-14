@@ -162,12 +162,6 @@
     ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
   ))
 
-(use-package ox-reveal
-  :ensure ox-reveal)
-(setq org-reveal-root
-      "file:///home/zakaria/org/conf/revealJS/reveal.js-4.1.2")
-(setq org-reveal-mathjax t)
-
 (eval-after-load "org"
   (use-package ob-async
     :ensure t

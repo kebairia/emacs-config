@@ -925,7 +925,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 
  #+RESULTS:
 
-** Reveal-js
+** COMMENT Reveal-js
    #+begin_src emacs-lisp
      (use-package ox-reveal
        :ensure ox-reveal)
