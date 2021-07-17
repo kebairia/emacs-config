@@ -1,3 +1,16 @@
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
 ;;; package --- Summary  
 ;; Load configuration from ~/.config/emacs/modules/*.el
 
@@ -17,20 +30,20 @@
              (garbage-collect)) t)
 
 ;; package managers
-(require 'package)
-;;(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-;; emacs 27 now does'nt need a package-initialize
-(when (< emacs-major-version 27)
-  (package-initialize))
+;; (require 'package)
+;; ;;(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+;; ;; emacs 27 now does'nt need a package-initialize
+;; (when (< emacs-major-version 27)
+;;   (package-initialize))
 ;; load files
 (load "~/.config/emacs/modules/DEFAULTS.el") 
 (load "~/.config/emacs/modules/PACKAGES.el") 
 (load "~/.config/emacs/modules/SESSIONS.el") 
 (load "~/.config/emacs/modules/BINDINGS.el") 
 (load "~/.config/emacs/modules/ORG.el") 
-(load "~/.config/emacs/modules/ORG-ROAM.el") 
+;; (load "~/.config/emacs/modules/ORG-ROAM.el") 
                                         ;(load "~/.config/emacs/modules/MU4E.el") 
 (load "~/.config/emacs/nano/nano.el") 	;
 (load "~/.config/emacs/nano/nano-layout.el") 
@@ -45,9 +58,3 @@
                                 (number-to-string (emacs-pid))
                                 ") started in "
                                 (emacs-init-time)))))
-
-(defun zk/gen-scratch-buffer()
-"Create and switch to a temporary scratch buffer with a random
-       name."
-  (interactive)
-  (switch-to-buffer (make-temp-name "scratch-")))

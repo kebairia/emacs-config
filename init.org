@@ -10,7 +10,6 @@
 #+PROPERTY:  header-args :results none
 #+ARCHIVE: ~/org/archive/config_archive.org::
 # ------------------------------------------------------------------------------
-- automatically tangle our ~init.org~ config file when we save it
 * BOOTSTRAP
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/init.el
@@ -43,13 +42,13 @@
   ;; You may delete these explanatory comments.
 
 #+end_src
+*** Faster Startup 
 - ~gc-cons-threshold~ is the number of bytes of consing before a garbage collection is invoked.
   It's normally set at 800,000 bytes, but for me that invokes the GC 39 times!!! during startup ~(gcs-done)~ ,
   and the GC is sloooow. I've set it to ~384M above.
   And now no GC invocations during startup.
   source:  [[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][2 easy little known steps to speed up Emacs start up time]]
 - reset the ~gc-cons-threshold~ to its defaults values after startup
-*** Faster Startup 
 #+begin_src emacs-lisp
   ;; Speed up startup
   (setq gc-cons-threshold 402653184
@@ -418,51 +417,144 @@
 #+end_src
 *** evil collection
 #+begin_src emacs-lisp
+  ;; after evil
   (straight-use-package
    '(evil-collection
      :type git
-     :host github :repo "emacs-evil/evil-collection"
-     :after evil
-     :config
-     (evil-collection-init)))
+     :host github :repo "emacs-evil/evil-collection"))
+  (evil-collection-init)
   
-  ;; (straight-use-package 'evil-collection
-  ;;                       :after evil
-  ;;                       :config
-  ;;                       (evil-collection-init))
 #+end_src
-*** COMMENT evil org
+*** evil org
 #+begin_src emacs-lisp
-  (straight-use-package 'evil-org-mode
-                        :after org)
+  (straight-use-package 'evil-org)
+  ;; config
+  
+  (add-hook 'org-mode-hook 'evil-org-mode)
+  (add-hook 'evil-org-mode-hook
+            (lambda () (evil-org-set-key-theme)))
+  ;; (require 'evil-org-agenda)
+  ;; (evil-org-agenda-set-keys)
+  ;; (setq                                             ;;automatically use evil for ibuffer and dired
+  ;; evil-emacs-state-modes
+  ;; (delq 'ibuffer-mode evil-emacs-state-modes))
 #+end_src
 ** evil leader
 #+begin_src emacs-lisp
   (straight-use-package 'evil-leader)
+                        ;; needs to be enabled before M-x evil-mode!
+                        ;; :config
+                        (evil-leader-mode 1)
+                        (global-evil-leader-mode 1)
+                        (evil-leader/set-leader ",")
+                        (evil-leader/set-key
+                          "e" 'mu4e
+                          "a" 'zk/switch-to-agenda
+                          "d" 'deft
+                          "g" 'magit-status
+                          "i" 'org-roam-insert
+                          "I" 'org-roam-insert-immediate
+                          "f" 'org-roam-capture
+                          "D" 'org-roam-dailies-capture-today
+                          "l" 'org-roam
+                          "t" 'term
+                          "c" 'org-capture
+                          "r" 'consult-recent-file
+                          "b" 'bookmark-bmenu-list
+                          "L" 'org-insert-link
+                          "q" 'kill-current-buffer
+                          "F" 'pdf-links-action-perform
+                          "s" 'zk/gen-scratch-buffer
+                          "n" 'org-noter)
+  ;; "b" 'ibuffer
+  ;;"l" 'org-store-link
+  ;; "B" 'zetteldeft-new-file-and-backlink
+  ;;"B" 'zetteldeft-backlink-add
+  ;;"s" 'zk/gen-scratch-buffer
+  ;; )
 #+end_src
 ** magit
 #+begin_src emacs-lisp
-  (straight-use-package 'magit)
+  (straight-use-package 'magit
+                        ;;(use-package evil-magit
+                        ;;  :after magit)
+                        "Display BUFFER in same-window"
+                        (custom-set-variables
+                         '(magit-display-buffer-function 'magit-display-buffer-traditional))
+                        ;; '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
+                        )
+#+end_src
+** which key
+    Which-key Package show me a helpful menu when i press "C-x" and wait
+#+begin_src emacs-lisp
+  (straight-use-package 'which-key)
+  (which-key-mode)
 #+end_src
 ** undo tree
 #+begin_src emacs-lisp
   (straight-use-package 'undo-tree)
 #+end_src
-** which key
-#+begin_src emacs-lisp
-  (straight-use-package 'which-key)
-#+end_src
 ** ibuffer
 #+begin_src emacs-lisp
   (straight-use-package 'ibuffer)
+  ;; disable linum-mode
+  (add-hook 'ibuffer-mode (lambda() (linum-mode -1)))
+  (global-set-key (kbd "C-x C-b") 'ibuffer) ;; Use Ibuffer for Buffer List
+  ;; create a function that define a group
+  (setq ibuffer-saved-filter-groups
+        '(("default"
+           ("Emacs"  (or
+                      (name . "^\\*Messages\\*$")
+                      (name . "^\\*scratch\\*$")
+                      ))
+           ("Agenda"  (or
+                       (name . "inbox.org")
+                       (name . "next.org")
+                       (name . "someday.org")
+                       (name . "emails.org")
+                       (name . "archive.org")
+                       (name . "habits.org")
+                       (name . "projects.org")
+                       (name . "weekly_reviews.org")
+                       ))
+  
+           ("Org"  (name . "^.*org$"))
+           ("PDF"  (name . "^.*pdf"))
+           ("Python"  (name . "^.*py$"))
+           ("Elisp"  (name . "^.*el"))
+           ("Web"  (or
+                    (name . "^.*html$")
+                    (name . "^.*css")
+                    (name . "^.*php")
+                    ))
+           ("Dired"  (mode . dired-mode))
+           ))
+        )
+  
+  (add-hook 'ibuffer-mode-hook
+            '(lambda ()
+               (ibuffer-auto-mode 1)
+               (ibuffer-switch-to-saved-filter-groups "default"))) ;; use the group default
 #+end_src
 ** selectrum
 #+begin_src emacs-lisp
   (straight-use-package 'selectrum)
+  (selectrum-mode +1)
+  ;; to make sorting and filtering more intelligent
+  (straight-use-package 'selectrum-prescient)
+  (selectrum-prescient-mode +1)
+  
+  ;; to save your command history on disk, so the sorting gets more
+  ;; intelligent over time
+  (prescient-persist-mode +1)
+  ;; ;; In Emacs 27 there is also a flex style which you might like.
+  ;; (setq completion-styles '(substring partial-completion))
+  ;;(setq selectrum-show-indices nil)
 #+end_src
 ** ctrlf
 #+begin_src emacs-lisp
   (straight-use-package 'ctrlf)
+  (ctrlf-mode +1)
 #+end_src
 ** COMMENT orderless
 #+begin_src emacs-lisp
@@ -472,9 +564,48 @@
 #+begin_src emacs-lisp
   (straight-use-package 'aggressive-indent)
 #+end_src
+
+The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don't want indentation to happen.
+#+begin_example
+(add-to-list
+ 'aggressive-indent-dont-indent-if
+ '(and (derived-mode-p 'c++-mode)
+       (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+                           (thing-at-point 'line)))))
+#+end_example
+#+begin_src emacs-lisp
+  (global-aggressive-indent-mode 1)
+#+end_src
 ** pdf tools
 #+begin_src emacs-lisp
   (straight-use-package 'pdf-tools)
+  ;; config
+     (pdf-tools-install)
+      ;; open pdfs scaled to fit page
+     (setq-default pdf-view-display-size 'fit-page)
+      ;; exchange isearch -- occur, occur -- isearch
+     (define-key pdf-view-mode-map (kbd "C-s") 'occur)
+     (define-key pdf-view-mode-map (kbd "M-s o") 'isearch-forward)
+     ;; turn off cua so copy works
+     (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
+     ;; more fine-grained zooming
+     (setq pdf-view-resize-factor 1.1)
+#+end_src
+*** COMMENT org-pdfview
+#+begin_src emacs-lisp
+  (straight-use-package 'org-pdfview)
+     ;; Set the pdf-view incompatible-modes[linum mode: line numbers]
+     (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+#+end_src
+*** COMMENT org-noter
+#+begin_src emacs-lisp
+  (straight-use-package 'org-noter)
+  
+  (setq org-noter-auto-save-last-location t
+        org-noter-doc-split-fraction (quote (0.7 . 0.7))
+        org-noter-notes-window-behavior nil
+        org-noter-always-create-frame nil
+        org-noter-separate-notes-from-heading t)
 #+end_src
 
 * COMMENT ORG MODE
@@ -496,9 +627,6 @@
                                   (compose-region
                                    (match-beginning 1)
                                    (match-end 1) "•"))))))
-  ;; enable org-bullets with org-mode
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  
 #+end_src
 ** GTD
 *** Global
@@ -640,6 +768,22 @@
   (setq
    org-appear-autolinks t
    org-appear-autosubmarkers t)
+#+end_src
+
+** org bullets
+#+begin_src emacs-lisp
+  ;; enable org-bullets with org-mode
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  ;; (setq org-bullets-bullet-list
+  ;;   '(;;; Large
+  ;;     "▶"
+  ;;     "●"
+  ;;     "◆"
+  ;;     "✚"
+  ;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
+  ;;     ;;; Small
+  ;;     ;; ► • ★ ▸
+  ;;     )
 #+end_src
 ** org capture
    #+begin_src emacs-lisp

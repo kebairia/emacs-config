@@ -69,9 +69,9 @@
 (electric-pair-mode 1)
 ;; Tab behavior
 (setq tab-always-indent 'complete)
-(global-company-mode)
-(define-key company-mode-map [remap indent-for-tab-command]
-  #'company-indent-or-complete-common)
+;; (global-company-mode)
+;; (define-key company-mode-map [remap indent-for-tab-command]
+;;   #'company-indent-or-complete-common)
 ;; Pixel scroll (as opposed to char scrool)
 (pixel-scroll-mode t)
 ;; Mac specific

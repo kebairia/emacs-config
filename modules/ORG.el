@@ -119,6 +119,19 @@
                            ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
 ;;("someday.org" :level . 0)
 
+;; enable org-bullets with org-mode
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+;; (setq org-bullets-bullet-list
+;;   '(;;; Large
+;;     "▶"
+;;     "●"
+;;     "◆"
+;;     "✚"
+;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
+;;     ;;; Small
+;;     ;; ► • ★ ▸
+;;     )
+
 (setq org-capture-templates
       `(("i" "Inbox" entry  (file "~/org/gtd/inbox.org")
          ,(concat "* TODO %?\n"
