@@ -404,11 +404,14 @@
 #+end_src
 ** evil
 #+begin_src emacs-lisp
+  (setq evil-want-keybinding nil)                   
   (straight-use-package 'evil)
   ;; this statement is required to enable evil/evil-colleciton mode
-  (setq evil-want-keybinding nil)                   
   (evil-mode 1)
   (setq evil-want-abbrev-expand-on-insert-exit nil)
+  (setq evil-want-C-i-jump nil)
+#+end_src
+#+begin_src emacs-lisp
 #+end_src
 *** evil collection
 #+begin_src emacs-lisp
@@ -477,6 +480,7 @@
                          '(magit-display-buffer-function 'magit-display-buffer-traditional))
                         ;; '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
                         )
+  (straight-use-package 'evil-magit)
 #+end_src
 ** which key
     Which-key Package show me a helpful menu when i press "C-x" and wait
@@ -602,7 +606,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         org-noter-separate-notes-from-heading t)
 #+end_src
 
-* COMMENT ORG MODE
+* ORG MODE
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/ORG.el
 :header-args: :results none
@@ -756,8 +760,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 
 ** org-appear
 #+begin_src shell
-  (use-package org-appear
-   :load-path "~/.config/emacs/modules/org-appear/")
+  (straight-use-package 'org-appear)
   (add-hook 'org-mode-hook 'org-appear-mode)
   (setq
    org-appear-autolinks t
@@ -798,11 +801,11 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
              ;;           "/Entered on/ %U") :immediate-finish t)
              ))
    #+end_src
-** org protocol
+** COMMENT org protocol
 #+begin_src emacs-lisp
 (require 'org-protocol)
 #+end_src
-** org ref
+** COMMENT org ref
 #+begin_src emacs-lisp
   ;; (setq reftex-default-bibliography '("~/org/ref/org-ref.bib"))
   (setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))

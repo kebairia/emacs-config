@@ -1,10 +1,13 @@
 (straight-use-package 'org)
 
+(setq evil-want-keybinding nil)                   
 (straight-use-package 'evil)
 ;; this statement is required to enable evil/evil-colleciton mode
-(setq evil-want-keybinding nil)                   
 (evil-mode 1)
 (setq evil-want-abbrev-expand-on-insert-exit nil)
+(setq evil-want-C-i-jump nil)
+
+
 
 ;; after evil
 (straight-use-package '(evil-collection
@@ -64,6 +67,7 @@
                        '(magit-display-buffer-function 'magit-display-buffer-traditional))
                       ;; '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
                       )
+(straight-use-package 'evil-magit)
 
 (straight-use-package 'which-key)
 (which-key-mode)

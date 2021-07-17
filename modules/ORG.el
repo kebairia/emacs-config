@@ -1,3 +1,16 @@
+(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-log-into-drawer t)
+;; use '⤵' instead of '...' in headlines
+;;(setq org-ellipsis "⤵")
+
+;; use '•' instead of '-' in lists
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 ()
+                                (compose-region
+                                 (match-beginning 1)
+                                 (match-end 1) "•"))))))
+
 ;; ;; Adding a separator line between days in Emacs Org-mode calender view (prettier)
 
 ;;     (setq org-agenda-format-date (lambda (date) (concat "\n"
@@ -119,6 +132,12 @@
                            ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
 ;;("someday.org" :level . 0)
 
+(straight-use-package 'org-appear)
+(add-hook 'org-mode-hook 'org-appear-mode)
+(setq
+ org-appear-autolinks t
+ org-appear-autosubmarkers t)
+
 ;; enable org-bullets with org-mode
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 ;; (setq org-bullets-bullet-list
@@ -148,20 +167,6 @@
         ;;  ,(concat "* %? \n %^{MOOD} \n"
         ;;           "/Entered on/ %U") :immediate-finish t)
         ))
-
-(require 'org-protocol)
-
-;; (setq reftex-default-bibliography '("~/org/ref/org-ref.bib"))
-(setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
-;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
-      org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
-      org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles")
-
-;; see org-ref for use of these variables
-;; (setq org-ref-bibliography-notes "/tmp/test/notes.org"
-;;       org-ref-default-bibliography '("~/org/ref/org-ref.bib")
-;;       org-ref-pdf-directory "~/org/ref/pdfs")
 
 (setq org-todo-keywords
   '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED")))
@@ -226,23 +231,3 @@
     (cond
      ((and (member (org-get-todo-state) (list "NEXT")))  "HOLD")
       )))
-
-(add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-log-into-drawer t)
-;; use '⤵' instead of '...' in headlines
-;;(setq org-ellipsis "⤵")
-
-;; use '•' instead of '-' in lists
-(font-lock-add-keywords 'org-mode
-                        '(("^ *\\([-]\\) "
-                           (0 (prog1 ()
-                                (compose-region
-                                 (match-beginning 1)
-                                 (match-end 1) "•"))))))
-
-(use-package org-appear
- :load-path "~/.config/emacs/modules/org-appear/")
-(add-hook 'org-mode-hook 'org-appear-mode)
-(setq
- org-appear-autolinks t
- org-appear-autosubmarkers t)
