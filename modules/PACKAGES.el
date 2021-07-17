@@ -1,13 +1,12 @@
 (straight-use-package 'org)
 
 (setq evil-want-keybinding nil)                   
+;; put this before loading evil to work
+(setq evil-want-C-i-jump nil)
 (straight-use-package 'evil)
 ;; this statement is required to enable evil/evil-colleciton mode
 (evil-mode 1)
 (setq evil-want-abbrev-expand-on-insert-exit nil)
-(setq evil-want-C-i-jump nil)
-
-
 
 ;; after evil
 (straight-use-package '(evil-collection
