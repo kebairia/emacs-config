@@ -49,12 +49,15 @@
 
 #+end_src
 *** Faster Startup 
+
+#+HTML: <details><summary><b>GC cons threshold explanation </b></summary>
 - ~gc-cons-threshold~ is the number of bytes of consing before a garbage collection is invoked.
   It's normally set at 800,000 bytes, but for me that invokes the GC 39 times!!! during startup ~(gcs-done)~ ,
   and the GC is sloooow. I've set it to ~384M above.
   And now no GC invocations during startup.
   source:  [[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][2 easy little known steps to speed up Emacs start up time]]
 - reset the ~gc-cons-threshold~ to its defaults values after startup
+#+HTML: </details>
 #+begin_src emacs-lisp
   ;; Speed up startup
   (setq gc-cons-threshold 402653184
