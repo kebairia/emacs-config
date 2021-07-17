@@ -411,17 +411,17 @@
 ** evil
 #+begin_src emacs-lisp
   (straight-use-package 'evil)
-  (setq evil-want-keybinding nil)                   ;; this statement is required to enable evil/evil-colleciton mode
+  ;; this statement is required to enable evil/evil-colleciton mode
+  (setq evil-want-keybinding nil)                   
   (evil-mode 1)
   (setq evil-want-abbrev-expand-on-insert-exit nil)
 #+end_src
 *** evil collection
 #+begin_src emacs-lisp
   ;; after evil
-  (straight-use-package
-   '(evil-collection
-     :type git
-     :host github :repo "emacs-evil/evil-collection"))
+  (straight-use-package '(evil-collection
+                          :type git
+                          :host github :repo "emacs-evil/evil-collection"))
   (evil-collection-init)
   
 #+end_src
@@ -439,7 +439,7 @@
   ;; evil-emacs-state-modes
   ;; (delq 'ibuffer-mode evil-emacs-state-modes))
 #+end_src
-** evil leader
+*** evil leader
 #+begin_src emacs-lisp
   (straight-use-package 'evil-leader)
                         ;; needs to be enabled before M-x evil-mode!
