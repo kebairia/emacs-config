@@ -3,6 +3,6 @@
 !init.el
 !init.org
 !README.org
-!modules/*.el
+!lisp/*.el
 !nano/*.el
 !nano/org-appear
