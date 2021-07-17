@@ -559,10 +559,6 @@
   (straight-use-package 'ctrlf)
   (ctrlf-mode +1)
 #+end_src
-** COMMENT orderless
-#+begin_src emacs-lisp
-  (straight-use-package 'org)
-#+end_src
 ** aggressive indent
 #+begin_src emacs-lisp
   (straight-use-package 'aggressive-indent)
@@ -805,10 +801,9 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+begin_src emacs-lisp
 (require 'org-protocol)
 #+end_src
-** COMMENT org ref
+** org ref
 #+begin_src emacs-lisp
-  ;; (straight-use-package 'org-ref)
-  ;; (setq reftex-default-bibliography '("~/org/ref/org-ref.bib"))
+  (straight-use-package 'org-ref)
   (setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
   ;; see org-ref for use of these variables
   (setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
@@ -820,7 +815,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   ;;       org-ref-default-bibliography '("~/org/ref/org-ref.bib")
   ;;       org-ref-pdf-directory "~/org/ref/pdfs")
 #+end_src
-
 ** todo faces
    #+begin_src emacs-lisp
     (setq org-todo-keywords
