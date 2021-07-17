@@ -77,7 +77,7 @@
   (load "~/.config/emacs/lisp/SESSIONS.el") 
   (load "~/.config/emacs/lisp/BINDINGS.el") 
   (load "~/.config/emacs/lisp/ORG.el") 
-  ;; (load "~/.config/emacs/lisp/ORG-ROAM.el") 
+  (load "~/.config/emacs/lisp/ORG-ROAM.el") 
   ;;(load "~/.config/emacs/lisp/MU4E.el") 
   (load "~/.config/emacs/nano/nano.el") 	;
   (load "~/.config/emacs/nano/nano-layout.el") 
@@ -424,12 +424,17 @@
 #+end_src
 *** evil org
 #+begin_src emacs-lisp
-  (straight-use-package 'evil-org)
+  (straight-use-package '(evil-org-mode
+                          :type git
+                          :host github
+                          :repo "Somelauw/evil-org-mode"))
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys)
   ;; config
   
-  (add-hook 'org-mode-hook 'evil-org-mode)
-  (add-hook 'evil-org-mode-hook
-            (lambda () (evil-org-set-key-theme)))
+  ;; (add-hook 'org-mode-hook 'evil-org-mode)
+  ;; (add-hook 'evil-org-mode-hook
+  ;;           (lambda () (evil-org-set-key-theme)))
   ;; (require 'evil-org-agenda)
   ;; (evil-org-agenda-set-keys)
   ;; (setq                                             ;;automatically use evil for ibuffer and dired
@@ -519,7 +524,7 @@
            ("Org"  (name . "^.*org$"))
            ("PDF"  (name . "^.*pdf"))
            ("Python"  (name . "^.*py$"))
-           ("Elisp"  (name . "^.*el"))
+           ("Lisp"  (name . "^.*el"))
            ("Web"  (or
                     (name . "^.*html$")
                     (name . "^.*css")
@@ -589,13 +594,13 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
      ;; more fine-grained zooming
      (setq pdf-view-resize-factor 1.1)
 #+end_src
-*** COMMENT org-pdfview
+*** org-pdfview
 #+begin_src emacs-lisp
   (straight-use-package 'org-pdfview)
      ;; Set the pdf-view incompatible-modes[linum mode: line numbers]
      (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 #+end_src
-*** COMMENT org-noter
+*** org-noter
 #+begin_src emacs-lisp
   (straight-use-package 'org-noter)
   
@@ -757,7 +762,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                                  ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
       ;;("someday.org" :level . 0)
     #+end_src
-
 ** org-appear
 #+begin_src emacs-lisp
   (straight-use-package 'org-appear)
@@ -797,7 +801,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
              ;;           "/Entered on/ %U") :immediate-finish t)
              ))
    #+end_src
-** COMMENT org protocol
+** org protocol
 #+begin_src emacs-lisp
 (require 'org-protocol)
 #+end_src
@@ -974,9 +978,19 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 ** Global config 
 #+begin_src emacs-lisp
   (straight-use-package 'org-roam)
+  (setq org-roam-v2-ack t)
   (require 'org-roam-protocol)
   (setq ivy-use-selectable-prompt t )
   (setq org-roam-directory "/home/zakaria/dox/braindump/org-files")
+  (global-set-key (kbd "C-c n l") 'org-roam)
+  (global-set-key (kbd "C-c n f")  'org-roam-capture)
+  (global-set-key (kbd "C-c n d")  'org-roam-dailies-capture-today)
+  (global-set-key (kbd "C-c n D")  'org-roam-dailies-find-today)
+  (global-set-key (kbd "C-c n g")  'org-roam-graph)
+  
+  (global-set-key (kbd "C-c n i") 'org-roam-insert)
+  (global-set-key (kbd "C-c n t") 'org-roam-tag-add)
+  (global-set-key (kbd "C-c n I") 'org-roam-insert-immediate)
   ;; (use-package org-roam
   ;;   :ensure t
   ;;   :hook
@@ -1001,14 +1015,14 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   ;; ;;         :head "#+title: ${title}\n#+roam_tags:%^{org-roam-tags}\n#+created: %u\n#+last_modified: %U"
   ;; ;;         :unnarrowed t))
   ;; ;;(setq org-roam-completion-system 'ivy)
-  (org-roam-mode 1)
+  ;; (org-roam-mode 1)
   
   
   ;; winner mode
-  (winner-mode +1)
-  (define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
-  (define-key winner-mode-map (kbd "<M-right>") #'winner-redo)
-  (setq ivy-use-selectable-prompt t)
+  ;; (winner-mode +1)
+  ;; (define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
+  ;; (define-key winner-mode-map (kbd "<M-right>") #'winner-redo)
+  ;; (setq ivy-use-selectable-prompt t)
 #+end_src
 ** org-roam daily 
 #+begin_src emacs-lisp
@@ -1072,3 +1086,4 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
 
 
    #+END_SRC
+   
