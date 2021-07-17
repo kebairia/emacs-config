@@ -1,20 +1,15 @@
-(straight-use-package 'use-package)
-;; make `use-package` to automatically install all of your packages 
-;; without the need for adding `:straight t`.
-(setq straight-use-package-by-default t)
-
 (straight-use-package 'org)
 
 (straight-use-package 'evil)
-(setq evil-want-keybinding nil)                   ;; this statement is required to enable evil/evil-colleciton mode
+;; this statement is required to enable evil/evil-colleciton mode
+(setq evil-want-keybinding nil)                   
 (evil-mode 1)
 (setq evil-want-abbrev-expand-on-insert-exit nil)
 
 ;; after evil
-(straight-use-package
- '(evil-collection
-   :type git
-   :host github :repo "emacs-evil/evil-collection"))
+(straight-use-package '(evil-collection
+                        :type git
+                        :host github :repo "emacs-evil/evil-collection"))
 (evil-collection-init)
 
 (straight-use-package 'evil-org)

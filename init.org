@@ -16,6 +16,7 @@
 :header-args: :results none
 :END:
 ** STRAIGHT
+- Straight boostraping 
 #+begin_src emacs-lisp
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -29,6 +30,11 @@
         (goto-char (point-max))
         (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
+  ;; use use-package along with straight
+  (straight-use-package 'use-package)
+  ;; make `use-package` to automatically install all of your packages 
+  ;; without the need for adding `:straight t`.
+  (setq straight-use-package-by-default t)
 #+end_src
 ** DEPS
 #+begin_src emacs-lisp
@@ -59,16 +65,8 @@
                      gc-cons-percentage 0.1)
                (garbage-collect)) t)
 #+end_src
-*** Load files and initialize packages repositories
+*** Load elisp files
 #+begin_src emacs-lisp
-  ;; package managers
-  ;; (require 'package)
-  ;; ;;(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-  ;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  ;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-  ;; ;; emacs 27 now does'nt need a package-initialize
-  ;; (when (< emacs-major-version 27)
-  ;;   (package-initialize))
   ;; load files
   (load "~/.config/emacs/modules/DEFAULTS.el") 
   (load "~/.config/emacs/modules/PACKAGES.el") 
@@ -84,7 +82,7 @@
   ;; (require 'emacs-reveal)
   
 #+end_src
-*** Mesure emacs startup time
+*** Mesure startup time for emacs
 #+begin_src emacs-lisp
   ;; Measure emacs startup time
   (add-to-list 'after-init-hook
@@ -397,13 +395,6 @@
   :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
   :header-args: :results none
   :END:
-** use-package
-#+begin_src emacs-lisp
-  (straight-use-package 'use-package)
-  ;; make `use-package` to automatically install all of your packages 
-  ;; without the need for adding `:straight t`.
-  (setq straight-use-package-by-default t)
-#+end_src
 ** org
 #+begin_src emacs-lisp
   (straight-use-package 'org)

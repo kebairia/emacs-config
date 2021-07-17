@@ -10,6 +10,11 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+;; use use-package along with straight
+(straight-use-package 'use-package)
+;; make `use-package` to automatically install all of your packages 
+;; without the need for adding `:straight t`.
+(setq straight-use-package-by-default t)
 
 ;;; package --- Summary  
 ;; Load configuration from ~/.config/emacs/modules/*.el
@@ -29,14 +34,6 @@
                    gc-cons-percentage 0.1)
              (garbage-collect)) t)
 
-;; package managers
-;; (require 'package)
-;; ;;(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-;; ;; emacs 27 now does'nt need a package-initialize
-;; (when (< emacs-major-version 27)
-;;   (package-initialize))
 ;; load files
 (load "~/.config/emacs/modules/DEFAULTS.el") 
 (load "~/.config/emacs/modules/PACKAGES.el") 
