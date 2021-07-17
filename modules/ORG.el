@@ -138,12 +138,17 @@
 
 (require 'org-protocol)
 
-(setq reftex-default-bibliography '("~/org/ref/org-ref.bib"))
+;; (setq reftex-default-bibliography '("~/org/ref/org-ref.bib"))
+(setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
+;; see org-ref for use of these variables
+(setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
+      org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
+      org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles")
 
 ;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "/tmp/test/notes.org"
-      org-ref-default-bibliography '("~/org/ref/org-ref.bib")
-      org-ref-pdf-directory "~/org/ref/pdfs")
+;; (setq org-ref-bibliography-notes "/tmp/test/notes.org"
+;;       org-ref-default-bibliography '("~/org/ref/org-ref.bib")
+;;       org-ref-pdf-directory "~/org/ref/pdfs")
 
 (setq org-todo-keywords
   '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED")))
