@@ -11,20 +11,26 @@
 #+ARCHIVE: ~/org/archive/config_archive.org::
 # ------------------------------------------------------------------------------
 - automatically tangle our ~init.org~ config file when we save it
-#+begin_src emacs-lisp
-  (defun zk/org-babel-tangle-config()
-    (when (string-equal (buffer-file-name)
-                        (expand-file-name "~/.config/emacs/init.org"))
-      ;; dynamic scoping to the rescue
-      (let ((org-confirm-babel-evaluate nil))
-        (org-babel-tangle))))
-      (add-hook 'org-mode-hook (lambda ()(add-hook 'after-save-hook #'zk/org-babel-tangle-config))) 
-#+end_src
 * BOOTSTRAP
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/init.el
 :header-args: :results none
 :END:
+** STRAIGHT
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+end_src
 ** DEPS
 #+begin_src emacs-lisp
   ;;; package --- Summary  
@@ -57,20 +63,20 @@
 *** Load files and initialize packages repositories
 #+begin_src emacs-lisp
   ;; package managers
-  (require 'package)
-  ;;(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-  ;; emacs 27 now does'nt need a package-initialize
-  (when (< emacs-major-version 27)
-    (package-initialize))
+  ;; (require 'package)
+  ;; ;;(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+  ;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  ;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  ;; ;; emacs 27 now does'nt need a package-initialize
+  ;; (when (< emacs-major-version 27)
+  ;;   (package-initialize))
   ;; load files
   (load "~/.config/emacs/modules/DEFAULTS.el") 
   (load "~/.config/emacs/modules/PACKAGES.el") 
   (load "~/.config/emacs/modules/SESSIONS.el") 
   (load "~/.config/emacs/modules/BINDINGS.el") 
   (load "~/.config/emacs/modules/ORG.el") 
-  (load "~/.config/emacs/modules/ORG-ROAM.el") 
+  ;; (load "~/.config/emacs/modules/ORG-ROAM.el") 
                                           ;(load "~/.config/emacs/modules/MU4E.el") 
   (load "~/.config/emacs/nano/nano.el") 	;
   (load "~/.config/emacs/nano/nano-layout.el") 
@@ -89,6 +95,63 @@
                                   ") started in "
                                   (emacs-init-time)))))
 #+end_src
+** BINDINGS
+:PROPERTIES:
+:header-args: :tangle ~/.config/emacs/modules/BINDINGS.el
+:header-args: :results none
+:END:
+*** Files
+   #+begin_src emacs-lisp
+     ;; some shortcuts -- files
+     ;; (set-register ?i (cons 'file "~/.config/emacs/init.org" ))
+     ;; (set-register ?b (cons 'file "~/org/books.org" ))
+     (global-set-key (kbd "C-c C") (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
+     (global-set-key (kbd "C-c b") (lambda() (interactive)(find-file "~/org/books.org")))
+     (global-set-key (kbd "C-c I") (lambda() (interactive)(find-file "~/org/gtd/inbox.org")))
+     (global-set-key (kbd "C-c L") (lambda() (interactive)(find-file "~/org/links.org")))
+     (global-set-key (kbd "C-c E") (lambda() (interactive)(find-file "~/org/gtd/emails.org")))
+     (global-set-key (kbd "<f12>") (lambda() (interactive)(find-file "~/org/conf/org.pdf")))
+     ;; Reload buffer with <F5>
+     (global-set-key [f5] '(lambda () (interactive) (revert-buffer nil t nil)))
+   #+end_src
+*** Win-movements
+   #+begin_src emacs-lisp
+     (global-set-key (kbd "<f12>" ) 'flyspell-auto-correct-previous-word)
+     (defun zk/split-go-right()
+       (interactive)
+       (split-window-horizontally)
+       (windmove-right))
+     (defun zk/split-go-down()
+       (interactive)
+       (split-window-vertically)
+       (windmove-down))
+     ;; try to go to the other window automaticly
+     (global-set-key (kbd "C-x i") 'zk/split-go-right)
+     (global-set-key (kbd "C-x m") 'zk/split-go-down)
+
+     ;; Move between buffer
+     (global-set-key (kbd "M-n") 'switch-to-next-buffer)
+     (global-set-key (kbd "M-p") 'switch-to-prev-buffer)
+
+     ;; Move between Windows
+     (global-set-key (kbd "C-x k") 'windmove-up)
+     (global-set-key (kbd "C-x j") 'windmove-down)
+     (global-set-key (kbd "C-x l") 'windmove-right)
+     (global-set-key (kbd "C-x h") 'windmove-left)
+
+     ;; Resize windows
+     (global-set-key (kbd "C-M-l") 'shrink-window-horizontally)
+     (global-set-key (kbd "C-M-h") 'enlarge-window-horizontally)
+     (global-set-key (kbd "C-M-j") 'shrink-window)
+     (global-set-key (kbd "C-M-k") 'enlarge-window)
+
+     (global-set-key (kbd "M-o") 'delete-other-windows)
+     (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
+   #+end_src
+*** other
+   #+begin_src emacs-lisp
+     (global-set-key (kbd "C-c i") 'consult-outline)
+   #+end_src
 ** DEFAULTS
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/DEFAULTS.el
@@ -128,20 +191,20 @@
   (setq font-lock-maximum-decoration nil)
   ;; No limite on font lock
   (setq font-lock-maximum-size nil)
-
+  
   ;; No line breat space points
   (setq auto-fill-mode nil)
-
+  
   ;; Fill column at 80
   (setq fill-column 80)
-
+  
   ;; No confirmation for visiting non-existent files
   (setq confirm-nonexistent-file-or-buffer nil)
-
+  
   ;; Completion style, see
   ;; gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
   (setq completion-styles '(basic substring))
-
+  
   ;; Mouse active in terminal
   (unless (display-graphic-p)
     (xterm-mouse-mode 1)
@@ -166,9 +229,9 @@
   (electric-pair-mode 1)
   ;; Tab behavior
   (setq tab-always-indent 'complete)
-  (global-company-mode)
-  (define-key company-mode-map [remap indent-for-tab-command]
-    #'company-indent-or-complete-common)
+  ;; (global-company-mode)
+  ;; (define-key company-mode-map [remap indent-for-tab-command]
+  ;;   #'company-indent-or-complete-common)
   ;; Pixel scroll (as opposed to char scrool)
   (pixel-scroll-mode t)
   ;; Mac specific
@@ -178,7 +241,7 @@
   ;;       mac-command-modifier 'meta
   ;;       mac-option-modifier nil
   ;;       mac-use-title-bar nil)
-
+  
   ;; Make sure clipboard works properly in tty mode on OSX
                                           ;(defun copy-from-osx ()
                                           ;(shell-command-to-string "pbpaste"))
@@ -190,45 +253,45 @@
                                           ;(if (not (display-graphic-p))
                                           ;(progn (setq interprogram-cut-function 'paste-to-osx)
                                           ;(setq interprogram-paste-function 'copy-from-osx)))
-
+  
   ;; y/n for  answering yes/no questions
   (fset 'yes-or-no-p 'y-or-n-p)
   ;; use ssh by default in tramp
   (setq tramp-default-method "ssh")
-
+  
   ;; No tabs
   ;;(setq-default indent-tabs-mode nil)
-
+  
   ;; Tab.space equivalence
   (setq tab-width 4)
-
+  
   ;; Size of temporary buffers
   (temp-buffer-resize-mode)
   (setq temp-buffer-max-height 8)
-
+  
   ;; Minimum window height
   (setq window-min-height 1)
-
+  
   ;; Buffer encoding
   (prefer-coding-system       'utf-8)
   (set-default-coding-systems 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
   (set-language-environment   'utf-8)
-
+  
   ;; Unique buffer names
   (require 'uniquify)
   (setq uniquify-buffer-name-style 'reverse
         uniquify-separator " • "
         uniquify-after-kill-buffer-p t
         uniquify-ignore-buffers-re "^\\*")
-
+  
   ;; Default shell in term
   (setq-default shell-file-name "/bin/zsh")
   (setq explicit-shell-file-name "/bin/zsh")
   ;; activate eterm-256color-mode when starting term
   (add-hook 'term-mode-hook #'eterm-256color-mode)
-
+  
   ;; Kill term buffer when exiting
   (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
     (if (memq (process-status proc) '(signal exit))
@@ -237,7 +300,7 @@
           (kill-buffer buffer))
       ad-do-it))
   (ad-activate 'term-sentinel)
-
+  
   ;; display line number in text/prog & fundamental modes
   (setq-default
    display-line-numbers-current-absolute t ;  Enable the line nubmers
@@ -330,323 +393,91 @@
                        "~/.netrc" ))
 #+end_src
 
-** BINDINGS              
-:PROPERTIES:
-:header-args: :tangle ~/.config/emacs/modules/BINDINGS.el
-:header-args: :results none
-:END:
-*** Files
-   #+begin_src emacs-lisp
-     ;; some shortcuts -- files
-     ;; (set-register ?i (cons 'file "~/.config/emacs/init.org" ))
-     ;; (set-register ?b (cons 'file "~/org/books.org" ))
-     (global-set-key (kbd "C-c C") (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
-     (global-set-key (kbd "C-c b") (lambda() (interactive)(find-file "~/org/books.org")))
-     (global-set-key (kbd "C-c I") (lambda() (interactive)(find-file "~/org/gtd/inbox.org")))
-     (global-set-key (kbd "C-c L") (lambda() (interactive)(find-file "~/org/links.org")))
-     (global-set-key (kbd "C-c E") (lambda() (interactive)(find-file "~/org/gtd/emails.org")))
-     (global-set-key (kbd "<f12>") (lambda() (interactive)(find-file "~/org/conf/org.pdf")))
-     ;; Reload buffer with <F5>
-     (global-set-key [f5] '(lambda () (interactive) (revert-buffer nil t nil)))
-   #+end_src
-*** Win-movements
-   #+begin_src emacs-lisp
-     (global-set-key (kbd "<f12>" ) 'flyspell-auto-correct-previous-word)
-     (defun zk/split-go-right()
-       (interactive)
-       (split-window-horizontally)
-       (windmove-right))
-     (defun zk/split-go-down()
-       (interactive)
-       (split-window-vertically)
-       (windmove-down))
-     ;; try to go to the other window automaticly
-     (global-set-key (kbd "C-x i") 'zk/split-go-right)
-     (global-set-key (kbd "C-x m") 'zk/split-go-down)
-
-     ;; Move between buffer
-     (global-set-key (kbd "M-n") 'switch-to-next-buffer)
-     (global-set-key (kbd "M-p") 'switch-to-prev-buffer)
-
-     ;; Move between Windows
-     (global-set-key (kbd "C-x k") 'windmove-up)
-     (global-set-key (kbd "C-x j") 'windmove-down)
-     (global-set-key (kbd "C-x l") 'windmove-right)
-     (global-set-key (kbd "C-x h") 'windmove-left)
-
-     ;; Resize windows
-     (global-set-key (kbd "C-M-l") 'shrink-window-horizontally)
-     (global-set-key (kbd "C-M-h") 'enlarge-window-horizontally)
-     (global-set-key (kbd "C-M-j") 'shrink-window)
-     (global-set-key (kbd "C-M-k") 'enlarge-window)
-
-     (global-set-key (kbd "M-o") 'delete-other-windows)
-     (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
-   #+end_src
-*** other
-   #+begin_src emacs-lisp
-     (global-set-key (kbd "C-c i") 'consult-outline)
-   #+end_src
-** FUNCTIONS 
-#+begin_src emacs-lisp
-    (defun zk/gen-scratch-buffer()
-    "Create and switch to a temporary scratch buffer with a random
-           name."
-      (interactive)
-      (switch-to-buffer (make-temp-name "scratch-")))
-#+end_src
-
-* PACKAGES             
+* PACKAGES
   :PROPERTIES:
   :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
   :header-args: :results none
   :END:
-** Dired  
+** use-package
 #+begin_src emacs-lisp
-  (use-package dired-single)
-  (use-package dired
-    :ensure nil
-    :commands (dired dired-jump)
-    :bind (("C-x C-j" . dired-jump))
-    :custom ((dired-listing-switches "-gho --group-directories-first"))
-    :config
-    (evil-collection-define-key 'normal 'dired-mode-map
-      "h" 'dired-single-up-directory
-      "l" 'dired-find-file))
-
+  (straight-use-package 'use-package)
+  ;; make `use-package` to automatically install all of your packages 
+  ;; without the need for adding `:straight t`.
+  (setq straight-use-package-by-default t)
 #+end_src
-** evil mode
-#+BEGIN_SRC emacs-lisp
+** org
+#+begin_src emacs-lisp
+  (straight-use-package 'org)
+#+end_src
+** evil
+#+begin_src emacs-lisp
+  (straight-use-package 'evil)
   (setq evil-want-keybinding nil)                   ;; this statement is required to enable evil/evil-colleciton mode
-  (evil-mode 1)                                     ;; enable evil-mode
+  (evil-mode 1)
   (setq evil-want-abbrev-expand-on-insert-exit nil)
-  (use-package evil-collection                      ;; evil-friendly binding for many modes
-    :after evil
-    :ensure t
-    :config
-    (evil-collection-init))
-  (use-package evil-org
-    :after org
-    :config
-    (add-hook 'org-mode-hook 'evil-org-mode)
-    (add-hook 'evil-org-mode-hook
-              (lambda () (evil-org-set-key-theme)))
-    (require 'evil-org-agenda)
-    (evil-org-agenda-set-keys))
-  (setq                                             ;;automatically use evil for ibuffer and dired
-   evil-emacs-state-modes
-      (delq 'ibuffer-mode evil-emacs-state-modes))
-#+END_SRC
-** evil-leader
-   #+BEGIN_SRC emacs-lisp
-     (use-package evil-leader
-       ;; needs to be enabled before M-x evil-mode!
-       :ensure t
-       :config
-       (evil-leader/set-leader ",")
-       (evil-leader/set-key
-         "e" 'mu4e
-         "a" 'zk/switch-to-agenda
-         "d" 'deft
-         "g" 'magit-status
-         "i" 'org-roam-insert
-         "I" 'org-roam-insert-immediate
-         "f" 'org-roam-capture
-         "D" 'org-roam-dailies-capture-today
-         "l" 'org-roam
-         "t" 'term
-         "c" 'org-capture
-         "r" 'consult-recent-file
-         "b" 'bookmark-bmenu-list
-         "L" 'org-insert-link
-         "q" 'kill-current-buffer
-         "F" 'pdf-links-action-perform
-         "s" 'zk/gen-scratch-buffer
-         "n" 'org-noter)
-       (evil-leader-mode 1)
-       (global-evil-leader-mode 1))
-              ;; "b" 'ibuffer
-              ;;"l" 'org-store-link
-              ;; "B" 'zetteldeft-new-file-and-backlink
-              ;;"B" 'zetteldeft-backlink-add
-              ;;"s" 'zk/gen-scratch-buffer
-   #+END_SRC
-** Magit
-#+begin_src emacs-lisp
-  (use-package magit)
-  ;;(use-package evil-magit
-  ;;  :after magit)
-  "Display BUFFER in same-window"
-  (custom-set-variables
-   '(magit-display-buffer-function 'magit-display-buffer-traditional))
-  ;; '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 #+end_src
-** UndoTree
-   #+BEGIN_SRC emacs-lisp
-     ;;turn on everywhere
-     (global-undo-tree-mode 1)
-     ;; Save history to a file
-     (setq
-         undo-tree-auto-save-history 1 ; Show relative times in the undo tree visualizer
-         undo-tree-visualizer-timestamps 1; Show diffs when browsing through the undo tree
-         undo-tree-visualizer-diff 1)
-   #+END_SRC
-** Ibuffer
-   #+BEGIN_SRC emacs-lisp
-     ;; disable linum-mode
-     (add-hook 'ibuffer-mode (lambda() (linum-mode -1)))
-     (global-set-key (kbd "C-x C-b") 'ibuffer) ;; Use Ibuffer for Buffer List
-     ;; create a function that define a group
-     (setq ibuffer-saved-filter-groups
-         '(("default"
-            ("Emacs"  (or
-                        (name . "^\\*Messages\\*$")
-                        (name . "^\\*scratch\\*$")
-            ))
-            ("Agenda"  (or
-                        (name . "inbox.org")
-                        (name . "next.org")
-                        (name . "someday.org")
-                        (name . "emails.org")
-                        (name . "archive.org")
-                        (name . "habits.org")
-                        (name . "projects.org")
-                        (name . "weekly_reviews.org")
-                ))
-
-            ("Org"  (name . "^.*org$"))
-            ("PDF"  (name . "^.*pdf"))
-            ("Python"  (name . "^.*py$"))
-            ("Elisp"  (name . "^.*el"))
-            ("Web"  (or
-                        (name . "^.*html$")
-                        (name . "^.*css")
-                        (name . "^.*php")
-                ))
-            ("Dired"  (mode . dired-mode))
-          ))
-       )
-
-     (add-hook 'ibuffer-mode-hook
-      '(lambda ()
-         (ibuffer-auto-mode 1)
-         (ibuffer-switch-to-saved-filter-groups "default"))) ;; use the group default
-
-   #+END_SRC
-** which-key
-    Which-key Package show me a helpful menu when i press "C-x" and wait
-#+BEGIN_SRC emacs-lisp
-   (use-package which-key
-    :ensure t
-    :config
-    (which-key-mode))
-#+END_SRC
-** selectrum 
+*** evil collection
 #+begin_src emacs-lisp
-  (use-package selectrum
-    :ensure t)
-  (selectrum-mode +1)
-  ;; to make sorting and filtering more intelligent
-  (selectrum-prescient-mode +1)
-
-  ;; to save your command history on disk, so the sorting gets more
-  ;; intelligent over time
-  (prescient-persist-mode +1)
-  ;; In Emacs 27 there is also a flex style which you might like.
-  (setq completion-styles '(substring partial-completion))
-  ;;(setq selectrum-show-indices nil)
-#+end_src
-** CTRLF
-#+begin_src emacs-lisp
-  (use-package ctrlf
-    :ensure t)
-    ;:bind (("" . ctrlf-forward-fuzzy-regexp)))
-  (ctrlf-mode +1)
-#+end_src
-** orderless
-#+begin_src emacs-lisp
-(use-package orderless
-  :ensure t
-  :custom (completion-styles '(orderless)))
-#+end_src
-** Aggressive Indent
-:PROPERTIES:
-:ACTIVATED: [2021-01-16]
-:END:
-The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don't want indentation to happen.
-#+begin_example
-(add-to-list
- 'aggressive-indent-dont-indent-if
- '(and (derived-mode-p 'c++-mode)
-       (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
-                           (thing-at-point 'line)))))
-#+end_example
-#+begin_src emacs-lisp
-  (global-aggressive-indent-mode 1)
-#+end_src
-** PDF-Tools
-   #+BEGIN_SRC emacs-lisp
-     (use-package pdf-tools
-     :ensure t
+  (straight-use-package
+   '(evil-collection
+     :type git
+     :host github :repo "emacs-evil/evil-collection"
+     :after evil
      :config
-     (pdf-tools-install))
-      ;; open pdfs scaled to fit page
-     (setq-default pdf-view-display-size 'fit-page)
-      ;; exchange isearch -- occur, occur -- isearch
-     (define-key pdf-view-mode-map (kbd "C-s") 'occur)
-     (define-key pdf-view-mode-map (kbd "M-s o") 'isearch-forward)
-     ;; turn off cua so copy works
-     (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
-     ;; more fine-grained zooming
-     (setq pdf-view-resize-factor 1.1)
-
-     (use-package org-pdfview
-     :ensure t)
-     ;; Set the pdf-view incompatible-modes[linum mode: line numbers]
-     (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
-
-     ;; org noter configuration
-     (use-package org-noter
-       :after org
-       :ensure t
-       :config (setq org-noter-auto-save-last-location t
-                     org-noter-doc-split-fraction (quote (0.7 . 0.7))
-                     org-noter-notes-window-behavior nil
-                     org-noter-always-create-frame nil
-                     org-noter-separate-notes-from-heading t))
-   #+END_SRC
-** COMMENT zathura
-#+begin_src emacs-lisp
-  (add-to-list 'TeX-view-program-selection
-  '(output-pdf "Zathura"))
+     (evil-collection-init)))
+  
+  ;; (straight-use-package 'evil-collection
+  ;;                       :after evil
+  ;;                       :config
+  ;;                       (evil-collection-init))
 #+end_src
-** COMMENT Swiper
-#+BEGIN_SRC emacs-lisp
-  ;; it looks like counsel is a requirement for swiper
-  ;; counsel give us a nice looking interface when we use M-x
-  (use-package counsel
-    :ensure t)
-  (use-package swiper
-    :ensure t
-    :config
-    (progn
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (global-set-key "\C-s" 'swiper)
-      ;(global-set-key "\C-i" 'counsel-org-goto-all)
-      (global-set-key (kbd "\C-c g") 'counsel-git)
-      (global-set-key (kbd "M-x") 'counsel-M-x)
-      (global-set-key (kbd "\C-x C-f") 'counsel-find-file)
-      (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-      (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-      (global-set-key (kbd "<f1> l") 'counsel-load-library)
-      (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-      (global-set-key (kbd "\C-c j") 'counsel-git-grep)
-      (global-set-key (kbd "<f6>") 'ivy-resume)
-      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-      ))
-#+END_SRC
-* ORG MODE            
+*** COMMENT evil org
+#+begin_src emacs-lisp
+  (straight-use-package 'evil-org-mode
+                        :after org)
+#+end_src
+** evil leader
+#+begin_src emacs-lisp
+  (straight-use-package 'evil-leader)
+#+end_src
+** magit
+#+begin_src emacs-lisp
+  (straight-use-package 'magit)
+#+end_src
+** undo tree
+#+begin_src emacs-lisp
+  (straight-use-package 'undo-tree)
+#+end_src
+** which key
+#+begin_src emacs-lisp
+  (straight-use-package 'which-key)
+#+end_src
+** ibuffer
+#+begin_src emacs-lisp
+  (straight-use-package 'ibuffer)
+#+end_src
+** selectrum
+#+begin_src emacs-lisp
+  (straight-use-package 'selectrum)
+#+end_src
+** ctrlf
+#+begin_src emacs-lisp
+  (straight-use-package 'ctrlf)
+#+end_src
+** COMMENT orderless
+#+begin_src emacs-lisp
+  (straight-use-package 'org)
+#+end_src
+** aggressive indent
+#+begin_src emacs-lisp
+  (straight-use-package 'aggressive-indent)
+#+end_src
+** pdf tools
+#+begin_src emacs-lisp
+  (straight-use-package 'pdf-tools)
+#+end_src
+
+* COMMENT ORG MODE
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/modules/ORG.el
 :header-args: :results none
@@ -657,7 +488,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (setq org-log-into-drawer t)
   ;; use '⤵' instead of '...' in headlines
   ;;(setq org-ellipsis "⤵")
-
+  
   ;; use '•' instead of '-' in lists
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
@@ -665,6 +496,9 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                                   (compose-region
                                    (match-beginning 1)
                                    (match-end 1) "•"))))))
+  ;; enable org-bullets with org-mode
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  
 #+end_src
 ** GTD
 *** Global
@@ -994,7 +828,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 
    #+END_SRC
 
-* ORG ROAM
+* COMMENT ORG ROAM
   :PROPERTIES:
   :header-args: :tangle ~/.config/emacs/modules/ORG-ROAM.el
   :header-args: :results none
@@ -1098,259 +932,3 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
 
 
    #+END_SRC
-* PYTHON
-:PROPERTIES:
-:header-args: :tangle ~/.config/emacs/modules/PYTHON.el
-:header-args: :results none
-:END:
-** COMMENT python-mode and lsp
-#+begin_src emacs-lisp
-  (use-package python-mode
-    :ensure nil
-    :hook (python-mode . lsp-defferd)
-    )
-
-#+end_src
-** Jedi
-    #+BEGIN_SRC emacs-lisp
-      (use-package jedi
-       :ensure t
-       :init
-        (add-hook 'python-mode-hook 'jedi:setup)
-        (add-hook 'python-mode-hook 'jedi:ac-setup)
-       )
-      (setq jedi:complete-on-dot t)
-
-      ;; (add-to-list 'company-backends 'company-jedi)
-
-      ;; (add-hook 'python-mode-hook 'jedi:setup)
-      ;; (setq jedi:complete-on-dot t)
-    #+END_SRC
-** Flycheck
-#+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
-#+END_SRC
-** Elpy
-    #+BEGIN_SRC emacs-lisp
-      (use-package elpy
-        :init
-        :disabled t
-        (elpy-enable))
-    #+END_SRC
-* COMMENT MU4E
-:PROPERTIES:
-:header-args: :tangle ~/.config/emacs/modules/MU4E.el
-:header-args: :results none
-:END:
-** INFO
-checkout [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4e for Dummies]] on reddit
-
-1. you need to create your authinfo file, ~authinfo~ is where you keep your email's password so mu4e can reach it
-2. simply create a file in your ~.emacs.d/~ folder, or any other folder you want, in my case i use ~~/.local/share/emacs/~ folder
-3. put your password in it using the authinfo syntax
-4. we need to make this file encrypted, so that this private information ca be safely stored.
-   1. use gpg : ~gpg2 --output ~~/.local/share/emacs/authinfo.gpg --symmetric ~~/.local/share/emacs/authinfo~
-5. remove the old file
-*** Headers Mode
-
-Key Bindings:
-|-----+-------+-------------------------------------+--------------------------------------|
-| Key | Evil  | Command                             | Description                          |
-|-----+-------+-------------------------------------+--------------------------------------|
-|     |       | Movement                            |                                      |
-|-----+-------+-------------------------------------+--------------------------------------|
-| C-n | j     | next-line                           | Moves to the next header line        |
-| C-p | k     | previous-line                       | Moves to the previous header line    |
-| [[  | [[    | mu4e-headers-prev-unread            | Moves to previous unread message     |
-| ]]  | ]]    | mu4e-headers-next-unread            | Moves to next unread message         |
-| j   | J     | mu4e~headers-jump-to-maildir        | Jump to another mail directory       |
-|     |       |                                     |                                      |
-|-----+-------+-------------------------------------+--------------------------------------|
-|     |       | Toggles                             |                                      |
-|-----+-------+-------------------------------------+--------------------------------------|
-| P   | zt    | mu4e-headers-toggle-threading       | Toggles threaded message display     |
-| W   | zr    | mu4e-headers-toggle-include-related | Toggles related message display      |
-|     |       |                                     |                                      |
-|-----+-------+-------------------------------------+--------------------------------------|
-|     |       | Marking                             |                                      |
-|-----+-------+-------------------------------------+--------------------------------------|
-| d   | d     | mu4e-headers-mark-for-trash         | Marks message for deletion           |
-| m   | m     | mu4e-headers-mark-for-move          | Marks message for move to folder     |
-| +   | +     | mu4e-headers-mark-for-flag          | Marks message for flagging           |
-| -   | -     | mu4e-headers-mark-for-unflag        | Marks message for unflagging         |
-| %   | %     | mu4e-headers-mark-pattern           | Marks based on a regex pattern       |
-| u   | u     | mu4e-headers-mark-for-unmark        | Removes mark for message             |
-| U   | U     | mu4e-mark-unmark-all                | Unmarks all marks in the view        |
-| x   | x     | mu4e-mark-execute-all               | Executes all marks in the view       |
-|-----+-------+-------------------------------------+--------------------------------------|
-|     |       | Searching                           |                                      |
-|-----+-------+-------------------------------------+--------------------------------------|
-| s   | s     | mu4e-headers-search                 | Search all e-mails                   |
-| S   | S     | mu4e-headers-search-edit            | Edit current search (useful!)        |
-| /   | /     | mu4e-headers-search-narrow          | Narrow down the current results      |
-| b   | b     | mu4e-headers-search-bookmark        | Select a bookmark to search with     |
-| B   | B     | mu4e-headers-search-bookmark-edit   | Edit bookmark before search          |
-| g   | gr    | mu4e-rerun-search                   | Rerun the current search             |
-|-----+-------+-------------------------------------+--------------------------------------|
-|     |       | Composing                           |                                      |
-|-----+-------+-------------------------------------+--------------------------------------|
-| C   | C, cc | mu4e-compose-new                    | Compose a new e-mail                 |
-| R   | R, cr | mu4e-compose-reply                  | Compose a reply to selected email    |
-| F   | F, cf | mu4e-compose-forward                | Compose a forward for selected email |
-| E   | E, ce | mu4e-compose-edit                   | Edit selected draft message          |
-|     |       |                                     |                                      |
-|     |       | Other Actions                       |                                      |
-| q   | q     | mu4e~headers-quit-buffer            | Quit the headers view                |
-|-----+-------+-------------------------------------+--------------------------------------|
-
-Controlling the number of messages visible:
-
-    ~mu4e-headers-results-limit~: The number of messages to display in mail listings (default 500)
-    ~mu4e-headers-full-search~: If t, shows all messages, ignoring limit
-
-You can toggle ~mu4e-headers-full-search~ with ~M-x mu4e-headers-toggle-full-search~!
-
-*** View Mode
-
-Many of the same keybindings work! Marking keys work on the currently viewed message.
-| Key | Evil | Command                  | Description                            |
-|-----+------+--------------------------+----------------------------------------|
-|     |      | Movement                 |                                        |
-| C-n | j    | next-line                | Moves to the next line in message      |
-| C-p | k    | previous-line            | Moves to the previous line in message  |
-| n   | C-j  | mu4e-view-headers-next   | Moves to next email in header list     |
-| p   | C-k  | mu4e-view-headers-prev   | Moves to previous email in header list |
-| [[  | [[   | mu4e-headers-prev-unread | Moves to previous unread message       |
-| ]]  | ]]   | mu4e-headers-next-unread | Moves to next unread message           |
-|-----+------+--------------------------+----------------------------------------|
-
-*** Search queries
-    something - General text search for “something”
-    from:stallman - Emails from a particular sender
-    date:today..now - Date range
-    flag:attach - Emails with an attachment
-    =”maildir:/Inbox”= - Search in a specific mail directory
-
-You can also use logic statements like and , not:
-
-=”maildir:/Inbox” and from:eli and docs=
-
-Documentation: https://www.djcbsoftware.nl/code/mu/mu4e/Queries.html
-** CONFIG 
-#+begin_src emacs-lisp
-  (use-package mu4e
-    :ensure nil
-    :config
-    ;; Pull in org helpers
-    (require 'mu4e-org)
-    ;; This is set to 't' to avoid mail syncing issues when using mbsync
-    (setq mu4e-change-filenames-when-moving t)
-                                          ; allow fancy icons for mail threads
-    ;;(setq mu4e-use-fancy-chars t) 
-
-    ;; Refresh mail using isync every 10 minutes
-    ;;(setq mu4e-update-interval (* 10 60))
-    (setq mu4e-get-mail-command "mbsync --config ~/.config/isync/mbsyncrc -a"
-          mu4e-compose-signature-auto-include t
-          mu4e-compose-signature 
-          (concat "Kebairia Zakaria\n"
-                  "Github: www.github.com/kebairia\n"
-                  "linkedIn: www.linkedin.com/in/zakaria-kebairia\n")
-          mu4e-compose-format-flowed t) ;; Make sure plain text mails flow correctly for recipients
-
-
-    (setq mu4e-maildir (expand-file-name "~/.local/share/mail"))
-
-    (setq mu4e-contexts
-          (list
-           ;; ESI account
-           (make-mu4e-context
-            :name "esi"
-            :match-func
-            (lambda (msg)
-              (when msg
-                (string-prefix-p "/ESI" (mu4e-message-field msg :maildir))))
-            :vars '((user-mail-address . "z.kebairia@esi-sba.dz")
-                    (user-full-name    . "Kebairia Zakaria, ISI, G03")
-                    (smtpmail-auth-credentials . (expand-file-name "~/.local/share/emacs/authinfo"))
-                    (smtpmail-smtp-user . "z.kebairia@esi-sba.dz")
-                    (smtpmail-smtp-server  . "smtp.gmail.com")
-                    (smtpmail-smtp-service . 465)
-                    (smtpmail-stream-type  . tls)
-                    (mu4e-drafts-folder  . "/z.kebairia@esi-sba.dz/[Gmail].Drafts")
-                    (mu4e-sent-folder  . "/z.kebairia@esi-sba.dz/[Gmail].Sent Mail")
-                    (mu4e-refile-folder  . "/z.kebairia@esi-sba.dz/[Gmail].All Mail")
-                    (mu4e-trash-folder  . "/z.kebairia@esi-sba.dz/[Gmail].Trash")
-
-                    ))
-           ;; Personal account
-           (make-mu4e-context
-            :name "Personal"
-            :match-func
-            (lambda (msg)
-              (when msg
-                (string-prefix-p "/4.kebairia" (mu4e-message-field msg :maildir))))
-            :vars '((user-mail-address . "4.kebairia@gmail.com")
-                    (user-full-name    . "Kebairia Zakaria")
-                    (smtpmail-auth-credentials . (expand-file-name "~/.local/share/emacs/authinfo"))
-                    (smtpmail-smtp-user . "4.kebairia@gmail.com")
-                    (smtpmail-smtp-server  . "smtp.gmail.com")
-                    (smtpmail-smtp-service . 465)
-                    (smtpmail-stream-type  . tls)
-                    (mu4e-drafts-folder  . "/4.kebairia@gmail.com/[Gmail].Drafts")
-                    (mu4e-sent-folder  . "/4.kebairia@gmail.com/[Gmail].Sent")
-                    (mu4e-refile-folder  . "/4.kebairia@gmail.com/[Gmail].Archive")
-                    (mu4e-trash-folder  . "/4.kebairia@gmail.com/[Gmail].Trash")
-                    )))))
-
-  ;; use org-htmlize by default when sending an email
-  (add-hook 'message-send-hook 'org-mime-htmlize)
-
-  ;; Configure the function to use for sending mail
-  (setq message-send-mail-function 'smtpmail-send-it)
-  (use-package org-mime
-  :ensure t
-  :config
-  (setq org-mime-export-options '(
-                                  :section-numbers nil
-                                  :with-author nil
-                                  :with-toc nil)))
-
-  ;; (use-package org-mu4e
-  ;;   :ensure t)
-  ;; spell check
-  (add-hook 'mu4e-compose-mode-hook
-            (defun my-do-compose-stuff ()
-              "My settings for message composition."
-              (visual-line-mode)
-              ;;(mu4e-org-mode)
-              (use-hard-newlines -1)
-              (flyspell-mode)))
-
-  (add-hook 'mu4e-headers-mode-hook
-  (defun my/mu4e-change-headers ()
-    (interactive)
-    (setq mu4e-headers-fields
-          `((:human-date . 15) ;; alternatively, use :date
-            (:flags . 6)
-            (:from . 22)
-            (:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
-            (:size . 7)))))
-
-  ;;from the info manual
-  (setq mu4e-attachment-dir  "~/dwn")
-
-  (setq message-kill-buffer-on-exit t)
-  (setq mu4e-compose-dont-reply-to-self t)
-
-  ;; convert org mode to HTML automatically
-  (setq org-mu4e-convert-to-html t)
-
-  ;; don't ask when quitting
-  (setq mu4e-confirm-quit nil)
-
-
-#+end_src
-
