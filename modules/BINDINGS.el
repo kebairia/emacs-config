@@ -1,4 +1,6 @@
 ;; some shortcuts -- files
+;; (set-register ?i (cons 'file "~/.config/emacs/init.org" ))
+;; (set-register ?b (cons 'file "~/org/books.org" ))
 (global-set-key (kbd "C-c C") (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
 (global-set-key (kbd "C-c b") (lambda() (interactive)(find-file "~/org/books.org")))
 (global-set-key (kbd "C-c I") (lambda() (interactive)(find-file "~/org/gtd/inbox.org")))

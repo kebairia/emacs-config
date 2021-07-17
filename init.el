@@ -35,8 +35,8 @@
 (load "~/.config/emacs/nano/nano.el") 	;
 (load "~/.config/emacs/nano/nano-layout.el") 
 (load "~/.config/emacs/nano/nano-modeline.el") 
-(add-to-list 'load-path "~/.config/emacs/emacs-reveal")
-(require 'emacs-reveal)
+;; (add-to-list 'load-path "~/.config/emacs/emacs-reveal")
+;; (require 'emacs-reveal)
 
 ;; Measure emacs startup time
 (add-to-list 'after-init-hook

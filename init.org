@@ -338,6 +338,8 @@
 *** Files
    #+begin_src emacs-lisp
      ;; some shortcuts -- files
+     ;; (set-register ?i (cons 'file "~/.config/emacs/init.org" ))
+     ;; (set-register ?b (cons 'file "~/org/books.org" ))
      (global-set-key (kbd "C-c C") (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
      (global-set-key (kbd "C-c b") (lambda() (interactive)(find-file "~/org/books.org")))
      (global-set-key (kbd "C-c I") (lambda() (interactive)(find-file "~/org/gtd/inbox.org")))
@@ -399,7 +401,7 @@
   :header-args: :tangle ~/.config/emacs/modules/PACKAGES.el
   :header-args: :results none
   :END:
-** COMMENT Dired  
+** Dired  
 #+begin_src emacs-lisp
   (use-package dired-single)
   (use-package dired
@@ -891,7 +893,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                       ("\\mboxparagraph{%s}" . "\\mboxparagraph*{%s}")
                       ("\\mboxsubparagraph{%s}" . "\\mboxsubparagraph*{%s}")))
-
+   
    (add-to-list 'org-latex-classes
                 '( "koma-article"
                    "\\documentclass{scrartcl}"

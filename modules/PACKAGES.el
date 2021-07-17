@@ -1,3 +1,14 @@
+(use-package dired-single)
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump))
+  :custom ((dired-listing-switches "-gho --group-directories-first"))
+  :config
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "l" 'dired-find-file))
+
 (setq evil-want-keybinding nil)                   ;; this statement is required to enable evil/evil-colleciton mode
 (evil-mode 1)                                     ;; enable evil-mode
 (setq evil-want-abbrev-expand-on-insert-exit nil)
