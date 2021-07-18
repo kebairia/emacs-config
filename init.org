@@ -559,6 +559,11 @@
   (straight-use-package 'ctrlf)
   (ctrlf-mode +1)
 #+end_src
+** consult 
+- [[https://github.com/minad/consult][consult github repo]]
+  #+begin_src emacs-lisp
+    (straight-use-package 'consult)
+  #+end_src
 ** aggressive indent
 #+begin_src emacs-lisp
   (straight-use-package 'aggressive-indent)
