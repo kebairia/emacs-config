@@ -16,6 +16,9 @@
 :header-args: :results none
 :END:
 ** STRAIGHT
+  #+begin_note
+  I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main package manager for Emacs
+  #+end_note
 - Straight boostraping 
 #+begin_src emacs-lisp
   (defvar bootstrap-version)
