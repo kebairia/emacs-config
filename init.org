@@ -504,7 +504,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   ("C-c p" . projectile-command-map)
   :init
   (when (file-directory-p "~/dox/wrk")
-    (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" "~/dox/wrk/pfe/docs"))))
+    (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" "~/dox/wrk/pfe/docs" "~/.config"))))
   
 #+end_src
 ** which key
