@@ -490,6 +490,17 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
                         )
   (straight-use-package 'evil-magit)
 #+end_src
+** projectile
+#+begin_src emacs-lisp
+  (use-package projectile
+  :config (projectile-mode)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/dox/wrk")
+    (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" "~/dox/wrk/pfe/docs"))))
+  
+#+end_src
 ** which key
     Which-key Package show me a helpful menu when i press "C-x" and wait
 #+begin_src emacs-lisp
