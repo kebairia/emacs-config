@@ -490,6 +490,12 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
                          ;; '(magit-display-buffer-function 'magit-display-buffer-traditional))
   (straight-use-package 'evil-magit)
 #+end_src
+*** forge
+- forge is a utility that let you pull your issues and pull-requests from the remote repo into magit interface
+#+begin_src emacs-lisp
+  (use-package forge
+    :after magit)
+#+end_src
 ** projectile
 #+begin_src emacs-lisp
   (use-package projectile
