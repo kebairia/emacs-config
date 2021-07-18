@@ -614,6 +614,11 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         org-noter-always-create-frame nil
         org-noter-separate-notes-from-heading t)
 #+end_src
+** modes
+*** yaml mode
+#+begin_src emacs-lisp
+  (straight-use-package 'yaml-mode)
+#+end_src
 
 * ORG MODE
 :PROPERTIES:
