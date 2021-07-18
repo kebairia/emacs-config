@@ -406,6 +406,10 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
 #+begin_src emacs-lisp
   (straight-use-package 'org)
 #+end_src
+*** org-cliplink 
+#+begin_src emacs-lisp
+  (use-package org-cliplink)
+#+end_src
 ** evil
 #+begin_src emacs-lisp
   (setq evil-want-keybinding nil)                   
