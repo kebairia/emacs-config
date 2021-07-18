@@ -485,9 +485,9 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
                         ;;  :after magit)
                         "Display BUFFER in same-window"
                         (custom-set-variables
-                         '(magit-display-buffer-function 'magit-display-buffer-traditional))
-                        ;; '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
+                         '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
                         )
+                         ;; '(magit-display-buffer-function 'magit-display-buffer-traditional))
   (straight-use-package 'evil-magit)
 #+end_src
 ** projectile
