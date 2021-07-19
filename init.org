@@ -875,50 +875,52 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
    #+end_src
 
 ** org-exports
-*** COMMENT Latex
+*** Latex
  #+begin_src emacs-lisp
-   (add-to-list 'org-latex-classes
-                    '("elsarticle"
-                      "\\documentclass{elsarticle}
-    [NO-DEFAULT-PACKAGES]
-    [PACKAGES]
-    [EXTRA]"
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-   (add-to-list 'org-latex-classes
-                    '("mimosis"
-                      "\\documentclass{mimosis}
-    [NO-DEFAULT-PACKAGES]
-    [PACKAGES]
-    [EXTRA]
-   \\newcommand{\\mboxparagraph}[1]{\\paragraph{#1}\\mbox{}\\\\}
-   \\newcommand{\\mboxsubparagraph}[1]{\\subparagraph{#1}\\mbox{}\\\\}"
-                      ("\\chapter{%s}" . "\\chapter*{%s}")
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                      ("\\mboxparagraph{%s}" . "\\mboxparagraph*{%s}")
-                      ("\\mboxsubparagraph{%s}" . "\\mboxsubparagraph*{%s}")))
+   (with-eval-after-load 'ox-latex
+     (add-to-list 'org-latex-classes
+                  '("elsarticle"
+                    "\\documentclass{elsarticle}
+      [NO-DEFAULT-PACKAGES]
+      [PACKAGES]
+      [EXTRA]"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+     (add-to-list 'org-latex-classes
+                  '("mimosis"
+                    "\\documentclass{mimosis}
+      [NO-DEFAULT-PACKAGES]
+      [PACKAGES]
+      [EXTRA]
+     \\newcommand{\\mboxparagraph}[1]{\\paragraph{#1}\\mbox{}\\\\}
+     \\newcommand{\\mboxsubparagraph}[1]{\\subparagraph{#1}\\mbox{}\\\\}"
+                    ("\\chapter{%s}" . "\\chapter*{%s}")
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\mboxparagraph{%s}" . "\\mboxparagraph*{%s}")
+                    ("\\mboxsubparagraph{%s}" . "\\mboxsubparagraph*{%s}")))
    
-   (add-to-list 'org-latex-classes
-                '( "koma-article"
-                   "\\documentclass{scrartcl}"
-                   ( "\\section{%s}" . "\\section*{%s}" )
-                   ( "\\subsection{%s}" . "\\subsection*{%s}" )
-                   ( "\\subsubsection{%s}" . "\\subsubsection*{%s}" )
-                   ( "\\paragraph{%s}" . "\\paragraph*{%s}" )
-                   ( "\\subparagraph{%s}" . "\\subparagraph*{%s}" )))
+     (add-to-list 'org-latex-classes
+                  '( "koma-article"
+                     "\\documentclass{scrartcl}"
+                     ( "\\section{%s}" . "\\section*{%s}" )
+                     ( "\\subsection{%s}" . "\\subsection*{%s}" )
+                     ( "\\subsubsection{%s}" . "\\subsubsection*{%s}" )
+                     ( "\\paragraph{%s}" . "\\paragraph*{%s}" )
+                     ( "\\subparagraph{%s}" . "\\subparagraph*{%s}" )))
+     )
    ;; Coloured LaTeX using Minted
    (setq org-latex-listings 'minted
-       org-latex-packages-alist '(("" "minted"))
-       org-latex-pdf-process
-       '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-         "biber %b"
-         "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-         "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+         org-latex-packages-alist '(("" "minted"))
+         org-latex-pdf-process
+         '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+           "biber %b"
+           "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+           "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
    
    ;; syntex-highlighting
    (use-package htmlize)
@@ -939,9 +941,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
    (custom-set-variables
     '(org-export-backends '(ascii beamer html icalendar latex odt)))
  #+end_src
-
- #+RESULTS:
-
+ 
 ** COMMENT Reveal-js
    #+begin_src emacs-lisp
      (use-package ox-reveal
