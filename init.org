@@ -536,7 +536,9 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+end_src
 ** undo tree
 #+begin_src emacs-lisp
-  (straight-use-package 'undo-tree)
+  (use-package undo-tree
+    ;;turn on everywhere
+    :init (global-undo-tree-mode 1))
 #+end_src
 ** ibuffer
 #+begin_src emacs-lisp
