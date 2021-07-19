@@ -10,9 +10,8 @@
 #+PROPERTY:  header-args :results none
 #+ARCHIVE:   ~/org/archive/config_archive.org::
 # ------------------------------------------------------------------------------
-#+html: <a href="https://www.gnu.org/software/emacs/emacs.html#Releases"><img src="https://img.shields.io/badge/Emacs-27.2%20%E2%80%93%2028.0.50-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white"></a>
+#+html: <a href="https://www.gnu.org/software/emacs/emacs.html#Releases"><img src="https://img.shields.io/badge/GNU%20Emacs-%2027.2%20-orange"></a>
 #+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=flat-square&logo=org&logoColor=white"></a>
-#+html: <a href="https://github.com/kebairia/emacs-config/actions"><img src="https://img.shields.io/github/workflow/status/kebairia/emacs-config/Publish/master.svg?style=flat-square&label=publish&logo=buffer"></a>
 # ------------------------------------------------------------------------------
 
 * BOOTSTRAP
