@@ -292,18 +292,18 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
        (split-window-vertically)
        (windmove-down))
      ;; try to go to the other window automaticly
-     (global-set-key (kbd "C-x i") 'zk/split-go-right)
-     (global-set-key (kbd "C-x m") 'zk/split-go-down)
+     (global-set-key (kbd "C-c i") 'zk/split-go-right)
+     (global-set-key (kbd "C-c m") 'zk/split-go-down)
 
      ;; Move between buffer
      (global-set-key (kbd "M-n") 'switch-to-next-buffer)
      (global-set-key (kbd "M-p") 'switch-to-prev-buffer)
 
      ;; Move between Windows
-     (global-set-key (kbd "C-x k") 'windmove-up)
-     (global-set-key (kbd "C-x j") 'windmove-down)
-     (global-set-key (kbd "C-x l") 'windmove-right)
-     (global-set-key (kbd "C-x h") 'windmove-left)
+     (global-set-key (kbd "C-c k") 'windmove-up)
+     (global-set-key (kbd "C-c j") 'windmove-down)
+     (global-set-key (kbd "C-c l") 'windmove-right)
+     (global-set-key (kbd "C-c h") 'windmove-left)
 
      ;; Resize windows
      (global-set-key (kbd "C-M-l") 'shrink-window-horizontally)
@@ -314,7 +314,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
      (global-set-key (kbd "M-o") 'delete-other-windows)
      (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
    #+end_src
-*** other
+*** COMMENT other
    #+begin_src emacs-lisp
      (global-set-key (kbd "C-c i") 'consult-outline)
    #+end_src
