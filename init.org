@@ -10,8 +10,8 @@
 #+PROPERTY:  header-args :results none
 #+ARCHIVE:   ~/org/archive/config_archive.org::
 # ------------------------------------------------------------------------------
-#+html: <a href="https://www.gnu.org/software/emacs/emacs.html#Releases"><img src="https://img.shields.io/badge/GNU%20Emacs-%2027.2%20-orange"></a>
-#+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=flat-square&logo=org&logoColor=white"></a>
+#+html: <a href="https://www.gnu.org/software/emacs/emacs.html#Releases"><img src="https://img.shields.io/badge/GNU%20Emacs-%2027.2%20-orange?style=for-the-badge&logo=emacsColor=blueviolet"></a>
+#+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=for-the-badge&logo=orgColor=white"></a>
 # ------------------------------------------------------------------------------
 
 * BOOTSTRAP
@@ -1026,7 +1026,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
     (org-roam-setup)
     ;; If using org-roam-protocol
     (require 'org-roam-protocol))
-  ;; (setq org-roam-v2-ack t)
+  (setq org-roam-v2-ack t)
   ;; winner mode
   (winner-mode +1)
   (define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
