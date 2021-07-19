@@ -812,7 +812,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
   ;; change org-bullets faces
   (setq org-bullets-bullet-list
-        '("▶" "⚫" "★" "◉" "○" "▸" "◇"))
+        '("▶" "⚫" "▸" "◉" "○" "◆" "◇"))
   ;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
   ;;     ;;; Small
   ;;     ;; ► • ★ ▸
