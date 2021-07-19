@@ -14,12 +14,7 @@
 #+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=for-the-badge&logo=orgColor=white"></a>
 # ------------------------------------------------------------------------------
 * SCREENSHOTS
-** scratch buffer
 [[file:shots/scratch.png]]
-** ibuffer
-[[file:shots/ibuffer.png]]
-** org-mode (emacs's configuration)
-[[file:shots/org-mode.png]]
 * BOOTSTRAP
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/init.el

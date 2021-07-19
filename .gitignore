@@ -4,4 +4,4 @@
 !README.org
 !lisp/*.el
 !nano/*.el
-!nano/org-appear
+!shots/*
