@@ -315,9 +315,9 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
      (global-set-key (kbd "M-o") 'delete-other-windows)
      (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
    #+end_src
-*** COMMENT other
+*** other
    #+begin_src emacs-lisp
-     (global-set-key (kbd "C-c i") 'consult-outline)
+     (global-set-key (kbd "C-x b") 'consult-buffer)
    #+end_src
 ** BACKUPS/SESSIONS ..etc
 :PROPERTIES:
