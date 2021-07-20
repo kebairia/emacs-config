@@ -1101,3 +1101,35 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
 
    #+END_SRC
    
+* TODO PYTHON
+:PROPERTIES:
+:header-args: :tangle ~/.config/emacs/lisp/PYTHON.el
+:header-args: :results none
+:END:
+** COMMENT Jedi
+    #+BEGIN_SRC emacs-lisp
+      (use-package jedi
+       :ensure t
+       :init
+        (add-hook 'python-mode-hook 'jedi:setup)
+        (add-hook 'python-mode-hook 'jedi:ac-setup)
+       )
+      (setq jedi:complete-on-dot t)
+
+      ;; (add-to-list 'company-backends 'company-jedi)
+
+      ;; (add-hook 'python-mode-hook 'jedi:setup)
+      ;; (setq jedi:complete-on-dot t)
+    #+END_SRC
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+  :init (global-flycheck-mode))
+#+END_SRC
+** COMMENT Elpy
+    #+BEGIN_SRC emacs-lisp
+      (use-package elpy
+        :init
+        :disabled t
+        (elpy-enable))
+    #+END_SRC
