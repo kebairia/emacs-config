@@ -1025,7 +1025,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
            ("C-c n c" . org-roam-capture)
            ;; Dailies
            ("C-c n j" . org-roam-dailies-capture-today))
-    :config
+    :init
     (org-roam-setup)
     ;; If using org-roam-protocol
     (require 'org-roam-protocol))
