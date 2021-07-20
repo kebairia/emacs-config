@@ -261,6 +261,8 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (add-hook 'text-mode-hook #'display-line-numbers-mode)
   (add-hook 'prog-mode-hook #'display-line-numbers-mode)
   (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
+  ;; enable `narrow-to-region` functionality
+  (put 'narrow-to-region 'disabled nil)
 #+end_src
 ** BINDINGS
 :PROPERTIES:
