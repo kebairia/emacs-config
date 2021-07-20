@@ -1009,10 +1009,10 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
    #+END_SRC
 
 * ORG ROAM
-  :PROPERTIES:
-  :header-args: :tangle ~/.config/emacs/lisp/ORG-ROAM.el
-  :header-args: :results none
-  :END:
+:PROPERTIES:
+:header-args: :tangle ~/.config/emacs/lisp/ORG-ROAM.el
+:header-args: :results none
+:END:
 ** Global config 
 #+begin_src emacs-lisp
   (use-package org-roam
@@ -1039,6 +1039,9 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                  (direction . right)
                  (window-width . 0.33)
                  (window-height . fit-window-to-buffer)))
+  ;; Garbage Collection
+  (setq org-roam-db-gc-threshold most-positive-fixnum)
+  
   ;; winner mode
   (winner-mode +1)
   (define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
@@ -1049,7 +1052,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   ;; org roam daily configuration
   ;; org roam daily used for literature and fleet notes
   (setq org-roam-dailies-directory "/home/zakaria/org/daily_notes/")
-
+  
   (setq org-roam-dailies-capture-templates
         '(("l" "literature note" entry
            #'org-roam-capture--get-point
@@ -1057,7 +1060,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
            :file-name "/home/zakaria/org/daily_notes/%<%Y-%m-%d>"
            :head "#+title: %<%Y-%m-%d>\n"
            :olp ("Literature notes"))
-
+  
           ("f" "fleet note" entry
            #'org-roam-capture--get-point
            "* %?"
@@ -1078,37 +1081,37 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
     (:map org-mode-map
           (("s-Y" . org-download-screenshot)
            ("s-y" . org-download-yank))))
-
+  
 #+end_src
 ** org roam graph
 #+begin_src emacs-lisp
-(setq org-roam-graph-viewer
-    (lambda (file)
-      (let ((org-roam-graph-viewer "/usr/bin/brave"))
-        (org-roam-graph--open (concat "file://///" file)))))
+  (setq org-roam-graph-viewer
+        (lambda (file)
+          (let ((org-roam-graph-viewer "/usr/bin/brave"))
+            (org-roam-graph--open (concat "file://///" file)))))
 #+end_src
 ** Deft
 - The Deft interface can slow down quickly when the number of files get huge.
 - ~Notdeft~ is a fork of Deft that uses an external search engine and indexer.
-   #+BEGIN_SRC emacs-lisp
-     ;; disable linum-mode (line number)
-     (add-hook 'deft
-     '(lambda () (linum-mode nil)))
-      (use-package deft
-         :commands (deft)
-         :custom       (deft-directory "~/org/notes" )
-                       (deft-recursive t)
-                       (deft-extensions '("org" "md" "txt") )
-                       (deft-use-filename-as-title t)
-                       (deft-file-naming-rules
-                         '((noslash . "-")
-                           (nospace . "-")
-                           (case-fn . downcase))
-                       deft-org-mode-title-prefix t
-                       deft-text-mode 'org-mode))
-
-
-   #+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    ;; disable linum-mode (line number)
+    (add-hook 'deft
+              '(lambda () (linum-mode nil)))
+    (use-package deft
+      :commands (deft)
+      :custom       (deft-directory "~/org/notes" )
+      (deft-recursive t)
+      (deft-extensions '("org" "md" "txt") )
+      (deft-use-filename-as-title t)
+      (deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase))
+        deft-org-mode-title-prefix t
+        deft-text-mode 'org-mode))
+    
+    
+  #+END_SRC
    
 * TODO PYTHON
 :PROPERTIES:
