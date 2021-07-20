@@ -1032,6 +1032,13 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
     ;; If using org-roam-protocol
     (require 'org-roam-protocol))
   (setq org-roam-v2-ack t)
+  ;;Configuring the Org-roam buffer display
+  (add-to-list 'display-buffer-alist
+               '("\\*org-roam\\*"
+                 (display-buffer-in-direction)
+                 (direction . right)
+                 (window-width . 0.33)
+                 (window-height . fit-window-to-buffer)))
   ;; winner mode
   (winner-mode +1)
   (define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
