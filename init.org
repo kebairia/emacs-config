@@ -498,7 +498,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   ;; '(magit-display-buffer-function 'magit-display-buffer-traditional))
   (straight-use-package 'evil-magit)
 #+end_src
-*** forge
+*** COMMENT forge
 - forge is a utility that let you pull your issues and pull-requests from the remote repo into magit interface
 #+begin_src emacs-lisp
   (use-package forge
@@ -1031,7 +1031,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
     (org-roam-setup)
     ;; If using org-roam-protocol
     (require 'org-roam-protocol))
-  (setq org-roam-v2-ack t)
   ;;Configuring the Org-roam buffer display
   (add-to-list 'display-buffer-alist
                '("\\*org-roam\\*"
@@ -1039,6 +1038,8 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                  (direction . right)
                  (window-width . 0.33)
                  (window-height . fit-window-to-buffer)))
+  ;; use org-roam v2
+  (setq org-roam-v2-ack t)
   ;; Garbage Collection
   (setq org-roam-db-gc-threshold most-positive-fixnum)
   
