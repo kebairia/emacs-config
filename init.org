@@ -940,7 +940,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
     ;; If you edit it by hand, you could mess it up, so be careful.
     ;; Your init file should contain only one such instance.
     ;; If there is more than one, they won't work right.
-    '(magit-display-buffer-function 'magit-display-buffer-traditional)
     '(org-export-backends '(ascii beamer html icalendar latex odt)))
    
    (custom-set-variables
@@ -1114,19 +1113,18 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
     
   #+END_SRC
    
-* TODO PYTHON
+* TODO COMMENT PYTHON                                               :ARCHIVE:
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/lisp/PYTHON.el
 :header-args: :results none
 :END:
 ** COMMENT Jedi
+- first, install python-virtualenv on your system
     #+BEGIN_SRC emacs-lisp
       (use-package jedi
-       :ensure t
        :init
         (add-hook 'python-mode-hook 'jedi:setup)
-        (add-hook 'python-mode-hook 'jedi:ac-setup)
-       )
+        (add-hook 'python-mode-hook 'jedi:ac-setup))
       (setq jedi:complete-on-dot t)
 
       ;; (add-to-list 'company-backends 'company-jedi)
@@ -1139,10 +1137,10 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
   (use-package flycheck
   :init (global-flycheck-mode))
 #+END_SRC
-** COMMENT Elpy
-    #+BEGIN_SRC emacs-lisp
-      (use-package elpy
-        :init
-        :disabled t
-        (elpy-enable))
-    #+END_SRC
+** Elpy
+#+begin_src emacs-lisp
+  (use-package elpy
+    :init
+    (elpy-enable))
+  ;; (setq elpy-rpc-backend "jedi")
+#+end_src
