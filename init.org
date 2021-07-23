@@ -645,6 +645,26 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         org-noter-always-create-frame nil
         org-noter-separate-notes-from-heading t)
 #+end_src
+** eterm256
+#+begin_src emacs-lisp
+  (use-package eterm-256color)
+#+end_src
+*** org-pdfview
+#+begin_src emacs-lisp
+  (straight-use-package 'org-pdfview)
+     ;; Set the pdf-view incompatible-modes[linum mode: line numbers]
+     (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+#+end_src
+*** org-noter
+#+begin_src emacs-lisp
+  (straight-use-package 'org-noter)
+  
+  (setq org-noter-auto-save-last-location t
+        org-noter-doc-split-fraction (quote (0.7 . 0.7))
+        org-noter-notes-window-behavior nil
+        org-noter-always-create-frame nil
+        org-noter-separate-notes-from-heading t)
+#+end_src
 ** modes
 *** yaml mode
 #+begin_src emacs-lisp
