@@ -1032,7 +1032,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :header-args: :tangle ~/.config/emacs/lisp/ORG-ROAM.el
 :header-args: :results none
 :END:
-** Global config 
+** global config 
 #+begin_src emacs-lisp
   (use-package org-roam
     :ensure t
