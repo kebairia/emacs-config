@@ -178,4 +178,6 @@
       org-noter-always-create-frame nil
       org-noter-separate-notes-from-heading t)
 
+(use-package eterm-256color)
+
 (straight-use-package 'yaml-mode)
