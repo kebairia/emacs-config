@@ -1117,12 +1117,12 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
     
   #+END_SRC
    
-* TODO COMMENT PYTHON                                               :ARCHIVE:
+* PYTHON
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/lisp/PYTHON.el
 :header-args: :results none
 :END:
-** COMMENT Jedi
+** Jedi
 - first, install python-virtualenv on your system
     #+BEGIN_SRC emacs-lisp
       (use-package jedi
@@ -1130,11 +1130,6 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
         (add-hook 'python-mode-hook 'jedi:setup)
         (add-hook 'python-mode-hook 'jedi:ac-setup))
       (setq jedi:complete-on-dot t)
-
-      ;; (add-to-list 'company-backends 'company-jedi)
-
-      ;; (add-hook 'python-mode-hook 'jedi:setup)
-      ;; (setq jedi:complete-on-dot t)
     #+END_SRC
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
