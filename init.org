@@ -498,7 +498,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   ;; '(magit-display-buffer-function 'magit-display-buffer-traditional))
   (straight-use-package 'evil-magit)
 #+end_src
-*** COMMENT forge
+*** COMMENT forge                                                 :ARCHIVE:
 - forge is a utility that let you pull your issues and pull-requests from the remote repo into magit interface
 #+begin_src emacs-lisp
   (use-package forge
@@ -1020,8 +1020,13 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+begin_src emacs-lisp
   (use-package org-roam
     :ensure t
+    ;; use org-roam v2
+    :init 
+    (setq org-roam-v2-ack t)
+    (org-roam-setup)
     :custom
     (org-roam-directory (file-truename "/home/zakaria/dox/braindump/org-files"))
+    (org-roam-completion-everywhere t)
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n g" . org-roam-graph)
@@ -1029,9 +1034,10 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
            ("C-c n t" . org-roam-tag-add)
            ("C-c n c" . org-roam-capture)
            ;; Dailies
-           ("C-c n j" . org-roam-dailies-capture-today))
-    :init
-    (org-roam-setup)
+           ("C-c n j" . org-roam-dailies-capture-today)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point))
+    :config
     ;; If using org-roam-protocol
     (require 'org-roam-protocol))
   ;;Configuring the Org-roam buffer display
@@ -1041,8 +1047,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                  (direction . right)
                  (window-width . 0.33)
                  (window-height . fit-window-to-buffer)))
-  ;; use org-roam v2
-  (setq org-roam-v2-ack t)
   ;; Garbage Collection
   (setq org-roam-db-gc-threshold most-positive-fixnum)
   

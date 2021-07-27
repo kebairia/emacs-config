@@ -1,7 +1,12 @@
 (use-package org-roam
   :ensure t
+  ;; use org-roam v2
+  :init 
+  (setq org-roam-v2-ack t)
+  (org-roam-setup)
   :custom
   (org-roam-directory (file-truename "/home/zakaria/dox/braindump/org-files"))
+  (org-roam-completion-everywhere t)
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n g" . org-roam-graph)
@@ -9,9 +14,10 @@
          ("C-c n t" . org-roam-tag-add)
          ("C-c n c" . org-roam-capture)
          ;; Dailies
-         ("C-c n j" . org-roam-dailies-capture-today))
-  :init
-  (org-roam-setup)
+         ("C-c n j" . org-roam-dailies-capture-today)
+         :map org-mode-map
+         ("C-M-i" . completion-at-point))
+  :config
   ;; If using org-roam-protocol
   (require 'org-roam-protocol))
 ;;Configuring the Org-roam buffer display
@@ -21,8 +27,6 @@
                (direction . right)
                (window-width . 0.33)
                (window-height . fit-window-to-buffer)))
-;; use org-roam v2
-(setq org-roam-v2-ack t)
 ;; Garbage Collection
 (setq org-roam-db-gc-threshold most-positive-fixnum)
 
