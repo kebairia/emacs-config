@@ -854,20 +854,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+begin_src emacs-lisp
 (require 'org-protocol)
 #+end_src
-** org ref
-#+begin_src emacs-lisp
-  (straight-use-package 'org-ref)
-  (setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
-  ;; see org-ref for use of these variables
-  (setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
-        org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
-        org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles")
-  
-  ;; see org-ref for use of these variables
-  ;; (setq org-ref-bibliography-notes "/tmp/test/notes.org"
-  ;;       org-ref-default-bibliography '("~/org/ref/org-ref.bib")
-  ;;       org-ref-pdf-directory "~/org/ref/pdfs")
-#+end_src
 ** todo faces
    #+begin_src emacs-lisp
     (setq org-todo-keywords
@@ -888,6 +874,16 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
       ))
    #+end_src
 
+** org ref
+#+begin_src emacs-lisp
+  (straight-use-package 'org-ref)
+  (setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
+  ;; see org-ref for use of these variables
+  (setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
+        org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
+        org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles")
+  
+#+end_src
 ** org-exports
 *** Latex
  #+begin_src emacs-lisp
@@ -1015,7 +1011,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
            )))
 
    #+END_SRC
-
 * ORG ROAM
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/lisp/ORG-ROAM.el
