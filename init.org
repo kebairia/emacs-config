@@ -13,9 +13,8 @@
 #+html: <a href="https://https://www.gnu.org/software/emacs/"> <img alt="Arch Linux package" src="https://img.shields.io/archlinux/v/Extra/x86_64/emacs?label=Emacs&logo=GNU%20Emacs&logoColor=white&style=flat-square"></a>
 #+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=flat-square&logo=Org&logoColor=white"></a>
 # ------------------------------------------------------------------------------
-[[file:img/zoned_gnu.jpeg]]
 * SCREENSHOTS
-[[file:shots/scratch.png]]
+[[file:img/scratch.png]]
 * BOOTSTRAP
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/init.el
