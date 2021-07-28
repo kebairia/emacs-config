@@ -184,12 +184,14 @@
     ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
   ))
 
-(straight-use-package 'org-ref)
-(setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
-;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
-      org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
-      org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles")
+(use-package org-ref
+  :config
+  (setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
+  ;; see org-ref for use of these variables
+  (setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
+        org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
+        org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles")
+  )
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
@@ -227,14 +229,18 @@
                   ( "\\paragraph{%s}" . "\\paragraph*{%s}" )
                   ( "\\subparagraph{%s}" . "\\subparagraph*{%s}" )))
   )
+
 ;; Coloured LaTeX using Minted
-(setq org-latex-listings 'minted
-      org-latex-packages-alist '(("" "minted"))
-      org-latex-pdf-process
-      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "biber %b"
-        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  (setq org-latex-listings 'minted
+        org-latex-packages-alist '(("" "minted"))
+        org-latex-pdf-process
+        '("xelatex -interaction nonstopmode -output-directory %o %f"
+          "biber --output-directory %o $(basename %f .tex)"
+          "xelatex -interaction nonstopmode -output-directory %o %f"
+          "xelatex -interaction nonstopmode -output-directory %o %f"))
+(setq tex-compile-commands '(("xelatex %r")))
+(setq tex-command "xelatex")
+(setq-default TeX-engine 'xetex)
 
 ;; syntex-highlighting
 (use-package htmlize)

@@ -872,19 +872,20 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
       ))
    #+end_src
-
 ** org ref
 #+begin_src emacs-lisp
-  (straight-use-package 'org-ref)
-  (setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
-  ;; see org-ref for use of these variables
-  (setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
-        org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
-        org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles")
-  
+  (use-package org-ref
+    :config
+    (setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
+    ;; see org-ref for use of these variables
+    (setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
+          org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
+          org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles")
+    )
 #+end_src
 ** org-exports
 *** Latex
+**** classes
  #+begin_src emacs-lisp
    (with-eval-after-load 'ox-latex
      (add-to-list 'org-latex-classes
@@ -922,35 +923,43 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                      ( "\\paragraph{%s}" . "\\paragraph*{%s}" )
                      ( "\\subparagraph{%s}" . "\\subparagraph*{%s}" )))
      )
-   ;; Coloured LaTeX using Minted
-   (setq org-latex-listings 'minted
-         org-latex-packages-alist '(("" "minted"))
-         org-latex-pdf-process
-         '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-           "biber %b"
-           "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-           "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-   
-   ;; syntex-highlighting
-   (use-package htmlize)
-   ;;Don’t include a footer...etc in exported HTML document.
-   (setq org-html-postamble nil)
-   (setq org-src-window-setup 'current-window)
-   
-   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
-   (add-hook 'org-mode-hook 'org-display-inline-images)
-   (custom-set-variables
-    ;; custom-set-variables was added by Custom.
-    ;; If you edit it by hand, you could mess it up, so be careful.
-    ;; Your init file should contain only one such instance.
-    ;; If there is more than one, they won't work right.
-    '(org-export-backends '(ascii beamer html icalendar latex odt)))
-   
-   (custom-set-variables
-    '(org-export-backends '(ascii beamer html icalendar latex odt)))
+ #+end_src
+**** minted 
+#+begin_src emacs-lisp
+  ;; Coloured LaTeX using Minted
+  (setq org-latex-listings 'minted
+        org-latex-packages-alist '(("" "minted"))
+        org-latex-pdf-process
+        '("xelatex -interaction nonstopmode -output-directory %o %f"
+          "biber --output-directory %o $(basename %f .tex)"
+          "xelatex -interaction nonstopmode -output-directory %o %f"
+          "xelatex -interaction nonstopmode -output-directory %o %f"))
+(setq tex-compile-commands '(("xelatex %r")))
+(setq tex-command "xelatex")
+(setq-default TeX-engine 'xetex)
+#+end_src
+**** syntax highlighting, babel and other configs
+#+begin_src emacs-lisp
+  ;; syntex-highlighting
+  (use-package htmlize)
+  ;;Don’t include a footer...etc in exported HTML document.
+  (setq org-html-postamble nil)
+  (setq org-src-window-setup 'current-window)
+  
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+  (add-hook 'org-mode-hook 'org-display-inline-images)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(org-export-backends '(ascii beamer html icalendar latex odt)))
+  
+  (custom-set-variables
+   '(org-export-backends '(ascii beamer html icalendar latex odt)))
  #+end_src
  
-** COMMENT Reveal-js
+***** COMMENT Reveal-js
    #+begin_src emacs-lisp
      (use-package ox-reveal
        :ensure ox-reveal)
@@ -958,7 +967,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
            "file:///home/zakaria/org/conf/revealJS/reveal.js-4.1.2")
      (setq org-reveal-mathjax t)
    #+end_src
-** Babel
+***** Babel
    #+BEGIN_SRC emacs-lisp
      (eval-after-load "org"
        (use-package ob-async
@@ -980,7 +989,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         (R . t)
         ))
    #+END_SRC
-** Other Functions
+***** Other Functions
    #+BEGIN_SRC emacs-lisp
      (defun zk/switch-to-agenda ()
           (interactive)
