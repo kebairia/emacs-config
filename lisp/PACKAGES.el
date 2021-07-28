@@ -153,30 +153,34 @@
 
 (straight-use-package 'consult)
 
-(straight-use-package 'pdf-tools)
-;; config
-   (pdf-tools-install)
-    ;; open pdfs scaled to fit page
-   (setq-default pdf-view-display-size 'fit-page)
-    ;; exchange isearch -- occur, occur -- isearch
-   (define-key pdf-view-mode-map (kbd "C-s") 'occur)
-   (define-key pdf-view-mode-map (kbd "M-s o") 'isearch-forward)
-   ;; turn off cua so copy works
-   (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
-   ;; more fine-grained zooming
-   (setq pdf-view-resize-factor 1.1)
+(use-package pdf-tools
+  :config
+  (pdf-tools-install))
+;; open pdfs scaled to fit page
+(setq-default pdf-view-display-size 'fit-page)
+;; exchange isearch -- occur, occur -- isearch
+(define-key pdf-view-mode-map (kbd "C-s") 'occur)
+(define-key pdf-view-mode-map (kbd "M-s o") 'isearch-forward)
+;; turn off cua so copy works
+(add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
+;; more fine-grained zooming
+(setq pdf-view-resize-factor 1.1)
+;; dark mode 
+(setq pdf-view-midnight-colors '("#f8f8f2" . "#1d2021"))
 
-(straight-use-package 'org-pdfview)
-   ;; Set the pdf-view incompatible-modes[linum mode: line numbers]
-   (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+(use-package org-pdfview)
+;; Set the pdf-view incompatible-modes[linum mode: line numbers]
+(add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 
-(straight-use-package 'org-noter)
+(use-package org-noter
+  :after org
+  :config
 
-(setq org-noter-auto-save-last-location t
-      org-noter-doc-split-fraction (quote (0.7 . 0.7))
-      org-noter-notes-window-behavior nil
-      org-noter-always-create-frame nil
-      org-noter-separate-notes-from-heading t)
+  (setq org-noter-auto-save-last-location t
+        org-noter-doc-split-fraction (quote (0.7 . 0.7))
+        org-noter-notes-window-behavior nil
+        org-noter-always-create-frame nil
+        org-noter-separate-notes-from-heading t))
 
 (use-package eterm-256color)
 
