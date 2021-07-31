@@ -190,8 +190,33 @@
   ;; see org-ref for use of these variables
   (setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
         org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
-        org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles")
-  )
+        org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles"
+        bibtex-dialect                    'biblatex
+        ;; Optimize for 80 character frame display
+        bibtex-completion-display-formats
+        '((t . "${title:46} ${author:20} ${year:4} ${=type=:3}${=has-pdf=:1}${=has-note=:1}"))
+        ))
+;; (use-package org-ref
+;;   :config
+;;   (setq
+;;    org-ref-default-bibliography	     '("~/Dropbox/Notes/Research/papers.bib")
+;;    org-ref-pdf-directory             "~/Dropbox/Notes/Papers/"
+;;    bibtex-dialect                    'biblatex
+;;    bibtex-completion-notes-extension "_notes.org"
+;;    bibtex-completion-notes-path      "~/Dropbox/Notes/Roam/"
+;;    bibtex-completion-bibliography    "~/Dropbox/Notes/Research/papers.bib"
+;;    bibtex-completion-library-path    "~/Dropbox/Notes/Papers/"
+;;    bibtex-completion-notes-template-multiple-files
+;;    "#+title: ${author-or-editor} (${year}): ${title}
+;;   #+roam_key: cite:${=key=}
+;;   #+roam_tags: bibliography"
+;;    bibtex-completion-pdf-symbol ""
+;;    bibtex-completion-notes-symbol ""
+;;    ;; Open pdf in external tool instead of in Emacs
+;;    bibtex-completion-pdf-open-function
+;;    (lambda (fpath)
+;;      (call-process "evince" nil 0 nil fpath)))
+;;   :bind ("C-c ]" . helm-bibtex))
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
