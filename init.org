@@ -879,7 +879,8 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
       ))
    #+end_src
-** org ref
+** Export
+*** org ref
 #+begin_src emacs-lisp
   (use-package org-ref
     :config
@@ -958,21 +959,15 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                      ( "\\subparagraph{%s}" . "\\subparagraph*{%s}" )))
      )
  #+end_src
-**** minted 
+***** minted 
 #+begin_src emacs-lisp
   ;; Coloured LaTeX using Minted
   (setq org-latex-listings 'minted
         org-latex-packages-alist '(("" "minted"))
         org-latex-pdf-process
-        '("xelatex -interaction nonstopmode -output-directory %o %f"
-          "biber --output-directory %o $(basename %f .tex)"
-          "xelatex -interaction nonstopmode -output-directory %o %f"
-          "xelatex -interaction nonstopmode -output-directory %o %f"))
-(setq tex-compile-commands '(("xelatex %r")))
-(setq tex-command "xelatex")
-(setq-default TeX-engine 'xetex)
+        '("latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -bibtex -pdf -output-directory=%o -f %f"))
 #+end_src
-**** syntax highlighting, babel and other configs
+***** syntax highlighting, babel and other configs
 #+begin_src emacs-lisp
   ;; syntex-highlighting
   (use-package htmlize)
@@ -993,7 +988,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
    '(org-export-backends '(ascii beamer html icalendar latex odt)))
  #+end_src
  
-***** COMMENT Reveal-js
+****** COMMENT Reveal-js
    #+begin_src emacs-lisp
      (use-package ox-reveal
        :ensure ox-reveal)
@@ -1001,7 +996,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
            "file:///home/zakaria/org/conf/revealJS/reveal.js-4.1.2")
      (setq org-reveal-mathjax t)
    #+end_src
-***** Babel
+****** Babel
    #+BEGIN_SRC emacs-lisp
      (eval-after-load "org"
        (use-package ob-async
@@ -1023,7 +1018,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
         (R . t)
         ))
    #+END_SRC
-***** Other Functions
+****** Other Functions
    #+BEGIN_SRC emacs-lisp
      (defun zk/switch-to-agenda ()
           (interactive)

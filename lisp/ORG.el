@@ -256,16 +256,10 @@
   )
 
 ;; Coloured LaTeX using Minted
-  (setq org-latex-listings 'minted
-        org-latex-packages-alist '(("" "minted"))
-        org-latex-pdf-process
-        '("xelatex -interaction nonstopmode -output-directory %o %f"
-          "biber --output-directory %o $(basename %f .tex)"
-          "xelatex -interaction nonstopmode -output-directory %o %f"
-          "xelatex -interaction nonstopmode -output-directory %o %f"))
-(setq tex-compile-commands '(("xelatex %r")))
-(setq tex-command "xelatex")
-(setq-default TeX-engine 'xetex)
+(setq org-latex-listings 'minted
+      org-latex-packages-alist '(("" "minted"))
+      org-latex-pdf-process
+      '("latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -bibtex -pdf -output-directory=%o -f %f"))
 
 ;; syntex-highlighting
 (use-package htmlize)
