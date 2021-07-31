@@ -464,7 +464,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (global-evil-leader-mode 1)
   (evil-leader/set-leader ",")
   (evil-leader/set-key
-    "e" 'mu4e
+    "e" 'org-export-dispatch
     "a" 'zk/switch-to-agenda
     "d" 'deft
     "g" 'magit-status
@@ -480,8 +480,15 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
     "q" 'kill-current-buffer
     "F" 'pdf-links-action-perform
     "s" 'zk/gen-scratch-buffer
-    "n" 'org-noter)
-    ;; "I" 'org-roam-insert-immediate
+    "n" 'org-noter
+    "m i" 'org-noter-insert-note
+    "m p" 'org-noter-insert-precise-note
+    "m k" 'org-noter-sync-prev-note
+    "m j" 'org-noter-sync-next-note
+    "m s" 'org-noter-create-skeleton
+    "m q" 'org-noter-kill-session
+    )
+  ;; "I" 'org-roam-insert-immediate
   ;; "b" 'ibuffer
   ;;"l" 'org-store-link
   ;; "B" 'zetteldeft-new-file-and-backlink
@@ -642,12 +649,12 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (use-package org-noter
     :after org
     :config
-  
     (setq org-noter-auto-save-last-location t
           org-noter-doc-split-fraction (quote (0.7 . 0.7))
           org-noter-notes-window-behavior nil
           org-noter-always-create-frame nil
-          org-noter-separate-notes-from-heading t))
+          org-noter-separate-notes-from-heading t)
+     )
 #+end_src
 ** eterm256
 #+begin_src emacs-lisp
