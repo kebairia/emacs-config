@@ -965,7 +965,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (setq org-latex-listings 'minted
         org-latex-packages-alist '(("" "minted"))
         org-latex-pdf-process
-        '("latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -bibtex -pdf -output-directory=%o -f %f"))
+        '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
 #+end_src
 ***** syntax highlighting, babel and other configs
 #+begin_src emacs-lisp
