@@ -15,3 +15,4 @@ savehist
 ._OLD 
 .org-id-locations
 /url/
+/projectile.cache

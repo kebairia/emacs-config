@@ -519,7 +519,9 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   ("C-c p" . projectile-command-map)
   :init
   (when (file-directory-p "~/dox/wrk")
-    (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" "~/dox/wrk/pfe/docs" "~/.config"))))
+    (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" "~/dox/wrk/pfe/docs" ))))
+  ;; speed up projectile by enabling caching
+  (setq projectile-enable-caching t)
   
 #+end_src
 ** aggressive indent
