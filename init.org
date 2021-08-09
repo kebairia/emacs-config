@@ -263,6 +263,8 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
   ;; enable `narrow-to-region` functionality
   (put 'narrow-to-region 'disabled nil)
+  ;; enable relative numbers
+  (setq display-line-numbers 'relative) 
 #+end_src
 ** BINDINGS
 :PROPERTIES:
@@ -984,9 +986,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-   '(org-export-backends '(ascii beamer html icalendar latex odt)))
-  
-  (custom-set-variables
    '(org-export-backends '(ascii beamer html icalendar latex odt)))
  #+end_src
  
