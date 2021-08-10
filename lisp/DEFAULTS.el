@@ -151,3 +151,5 @@
 (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
 ;; enable `narrow-to-region` functionality
 (put 'narrow-to-region 'disabled nil)
+;; enable relative numbers
+(setq display-line-numbers 'relative)

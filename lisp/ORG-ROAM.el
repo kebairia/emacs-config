@@ -19,7 +19,8 @@
          ("C-M-i" . completion-at-point))
   :config
   ;; If using org-roam-protocol
-  (require 'org-roam-protocol))
+  ;; (require 'org-roam-protocol)
+  )
 ;;Configuring the Org-roam buffer display
 (add-to-list 'display-buffer-alist
              '("\\*org-roam\\*"

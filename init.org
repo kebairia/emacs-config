@@ -476,7 +476,6 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
     "l" 'org-roam-buffer-toggle
     "t" 'term
     "c" 'org-capture
-    "r" 'consult-recent-file
     "b" 'bookmark-bmenu-list
     "L" 'org-insert-link
     "q" 'kill-current-buffer
@@ -489,7 +488,12 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
     "m j" 'org-noter-sync-next-note
     "m s" 'org-noter-create-skeleton
     "m q" 'org-noter-kill-session
+    "r c" 'org-ref-clean-bibtex-entry
+    "r s" 'org-ref-bibtex-sort-order
+    "r b" 'org-ref-bibliography
+    "r l" 'org-ref-add-labels
     )
+  ;; "r" 'consult-recent-file
   ;; "I" 'org-roam-insert-immediate
   ;; "b" 'ibuffer
   ;;"l" 'org-store-link
@@ -899,8 +903,8 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
           '((t . "${title:46} ${author:20} ${year:4} ${=type=:3}${=has-pdf=:1}${=has-note=:1}"))
           bibtex-completion-bibliography   "~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"
           bibtex-completion-library-path    "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles"
-          bibtex-completion-pdf-symbol ""
-          bibtex-completion-notes-symbol ""
+          ;; bibtex-completion-pdf-symbol ""
+          ;; bibtex-completion-notes-symbol ""
           ))
   ;; (use-package org-ref
   ;;   :config
@@ -1077,7 +1081,8 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
            ("C-M-i" . completion-at-point))
     :config
     ;; If using org-roam-protocol
-    (require 'org-roam-protocol))
+    ;; (require 'org-roam-protocol)
+    )
   ;;Configuring the Org-roam buffer display
   (add-to-list 'display-buffer-alist
                '("\\*org-roam\\*"
