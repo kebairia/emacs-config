@@ -50,7 +50,6 @@
   "l" 'org-roam-buffer-toggle
   "t" 'term
   "c" 'org-capture
-  "r" 'consult-recent-file
   "b" 'bookmark-bmenu-list
   "L" 'org-insert-link
   "q" 'kill-current-buffer
@@ -63,7 +62,12 @@
   "m j" 'org-noter-sync-next-note
   "m s" 'org-noter-create-skeleton
   "m q" 'org-noter-kill-session
+  "r c" 'org-ref-clean-bibtex-entry
+  "r s" 'org-ref-bibtex-sort-order
+  "r b" 'org-ref-bibliography
+  "r l" 'org-ref-add-labels
   )
+;; "r" 'consult-recent-file
 ;; "I" 'org-roam-insert-immediate
 ;; "b" 'ibuffer
 ;;"l" 'org-store-link
@@ -85,7 +89,9 @@
 ("C-c p" . projectile-command-map)
 :init
 (when (file-directory-p "~/dox/wrk")
-  (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" "~/dox/wrk/pfe/docs" "~/.config"))))
+  (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" "~/dox/wrk/pfe/docs" ))))
+;; speed up projectile by enabling caching
+(setq projectile-enable-caching t)
 
 (straight-use-package 'aggressive-indent)
 

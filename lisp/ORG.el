@@ -195,6 +195,10 @@
         ;; Optimize for 80 character frame display
         bibtex-completion-display-formats
         '((t . "${title:46} ${author:20} ${year:4} ${=type=:3}${=has-pdf=:1}${=has-note=:1}"))
+        bibtex-completion-bibliography   "~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"
+        bibtex-completion-library-path    "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles"
+        ;; bibtex-completion-pdf-symbol ""
+        ;; bibtex-completion-notes-symbol ""
         ))
 ;; (use-package org-ref
 ;;   :config
@@ -204,14 +208,10 @@
 ;;    bibtex-dialect                    'biblatex
 ;;    bibtex-completion-notes-extension "_notes.org"
 ;;    bibtex-completion-notes-path      "~/Dropbox/Notes/Roam/"
-;;    bibtex-completion-bibliography    "~/Dropbox/Notes/Research/papers.bib"
-;;    bibtex-completion-library-path    "~/Dropbox/Notes/Papers/"
 ;;    bibtex-completion-notes-template-multiple-files
 ;;    "#+title: ${author-or-editor} (${year}): ${title}
 ;;   #+roam_key: cite:${=key=}
 ;;   #+roam_tags: bibliography"
-;;    bibtex-completion-pdf-symbol ""
-;;    bibtex-completion-notes-symbol ""
 ;;    ;; Open pdf in external tool instead of in Emacs
 ;;    bibtex-completion-pdf-open-function
 ;;    (lambda (fpath)
@@ -259,7 +259,7 @@
 (setq org-latex-listings 'minted
       org-latex-packages-alist '(("" "minted"))
       org-latex-pdf-process
-      '("latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -bibtex -pdf -output-directory=%o -f %f"))
+      '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
 
 ;; syntex-highlighting
 (use-package htmlize)
@@ -274,9 +274,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-export-backends '(ascii beamer html icalendar latex odt)))
-
-(custom-set-variables
  '(org-export-backends '(ascii beamer html icalendar latex odt)))
 
 (eval-after-load "org"
