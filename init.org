@@ -491,7 +491,6 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
     "r c" 'org-ref-clean-bibtex-entry
     "r s" 'org-ref-bibtex-sort-order
     "r b" 'org-ref-bibliography
-    "r l" 'org-ref-add-labels
     )
   ;; "r" 'consult-recent-file
   ;; "I" 'org-roam-insert-immediate
@@ -551,6 +550,9 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+begin_src emacs-lisp
   (straight-use-package 'which-key)
   (which-key-mode)
+  (setq which-key-popup-type 'minibuffer)
+  ;; (which-key-setup-side-window-right)
+  
 #+end_src
 ** undo tree
 #+begin_src emacs-lisp

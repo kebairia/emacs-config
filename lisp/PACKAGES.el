@@ -65,7 +65,6 @@
   "r c" 'org-ref-clean-bibtex-entry
   "r s" 'org-ref-bibtex-sort-order
   "r b" 'org-ref-bibliography
-  "r l" 'org-ref-add-labels
   )
 ;; "r" 'consult-recent-file
 ;; "I" 'org-roam-insert-immediate
@@ -99,6 +98,8 @@
 
 (straight-use-package 'which-key)
 (which-key-mode)
+(setq which-key-popup-type 'minibuffer)
+;; (which-key-setup-side-window-right)
 
 (use-package undo-tree
   ;;turn on everywhere
