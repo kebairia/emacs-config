@@ -10,6 +10,21 @@
                                 (compose-region
                                  (match-beginning 1)
                                  (match-end 1) "•"))))))
+(setq org-image-actual-width '(400)
+      org-list-allow-alphabetical t
+      org-fontify-quote-and-verse-blocks t
+      org-latex-prefer-user-labels t)
+;; (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+;; (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+;; (add-to-list 'org-structure-template-alist '("py" . "src python"))
+(use-package bibtex
+  :custom
+  (bibtex-dialect  'biblatex)) ;; biblatex as default bib format
+
+(use-package org-contrib
+  :config
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines)))
 
 ;; ;; Adding a separator line between days in Emacs Org-mode calender view (prettier)
 
@@ -185,59 +200,61 @@
   ))
 
 (use-package org-ref
+  :after org
   :config
-  (setq reftex-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"))
-  ;; see org-ref for use of these variables
-  (setq org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/bib_notes"
-        org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
-        org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles"
-        bibtex-dialect                    'biblatex
-        ;; Optimize for 80 character frame display
+  (setq org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
+        org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
+        bibtex-completion-pdf-field "file"
+        bibtex-completion-pdf-symbol ""
         bibtex-completion-display-formats
-        '((t . "${title:46} ${author:20} ${year:4} ${=type=:3}${=has-pdf=:1}${=has-note=:1}"))
-        bibtex-completion-bibliography   "~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib"
-        bibtex-completion-library-path    "~/dox/std/ESI/pfe/docs/thesis_infra/lib/articles"
-        ;; bibtex-completion-pdf-symbol ""
-        ;; bibtex-completion-notes-symbol ""
-        ))
-;; (use-package org-ref
-;;   :config
-;;   (setq
-;;    org-ref-default-bibliography	     '("~/Dropbox/Notes/Research/papers.bib")
-;;    org-ref-pdf-directory             "~/Dropbox/Notes/Papers/"
-;;    bibtex-dialect                    'biblatex
-;;    bibtex-completion-notes-extension "_notes.org"
-;;    bibtex-completion-notes-path      "~/Dropbox/Notes/Roam/"
-;;    bibtex-completion-notes-template-multiple-files
-;;    "#+title: ${author-or-editor} (${year}): ${title}
-;;   #+roam_key: cite:${=key=}
-;;   #+roam_tags: bibliography"
-;;    ;; Open pdf in external tool instead of in Emacs
-;;    bibtex-completion-pdf-open-function
-;;    (lambda (fpath)
-;;      (call-process "evince" nil 0 nil fpath)))
-;;   :bind ("C-c ]" . helm-bibtex))
+        '((t . "${title:46} ${author:20} ${year:4} ${=type=:4}${=has-pdf=:1}${=has-note=:1}"))))
+
+  (defun org-ref-open-in-scihub ()
+    "Open the bibtex entry at point in a browser using the url field or doi field.
+Not for real use, just here for demonstration purposes."
+    (interactive)
+    (let ((doi (org-ref-get-doi-at-point)))
+      (when doi
+        (if (string-match "^http" doi)
+            (browse-url doi)
+          (browse-url (format "http://sci-hub.se/%s" doi)))
+        (message "No url or doi found"))))
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("elsarticle"
                  "\\documentclass{elsarticle}
-   [NO-DEFAULT-PACKAGES]
-   [PACKAGES]
-   [EXTRA]"
+    [NO-DEFAULT-PACKAGES]
+    [PACKAGES]
+    [EXTRA]"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  ;; Mimore class is a latex class for writing articles.
+  (add-to-list 'org-latex-classes
+               '("mimore"
+                 "\\documentclass{mimore}
+ [NO-DEFAULT-PACKAGES]
+ [PACKAGES]
+ [EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  ;; Mimosis class is a latex class for writing articles.
   (add-to-list 'org-latex-classes
                '("mimosis"
                  "\\documentclass{mimosis}
-   [NO-DEFAULT-PACKAGES]
-   [PACKAGES]
-   [EXTRA]
-  \\newcommand{\\mboxparagraph}[1]{\\paragraph{#1}\\mbox{}\\\\}
-  \\newcommand{\\mboxsubparagraph}[1]{\\subparagraph{#1}\\mbox{}\\\\}"
+    [NO-DEFAULT-PACKAGES]
+    [PACKAGES]
+    [EXTRA]
+   \\newcommand{\\mboxparagraph}[1]{\\paragraph{#1}\\mbox{}\\\\}
+   \\newcommand{\\mboxsubparagraph}[1]{\\subparagraph{#1}\\mbox{}\\\\}"
                  ("\\chapter{%s}" . "\\chapter*{%s}")
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -258,8 +275,11 @@
 ;; Coloured LaTeX using Minted
 (setq org-latex-listings 'minted
       org-latex-packages-alist '(("" "minted"))
-      org-latex-pdf-process
-      '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
+org-latex-pdf-process
+'("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
+;; (setq  org-latex-pdf-process
+;;        '("latexmk -shell-escape -bibtex -pdf %f"))
+(setq bibtex-dialect 'biblatex)
 
 ;; syntex-highlighting
 (use-package htmlize)
