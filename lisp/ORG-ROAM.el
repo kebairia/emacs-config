@@ -19,7 +19,11 @@
          ("C-M-i" . completion-at-point))
   :config
   ;; If using org-roam-protocol
-  ;; (require 'org-roam-protocol)
+
+(load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-dailies.el")
+(load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-graph.el") 
+(load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-protocol.el") 
+  (require 'org-roam-protocol)
   )
 ;;Configuring the Org-roam buffer display
 (add-to-list 'display-buffer-alist
