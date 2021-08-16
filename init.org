@@ -1166,6 +1166,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n g" . org-roam-graph)
+           ("C-c n G" . org-roam-ui-mode)
            ("C-c n i" . org-roam-node-insert)
            ("C-c n t" . org-roam-tag-add)
            ("C-c n c" . org-roam-capture)
@@ -1195,6 +1196,23 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (winner-mode +1)
   (define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
   (define-key winner-mode-map (kbd "<M-right>") #'winner-redo)
+#+end_src
+** COMMENT org-roam-ui
+#+begin_src emacs-lisp
+  (use-package org-roam-ui
+    :straight
+      (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+      :after org-roam
+      ;; :hook
+  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+  ;;         a hookable mode anymore, you're advised to pick something yourself
+  ;;         if you don't care about startup time, use
+  ;;  :hook (after-init . org-roam-ui-mode)
+      :config
+      (setq org-roam-ui-sync-theme t
+            org-roam-ui-follow t
+            org-roam-ui-update-on-save t
+            org-roam-ui-open-on-start t))
 #+end_src
 ** TODO COMMENT org-roam daily 
 #+begin_src emacs-lisp
@@ -1261,8 +1279,61 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
     
     
   #+END_SRC
-   
-* PYTHON
+* COMMENT PILE
+#+begin_src emacs-lisp
+  (use-package pile
+    :straight (pile :type git :host github :repo "lepisma/pile")
+    :config
+    (let* ((template-dir (concat user-layer-dir "misc/"))
+           (preamble-template (f-read-text (concat template-dir "pile-preamble.html.template") 'utf-8))
+           (postamble-template (f-read-text (concat template-dir "pile-postamble.html.template") 'utf-8))
+           (root-url "https://kebairia.github.io/")
+           (output-dir (concat user-project-dir "kebairia.github.io-deploy/")))
+      (setq pile-serve-dir output-dir
+            pile-projects
+            (list (pile-project-wiki :name "wiki"
+                                     :root-url root-url
+                                     :base-url "wiki"
+                                     :input-dir (concat user-project-dir "kebairia.github.io/wiki")
+                                     :output-dir (concat output-dir "wiki")
+                                     :postamble postamble-template
+                                     :preamble (mustache-render preamble-template (ht ("wiki-p" t) ("page-meta" "Last modified: %d %C"))))
+                  (pile-project-blog :name "blog"
+                                     :root-url root-url
+                                     :base-url ""
+                                     :input-dir (concat user-project-dir "kebairia.github.io/blog")
+                                     :output-dir output-dir
+                                     :postamble postamble-template
+                                     :preamble (mustache-render preamble-template (ht ("blog-p" t) ("page-meta" "%d"))))
+                  (pile-project-blog :name "journal"
+                                     :root-url root-url
+                                     :base-url "journal"
+                                     :input-dir (concat user-project-dir "kebairia.github.io/journal")
+                                     :output-dir (concat output-dir "journal")
+                                     :postamble postamble-template
+                                     :preamble (mustache-render preamble-template (ht ("journal-p" t) ("page-meta" "%d"))))
+                  (pile-project-blog :name "log"
+                                     :root-url root-url
+                                     :base-url "log"
+                                     :input-dir (concat user-project-dir "kebairia.github.io/log")
+                                     :output-dir (concat output-dir "log")
+                                     :postamble postamble-template
+                                     :preamble (mustache-render preamble-template (ht ("log-p" t) ("page-meta" "%d"))))
+                  (pile-project-static :name "assets"
+                                       :root-url root-url
+                                       :input-dir (concat user-project-dir "kebairia.github.io/assets")
+                                       :output-dir (concat output-dir "assets"))
+                  (pile-project-plain :name "misc"
+                                      :root-url root-url
+                                      :base-url ""
+                                      :input-dir (concat user-project-dir "kebairia.github.io/misc")
+                                      :output-dir output-dir
+                                      :postamble ""
+                                      :preamble "")))
+  
+      ))
+#+end_src
+* COMMENT PYTHON
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/lisp/PYTHON.el
 :header-args: :results none
