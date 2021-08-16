@@ -280,8 +280,8 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
      (global-set-key (kbd "C-c b") (lambda() (interactive)(find-file "~/org/books.org")))
      (global-set-key (kbd "C-c I") (lambda() (interactive)(find-file "~/org/gtd/inbox.org")))
      (global-set-key (kbd "C-c L") (lambda() (interactive)(find-file "~/org/links.org")))
-     (global-set-key (kbd "C-c E") (lambda() (interactive)(find-file "~/org/gtd/emails.org")))
      (global-set-key (kbd "<f12>") (lambda() (interactive)(find-file "~/org/conf/org.pdf")))
+     ;; (global-set-key (kbd "C-c E") (lambda() (interactive)(find-file "~/org/gtd/emails.org")))
      ;; Reload buffer with <F5>
      (global-set-key [f5] '(lambda () (interactive) (revert-buffer nil t nil)))
    #+end_src
@@ -424,9 +424,10 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
 *** evil collection
 #+begin_src emacs-lisp
   ;; after evil
-  (straight-use-package '(evil-collection
-                          :type git
-                          :host github :repo "emacs-evil/evil-collection"))
+  (straight-use-package
+   '(evil-collection
+     :type git
+     :host github :repo "emacs-evil/evil-collection"))
   (evil-collection-init)
   
 #+end_src
@@ -466,7 +467,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
     "f" 'org-roam-capture
     "D" 'org-roam-dailies-capture-today
     "l" 'org-roam-buffer-toggle
-    "t" 'term
+    "z" 'term
     "c" 'org-capture
     "b" 'bookmark-bmenu-list
     "L" 'org-insert-link
@@ -882,14 +883,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                                  ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
       ;;("someday.org" :level . 0)
     #+end_src
-** org-appear
-#+begin_src emacs-lisp
-  (straight-use-package 'org-appear)
-  (add-hook 'org-mode-hook 'org-appear-mode)
-  (setq
-   org-appear-autolinks t
-   org-appear-autosubmarkers t)
-#+end_src
 ** org bullets
 #+begin_src emacs-lisp
   (straight-use-package 'org-bullets)

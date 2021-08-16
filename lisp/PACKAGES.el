@@ -48,7 +48,7 @@
   "f" 'org-roam-capture
   "D" 'org-roam-dailies-capture-today
   "l" 'org-roam-buffer-toggle
-  "t" 'term
+  "z" 'term
   "c" 'org-capture
   "b" 'bookmark-bmenu-list
   "L" 'org-insert-link
@@ -65,7 +65,10 @@
   "r c" 'org-ref-clean-bibtex-entry
   "r s" 'org-ref-bibtex-sort-order
   "r b" 'org-ref-bibliography
-  )
+  ;; "w i"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/chps/intro.org"))
+  ;; "w m"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/main.org"))
+  ;; "w s"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/lib/thesis_setup.org"))
+)
 ;; "r" 'consult-recent-file
 ;; "I" 'org-roam-insert-immediate
 ;; "b" 'ibuffer
