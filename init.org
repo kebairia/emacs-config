@@ -483,7 +483,12 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
     "r c" 'org-ref-clean-bibtex-entry
     "r s" 'org-ref-bibtex-sort-order
     "r b" 'org-ref-bibliography
-    )
+    "r g" 'org-ref-add-glossary-entry
+    "r a" 'org-ref-add-acronym-entry
+    ;; "w i"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/chps/intro.org"))
+    ;; "w m"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/main.org"))
+    ;; "w s"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/lib/thesis_setup.org"))
+  )
   ;; "r" 'consult-recent-file
   ;; "I" 'org-roam-insert-immediate
   ;; "b" 'ibuffer
@@ -982,6 +987,19 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
             (browse-url (format "http://sci-hub.se/%s" doi)))
           (message "No url or doi found"))))
 #+end_src
+*** bibtex
+#+begin_src emacs-lisp
+;; variables that control bibtex key format for auto-generation
+;; I want firstauthor-year-title-words
+;; this usually makes a legitimate filename to store pdfs under.
+(setq bibtex-autokey-year-length 4
+      bibtex-autokey-name-year-separator "-"
+      bibtex-autokey-year-title-separator "-"
+      bibtex-autokey-titleword-separator "-"
+      bibtex-autokey-titlewords 2
+      bibtex-autokey-titlewords-stretch 1
+      bibtex-autokey-titleword-length 5)
+#+end_src
 *** org-exports
 **** Latex
 ***** classes
@@ -1040,14 +1058,16 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
  #+end_src
 ***** minted and latexmk
 #+begin_src emacs-lisp
-  ;; Coloured LaTeX using Minted
-  (setq org-latex-listings 'minted
-        org-latex-packages-alist '(("" "minted"))
-  org-latex-pdf-process
-  '("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
-  ;; (setq  org-latex-pdf-process
-  ;;        '("latexmk -shell-escape -bibtex -pdf %f"))
-  (setq bibtex-dialect 'biblatex)
+      ;; Coloured LaTeX using Minted
+      (setq org-latex-listings 'minted
+            org-latex-packages-alist '(("" "minted")))
+      ;; org-latex-pdf-process
+      ;; '("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
+    (setq org-latex-pdf-process
+          '("latexmk -f -pdf -%latex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
+      ;; (setq  org-latex-pdf-process
+      ;;        '("latexmk -pdflatex='lualatex -shell-escape -recorder -bibtex -pdf -f %f"))
+      (setq bibtex-dialect 'biblatex)
 #+end_src
 ***** syntax highlighting, babel and other configs
 #+begin_src emacs-lisp
