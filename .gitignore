@@ -16,3 +16,5 @@ savehist
 .org-id-locations
 /url/
 /projectile.cache
+/games/
+/elpa/
