@@ -411,14 +411,6 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   :header-args: :tangle ~/.config/emacs/lisp/PACKAGES.el
   :header-args: :results none
   :END:
-** org
-#+begin_src emacs-lisp
-  (straight-use-package 'org)
-#+end_src
-*** org-cliplink 
-#+begin_src emacs-lisp
-  (use-package org-cliplink)
-#+end_src
 ** evil
 #+begin_src emacs-lisp
   (setq evil-want-keybinding nil)                   
@@ -681,13 +673,30 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :header-args: :tangle ~/.config/emacs/lisp/ORG.el
 :header-args: :results none
 :END:
-** GLOBAL
-#+begin_src lisp
+** Installation
+#+begin_src emacs-lisp
+  (straight-use-package 'org)
+#+end_src
+** Global Config
+#+begin_src emacs-lisp
+  ;; - turn on Org Indent mode globally for all files
+  ;; - You can also control this behaviour for each buffer by
+  ;;   setting #+startup: indent or #+startup: noindent
+  ;;   in the buffer metadata.
   (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-log-into-drawer t)
+  ;; Improve org mode looks
+  (setq org-startup-indented t
+        org-pretty-entities t
+        org-hide-emphasis-markers t
+        org-startup-with-inline-images t
+        org-list-allow-alphabetical t
+        org-fontify-quote-and-verse-blocks t
+        ;; use user's label, i need that for my thesis refenrences
+        org-latex-prefer-user-labels t
+        org-image-actual-width '(400))
   ;; use '⤵' instead of '...' in headlines
-  ;;(setq org-ellipsis "⤵")
-  
+  (setq org-ellipsis " ›")
   ;; use '•' instead of '-' in lists
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
@@ -695,23 +704,47 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                                   (compose-region
                                    (match-beginning 1)
                                    (match-end 1) "•"))))))
-  (setq org-image-actual-width '(400)
-        org-list-allow-alphabetical t
-        org-fontify-quote-and-verse-blocks t
-        org-latex-prefer-user-labels t)
-  ;; (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  ;; (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
-  ;; (add-to-list 'org-structure-template-alist '("py" . "src python"))
-  (use-package bibtex
-    :custom
-    (bibtex-dialect  'biblatex)) ;; biblatex as default bib format
+#+end_src
+** org-appear
+#+begin_src emacs-lisp
+  ;; Show hidden emphasis markers
+  (use-package org-appear
+    :hook (org-mode . org-appear-mode))
+  (setq
+   org-appear-autolinks t
+   org-appear-autosubmarkers t)
+#+end_src
+** org-cliplink 
+#+begin_src emacs-lisp
+  (use-package org-cliplink)
 #+end_src
 ** org-contrib
+#+begin_comment
+  Currently available extras:
+  
+  - ~latex-header-blocks~ :
+  allow the use of latex blocks, the
+  contents of which which will be interpreted as ~#+latex_header~ lines
+  for export.  These blocks should be tagged with ~#+header: :header~ 
+  yes.  For example:
+  #+begin_src org
+  #+header: :header yes
+  #+begin_export latex
+    ...
+  #+end_export
+  #+end_src
+  
+  - ~ignore-headlines~ -- allow a headline (but not its children) to
+  be ignored.  Any headline tagged with the 'ignore' tag will be
+  ignored (i.e. will not be included in the export), but any child
+  headlines will not be ignored (unless explicitly tagged to be
+  ignored), and will instead have their levels promoted by one.
+#+end_comment
 #+begin_src emacs-lisp
   (use-package org-contrib
     :config
     (require 'ox-extra)
-    (ox-extras-activate '(ignore-headlines)))
+    (ox-extras-activate '(latex-header-blocks ignore-headlines))
 #+end_src
 ** GTD
 *** Global
@@ -859,7 +892,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
   ;; change org-bullets faces
   (setq org-bullets-bullet-list
-        '("▶" "⚫" "▸" "◉" "○" "◆" "◇"))
+        '("▶" "⚫" "◆" "◉" "○" "◇" "▸"))
   ;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
   ;;     ;;; Small
   ;;     ;; ► • ★ ▸

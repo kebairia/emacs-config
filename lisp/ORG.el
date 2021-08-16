@@ -1,8 +1,7 @@
 (add-hook 'org-mode-hook 'org-indent-mode)
 (setq org-log-into-drawer t)
 ;; use '⤵' instead of '...' in headlines
-;;(setq org-ellipsis "⤵")
-
+(setq org-ellipsis " ›")
 ;; use '•' instead of '-' in lists
 (font-lock-add-keywords 'org-mode
                         '(("^ *\\([-]\\) "
@@ -220,6 +219,17 @@ Not for real use, just here for demonstration purposes."
           (browse-url (format "http://sci-hub.se/%s" doi)))
         (message "No url or doi found"))))
 
+;; variables that control bibtex key format for auto-generation
+;; I want firstauthor-year-title-words
+;; this usually makes a legitimate filename to store pdfs under.
+(setq bibtex-autokey-year-length 4
+      bibtex-autokey-name-year-separator "-"
+      bibtex-autokey-year-title-separator "-"
+      bibtex-autokey-titleword-separator "-"
+      bibtex-autokey-titlewords 2
+      bibtex-autokey-titlewords-stretch 1
+      bibtex-autokey-titleword-length 5)
+
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("elsarticle"
@@ -278,7 +288,7 @@ Not for real use, just here for demonstration purposes."
 org-latex-pdf-process
 '("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
 ;; (setq  org-latex-pdf-process
-;;        '("latexmk -shell-escape -bibtex -pdf %f"))
+;;        '("latexmk -pdflatex='lualatex -shell-escape -recorder -bibtex -pdf -f %f"))
 (setq bibtex-dialect 'biblatex)
 
 ;; syntex-highlighting
