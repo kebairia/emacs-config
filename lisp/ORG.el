@@ -201,7 +201,9 @@
 (use-package org-ref
   :after org
   :config
-  (setq org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
+  (setq org-ref-default-bibliography '("~/dox/wrk/pfe/docs/thesis_infra/lib/refs.bib")
+        org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.notes"
+        org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/papers"
         org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
         bibtex-completion-pdf-field "file"
         bibtex-completion-pdf-symbol ""
