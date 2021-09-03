@@ -196,6 +196,7 @@
   (setq org-noter-auto-save-last-location t
         org-noter-doc-split-fraction (quote (0.7 . 0.7))
         org-noter-notes-window-behavior nil
+        org-noter-notes-window-location "Vertical"
         org-noter-always-create-frame nil
         org-noter-separate-notes-from-heading t)
    )
