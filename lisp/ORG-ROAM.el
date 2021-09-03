@@ -1,30 +1,36 @@
 (use-package org-roam
-  :ensure t
   ;; use org-roam v2
-  :init 
+  :init
   (setq org-roam-v2-ack t)
-  (org-roam-setup)
   :custom
   (org-roam-directory (file-truename "/home/zakaria/dox/braindump/org-files"))
   (org-roam-completion-everywhere t)
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n g" . org-roam-graph)
+         ("C-c n G" . org-roam-ui-mode)
          ("C-c n i" . org-roam-node-insert)
          ("C-c n t" . org-roam-tag-add)
+         ("C-c n r" . org-roam-ref-add)
          ("C-c n c" . org-roam-capture)
          ;; Dailies
          ("C-c n j" . org-roam-dailies-capture-today)
+         :map org-roam-dailies-map
+         ("y" . org-roam-dailies-capture-yesterday)
+         ("t" . org-roam-dailies-capture-tomorrow)
          :map org-mode-map
          ("C-M-i" . completion-at-point))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
   :config
+  (org-roam-db-autosync-mode)
+  (setq org-roam-dailies-directory "/home/zakaria/dox/braindump/org-files/daily")
   ;; If using org-roam-protocol
+  (load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-dailies.el")
+  (load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-graph.el") 
+  (load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-protocol.el") 
+  (require 'org-roam-protocol))
 
-(load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-dailies.el")
-(load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-graph.el") 
-(load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-protocol.el") 
-  (require 'org-roam-protocol)
-  )
 ;;Configuring the Org-roam buffer display
 (add-to-list 'display-buffer-alist
              '("\\*org-roam\\*"
