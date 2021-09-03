@@ -1,7 +1,5 @@
 (straight-use-package 'org)
 
-(use-package org-cliplink)
-
 (setq evil-want-keybinding nil)                   
 ;; put this before loading evil to work
 (setq evil-want-C-i-jump nil)
@@ -11,9 +9,10 @@
 (setq evil-want-abbrev-expand-on-insert-exit nil)
 
 ;; after evil
-(straight-use-package '(evil-collection
-                        :type git
-                        :host github :repo "emacs-evil/evil-collection"))
+(straight-use-package
+ '(evil-collection
+   :type git
+   :host github :repo "emacs-evil/evil-collection"))
 (evil-collection-init)
 
 (straight-use-package '(evil-org-mode
@@ -65,6 +64,8 @@
   "r c" 'org-ref-clean-bibtex-entry
   "r s" 'org-ref-bibtex-sort-order
   "r b" 'org-ref-bibliography
+  "r g" 'org-ref-add-glossary-entry
+  "r a" 'org-ref-add-acronym-entry
   ;; "w i"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/chps/intro.org"))
   ;; "w m"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/main.org"))
   ;; "w s"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/lib/thesis_setup.org"))
@@ -91,7 +92,7 @@
 ("C-c p" . projectile-command-map)
 :init
 (when (file-directory-p "~/dox/wrk")
-  (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" "~/dox/wrk/pfe/docs" ))))
+  (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" ))))
 ;; speed up projectile by enabling caching
 (setq projectile-enable-caching t)
 
