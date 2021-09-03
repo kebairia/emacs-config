@@ -1,5 +1,18 @@
+;; - turn on Org Indent mode globally for all files
+;; - You can also control this behaviour for each buffer by
+;;   setting #+startup: indent or #+startup: noindent
+;;   in the buffer metadata.
 (add-hook 'org-mode-hook 'org-indent-mode)
 (setq org-log-into-drawer t)
+;; Improve org mode looks
+(setq org-startup-indented t
+      org-hide-emphasis-markers t
+      org-startup-with-inline-images t
+      org-list-allow-alphabetical t
+      org-fontify-quote-and-verse-blocks t
+      ;; use user's label, i need that for my thesis refenrences
+      org-latex-prefer-user-labels t
+      org-image-actual-width '(400))
 ;; use '⤵' instead of '...' in headlines
 (setq org-ellipsis " ›")
 ;; use '•' instead of '-' in lists
@@ -9,21 +22,20 @@
                                 (compose-region
                                  (match-beginning 1)
                                  (match-end 1) "•"))))))
-(setq org-image-actual-width '(400)
-      org-list-allow-alphabetical t
-      org-fontify-quote-and-verse-blocks t
-      org-latex-prefer-user-labels t)
-;; (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-;; (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
-;; (add-to-list 'org-structure-template-alist '("py" . "src python"))
-(use-package bibtex
-  :custom
-  (bibtex-dialect  'biblatex)) ;; biblatex as default bib format
+
+;; Show hidden emphasis markers
+(use-package org-appear
+  :hook (org-mode . org-appear-mode))
+(setq
+ org-appear-autolinks t
+ org-appear-autosubmarkers t)
+
+(use-package org-cliplink)
 
 (use-package org-contrib
   :config
   (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines)))
+  (ox-extras-activate '(latex-header-blocks ignore-headlines)))
 
 ;; ;; Adding a separator line between days in Emacs Org-mode calender view (prettier)
 
@@ -146,22 +158,6 @@
                            ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
 ;;("someday.org" :level . 0)
 
-(straight-use-package 'org-appear)
-(add-hook 'org-mode-hook 'org-appear-mode)
-(setq
- org-appear-autolinks t
- org-appear-autosubmarkers t)
-
-(straight-use-package 'org-bullets)
-;; enable org-bullets with org-mode
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-;; change org-bullets faces
-(setq org-bullets-bullet-list
-      '("▶" "⚫" "▸" "◉" "○" "◆" "◇"))
-;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
-;;     ;;; Small
-;;     ;; ► • ★ ▸
-
 (setq org-capture-templates
       `(("i" "Inbox" entry  (file "~/org/gtd/inbox.org")
          ,(concat "* TODO %?\n"
@@ -178,6 +174,16 @@
         ;;  ,(concat "* %? \n %^{MOOD} \n"
         ;;           "/Entered on/ %U") :immediate-finish t)
         ))
+
+(straight-use-package 'org-bullets)
+;; enable org-bullets with org-mode
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+;; change org-bullets faces
+(setq org-bullets-bullet-list
+      '("▶" "⚫" "◆" "◉" "○" "◇" "▸"))
+;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
+;;     ;;; Small
+;;     ;; ► • ★ ▸
 
 (require 'org-protocol)
 
