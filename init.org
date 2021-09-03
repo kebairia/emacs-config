@@ -1073,14 +1073,14 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
  #+end_src
 ***** minted and latexmk
 #+begin_src emacs-lisp
-      ;; Coloured LaTeX using Minted
-      (setq org-latex-listings 'minted
-            org-latex-packages-alist '(("" "minted")))
-      ;; org-latex-pdf-process
-      ;; '("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
-    (setq org-latex-pdf-process
-          '("latexmk -f -pdf -%latex --shell-escape -recorder -bibtex -output-directory=%o %f"))
-      (setq bibtex-dialect 'biblatex)
+  ;; Coloured LaTeX using Minted
+  (setq org-latex-listings 'minted
+        org-latex-packages-alist '(("" "minted")))
+  ;; org-latex-pdf-process
+  ;; '("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
+  (setq org-latex-pdf-process
+        '("latexmk -f -pdf -%latex --shell-escape -recorder -bibtex -output-directory=%o %f"))
+  (setq bibtex-dialect 'biblatex)
 #+end_src
 ***** syntax highlighting, babel and other configs
 #+begin_src emacs-lisp

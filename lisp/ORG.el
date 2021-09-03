@@ -299,13 +299,13 @@ Not for real use, just here for demonstration purposes."
   )
 
 ;; Coloured LaTeX using Minted
-  (setq org-latex-listings 'minted
-        org-latex-packages-alist '(("" "minted")))
-  ;; org-latex-pdf-process
-  ;; '("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
+(setq org-latex-listings 'minted
+      org-latex-packages-alist '(("" "minted")))
+;; org-latex-pdf-process
+;; '("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
 (setq org-latex-pdf-process
       '("latexmk -f -pdf -%latex --shell-escape -recorder -bibtex -output-directory=%o %f"))
-  (setq bibtex-dialect 'biblatex)
+(setq bibtex-dialect 'biblatex)
 
 ;; syntex-highlighting
 (use-package htmlize)
