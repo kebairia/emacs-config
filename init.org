@@ -86,6 +86,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (load "~/.config/emacs/lisp/BINDINGS.el") 
   (load "~/.config/emacs/lisp/ORG.el") 
   (load "~/.config/emacs/lisp/ORG-ROAM.el") 
+  (load "~/.config/emacs/lisp/PYTHON.el") 
   ;;(load "~/.config/emacs/lisp/MU4E.el") 
   (load "~/.config/emacs/nano/nano.el") 	;
   (load "~/.config/emacs/nano/nano-layout.el") 
@@ -265,6 +266,8 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (put 'narrow-to-region 'disabled nil)
   ;; enable relative numbers
   (setq display-line-numbers 'relative) 
+  ;; setting column indicator to 100
+  (setq display-fill-column-indicator-column 100)
 #+end_src
 ** BINDINGS
 :PROPERTIES:
@@ -278,6 +281,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
      ;; (set-register ?b (cons 'file "~/org/books.org" ))
      (global-set-key (kbd "C-c C") (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
      (global-set-key (kbd "C-c b") (lambda() (interactive)(find-file "~/org/books.org")))
+     (global-set-key (kbd "C-c r") (lambda() (interactive)(find-file "~/org/refs.org")))
      (global-set-key (kbd "C-c I") (lambda() (interactive)(find-file "~/org/gtd/inbox.org")))
      (global-set-key (kbd "C-c L") (lambda() (interactive)(find-file "~/org/links.org")))
      (global-set-key (kbd "<f12>") (lambda() (interactive)(find-file "~/org/conf/org.pdf")))
@@ -411,6 +415,18 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   :header-args: :tangle ~/.config/emacs/lisp/PACKAGES.el
   :header-args: :results none
   :END:
+** org
+#+begin_src emacs-lisp
+  (straight-use-package 'org)
+#+end_src
+** COMMENT nano-sidebar
+#+begin_src emacs-lisp
+  (straight-use-package '(nano-sidebar
+                          :type git :host github
+                          :repo "rougier/nano-sidebar"))
+  (require 'nano-sidebar)
+  (nano-sidebar-toggle)
+#+end_src
 ** evil
 #+begin_src emacs-lisp
   (setq evil-want-keybinding nil)                   
@@ -522,7 +538,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   ("C-c p" . projectile-command-map)
   :init
   (when (file-directory-p "~/dox/wrk")
-    (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" "~/dox/wrk/pfe/docs" ))))
+    (setq projectile-project-search-path '("~/dox/wrk" "~/dox/wrk/pfe" ))))
   ;; speed up projectile by enabling caching
   (setq projectile-enable-caching t)
   
@@ -679,10 +695,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :header-args: :tangle ~/.config/emacs/lisp/ORG.el
 :header-args: :results none
 :END:
-** Installation
-#+begin_src emacs-lisp
-  (straight-use-package 'org)
-#+end_src
 ** Global Config
 #+begin_src emacs-lisp
   ;; - turn on Org Indent mode globally for all files
@@ -693,7 +705,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (setq org-log-into-drawer t)
   ;; Improve org mode looks
   (setq org-startup-indented t
-        org-pretty-entities t
         org-hide-emphasis-markers t
         org-startup-with-inline-images t
         org-list-allow-alphabetical t
@@ -750,7 +761,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (use-package org-contrib
     :config
     (require 'ox-extra)
-    (ox-extras-activate '(latex-header-blocks ignore-headlines))
+    (ox-extras-activate '(latex-header-blocks ignore-headlines)))
 #+end_src
 ** GTD
 *** Global
@@ -883,18 +894,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                                  ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
       ;;("someday.org" :level . 0)
     #+end_src
-** org bullets
-#+begin_src emacs-lisp
-  (straight-use-package 'org-bullets)
-  ;; enable org-bullets with org-mode
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  ;; change org-bullets faces
-  (setq org-bullets-bullet-list
-        '("▶" "⚫" "◆" "◉" "○" "◇" "▸"))
-  ;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
-  ;;     ;;; Small
-  ;;     ;; ► • ★ ▸
-#+end_src
 ** org capture
    #+begin_src emacs-lisp
      (setq org-capture-templates
@@ -914,6 +913,18 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
              ;;           "/Entered on/ %U") :immediate-finish t)
              ))
    #+end_src
+** org bullets
+#+begin_src emacs-lisp
+  (straight-use-package 'org-bullets)
+  ;; enable org-bullets with org-mode
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  ;; change org-bullets faces
+  (setq org-bullets-bullet-list
+        '("▶" "⚫" "◆" "◉" "○" "◇" "▸"))
+  ;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
+  ;;     ;;; Small
+  ;;     ;; ► • ★ ▸
+#+end_src
 ** org protocol
 #+begin_src emacs-lisp
 (require 'org-protocol)
@@ -962,7 +973,9 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (use-package org-ref
     :after org
     :config
-    (setq org-ref-default-bibliography '("~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.bib")
+    (setq org-ref-default-bibliography '("~/dox/wrk/pfe/docs/thesis_infra/lib/refs.bib")
+          org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.notes"
+          org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/papers"
           org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
           bibtex-completion-pdf-field "file"
           bibtex-completion-pdf-symbol ""
@@ -1047,6 +1060,14 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
                      ( "\\subsubsection{%s}" . "\\subsubsection*{%s}" )
                      ( "\\paragraph{%s}" . "\\paragraph*{%s}" )
                      ( "\\subparagraph{%s}" . "\\subparagraph*{%s}" )))
+     (add-to-list 'org-latex-classes
+                  '("tufte-book"
+                    "\\documentclass{tufte-book}"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
      )
  #+end_src
 ***** minted and latexmk
@@ -1057,9 +1078,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
       ;; org-latex-pdf-process
       ;; '("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -bibtex -output-directory=%o -f %f"))
     (setq org-latex-pdf-process
-          '("latexmk -f -pdf -%latex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
-      ;; (setq  org-latex-pdf-process
-      ;;        '("latexmk -pdflatex='lualatex -shell-escape -recorder -bibtex -pdf -f %f"))
+          '("latexmk -f -pdf -%latex --shell-escape -recorder -bibtex -output-directory=%o %f"))
       (setq bibtex-dialect 'biblatex)
 #+end_src
 ***** syntax highlighting, babel and other configs
@@ -1145,14 +1164,12 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :header-args: :tangle ~/.config/emacs/lisp/ORG-ROAM.el
 :header-args: :results none
 :END:
-** global config 
+** Global config 
 #+begin_src emacs-lisp
   (use-package org-roam
-    :ensure t
     ;; use org-roam v2
-    :init 
+    :init
     (setq org-roam-v2-ack t)
-    (org-roam-setup)
     :custom
     (org-roam-directory (file-truename "/home/zakaria/dox/braindump/org-files"))
     (org-roam-completion-everywhere t)
@@ -1162,19 +1179,26 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
            ("C-c n G" . org-roam-ui-mode)
            ("C-c n i" . org-roam-node-insert)
            ("C-c n t" . org-roam-tag-add)
+           ("C-c n r" . org-roam-ref-add)
            ("C-c n c" . org-roam-capture)
            ;; Dailies
            ("C-c n j" . org-roam-dailies-capture-today)
+           :map org-roam-dailies-map
+           ("y" . org-roam-dailies-capture-yesterday)
+           ("t" . org-roam-dailies-capture-tomorrow)
            :map org-mode-map
            ("C-M-i" . completion-at-point))
+    :bind-keymap
+    ("C-c n d" . org-roam-dailies-map)
     :config
+    (org-roam-db-autosync-mode)
+    (setq org-roam-dailies-directory "/home/zakaria/dox/braindump/org-files/daily")
     ;; If using org-roam-protocol
-
-  (load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-dailies.el")
-  (load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-graph.el") 
-  (load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-protocol.el") 
-    (require 'org-roam-protocol)
-    )
+    (load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-dailies.el")
+    (load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-graph.el") 
+    (load "~/.config/emacs/straight/repos/org-roam/extensions/org-roam-protocol.el") 
+    (require 'org-roam-protocol))
+  
   ;;Configuring the Org-roam buffer display
   (add-to-list 'display-buffer-alist
                '("\\*org-roam\\*"
@@ -1189,25 +1213,41 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (winner-mode +1)
   (define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
   (define-key winner-mode-map (kbd "<M-right>") #'winner-redo)
+  
+  ;;   )
 #+end_src
-** COMMENT org-roam-ui
+** org-roam-ui
 #+begin_src emacs-lisp
   (use-package org-roam-ui
     :straight
-      (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
-      :after org-roam
-      ;; :hook
-  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-  ;;         a hookable mode anymore, you're advised to pick something yourself
-  ;;         if you don't care about startup time, use
-  ;;  :hook (after-init . org-roam-ui-mode)
-      :config
-      (setq org-roam-ui-sync-theme t
-            org-roam-ui-follow t
-            org-roam-ui-update-on-save t
-            org-roam-ui-open-on-start t))
+    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+    ;; :hook
+    ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+    ;;         a hookable mode anymore, you're advised to pick something yourself
+    ;;         if you don't care about startup time, use
+    ;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme nil
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+  
+  ;; (setq org-roam-ui-custom-theme
+  ;;       '((bg . "#1d2021")
+  ;;         (bg-alt . "#282a36")
+  ;;         (fg . "#f8f8f2")
+  ;;         (fg-alt . "#6272a4")
+  ;;         (red . "#ff5555")
+  ;;         (orange . "#f1fa8c")
+  ;;         (yellow ."#ffb86c")
+  ;;         (green . "#50fa7b")
+  ;;         (cyan . "#8be9fd")
+  ;;         (blue . "#ff79c6")
+  ;;         (violet . "#8be9fd")
+  ;;         (magenta . "#bd93f9")))
 #+end_src
-** TODO COMMENT org-roam daily 
+** TODO COMMENT org-roam daily                                    :ARCHIVE:
 #+begin_src emacs-lisp
   ;; org roam daily configuration
   ;; org roam daily used for literature and fleet notes
@@ -1228,7 +1268,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
            :head "#+title: %<%Y-%m-%d>\n"
            :olp ("Fleet notes"))))
 #+end_src
-** TODO COMMENT org download
+** TODO COMMENT org download                                      :ARCHIVE:
 :PROPERTIES:
 :ACTIVATED: [2021-07-18]
 :END:
@@ -1244,6 +1284,8 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
   
 #+end_src
 ** org roam graph
+- i'm using org-roam-ui now with org-roam-v2,
+  this will be removed after the first stable version of org-roam-ui
 #+begin_src emacs-lisp
   (setq org-roam-graph-viewer
         (lambda (file)
@@ -1326,7 +1368,7 @@ this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/or
   
       ))
 #+end_src
-* COMMENT PYTHON
+* PYTHON
 :PROPERTIES:
 :header-args: :tangle ~/.config/emacs/lisp/PYTHON.el
 :header-args: :results none

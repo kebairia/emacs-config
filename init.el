@@ -41,6 +41,7 @@
 (load "~/.config/emacs/lisp/BINDINGS.el") 
 (load "~/.config/emacs/lisp/ORG.el") 
 (load "~/.config/emacs/lisp/ORG-ROAM.el") 
+(load "~/.config/emacs/lisp/PYTHON.el") 
 ;;(load "~/.config/emacs/lisp/MU4E.el") 
 (load "~/.config/emacs/nano/nano.el") 	;
 (load "~/.config/emacs/nano/nano-layout.el") 
