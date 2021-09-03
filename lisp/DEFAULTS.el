@@ -152,4 +152,6 @@
 ;; enable `narrow-to-region` functionality
 (put 'narrow-to-region 'disabled nil)
 ;; enable relative numbers
-(setq display-line-numbers 'relative)
+(setq display-line-numbers 'relative) 
+;; setting column indicator to 100
+(setq display-fill-column-indicator-column 100)
