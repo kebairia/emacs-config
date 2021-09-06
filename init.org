@@ -491,7 +491,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
     "l" 'org-roam-buffer-toggle
     "z" 'term
     "c" 'org-capture
-    "b" 'bookmark-bmenu-list
+    "b" 'bookmark-jump
     "L" 'org-insert-link
     "q" 'kill-current-buffer
     "F" 'pdf-links-action-perform
