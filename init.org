@@ -1248,42 +1248,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   ;;         (violet . "#8be9fd")
   ;;         (magenta . "#bd93f9")))
 #+end_src
-** TODO COMMENT org-roam daily                                    :ARCHIVE:
-#+begin_src emacs-lisp
-  ;; org roam daily configuration
-  ;; org roam daily used for literature and fleet notes
-  (setq org-roam-dailies-directory "/home/zakaria/org/daily_notes/")
-  
-  (setq org-roam-dailies-capture-templates
-        '(("l" "literature note" entry
-           #'org-roam-capture--get-point
-           "* %?"
-           :file-name "/home/zakaria/org/daily_notes/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n"
-           :olp ("Literature notes"))
-  
-          ("f" "fleet note" entry
-           #'org-roam-capture--get-point
-           "* %?"
-           :file-name "/home/zakaria/org/daily_notes/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n"
-           :olp ("Fleet notes"))))
-#+end_src
-** TODO COMMENT org download                                      :ARCHIVE:
-:PROPERTIES:
-:ACTIVATED: [2021-07-18]
-:END:
-this is its repo: [[https://github.com/abo-abo/org-download][GitHub - abo-abo/org-download: Drag and drop images to Emacs org-mode]] 
-#+begin_src emacs-lisp
-  ;; org-download
-  (use-package org-download
-    :after org
-    :bind
-    (:map org-mode-map
-          (("s-Y" . org-download-screenshot)
-           ("s-y" . org-download-yank))))
-  
-#+end_src
 ** org roam graph
 - i'm using org-roam-ui now with org-roam-v2,
   this will be removed after the first stable version of org-roam-ui
