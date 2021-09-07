@@ -126,7 +126,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (setq initial-buffer-choice nil)
   ;; No frame title
   (setq frame-title-format nil)
-  ;; No file fialog
+  ;; No file dialog
   (setq use-file-dialog nil)
   ;; No dialog box
   (setq use-dialog-box nil)
@@ -189,26 +189,6 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   ;;   #'company-indent-or-complete-common)
   ;; Pixel scroll (as opposed to char scrool)
   (pixel-scroll-mode t)
-  ;; Mac specific
-  ;; (setq ns-use-native-fullscreen t
-  ;;       mac-option-key-is-meta nil
-  ;;       mac-command-key-is-meta t
-  ;;       mac-command-modifier 'meta
-  ;;       mac-option-modifier nil
-  ;;       mac-use-title-bar nil)
-  
-  ;; Make sure clipboard works properly in tty mode on OSX
-                                          ;(defun copy-from-osx ()
-                                          ;(shell-command-to-string "pbpaste"))
-                                          ;(defun paste-to-osx (text &optional push)
-                                          ;(let ((process-connection-type nil))
-                                          ;(let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-                                          ;(process-send-string proc text)
-                                          ;(process-send-eof proc))))
-                                          ;(if (not (display-graphic-p))
-                                          ;(progn (setq interprogram-cut-function 'paste-to-osx)
-                                          ;(setq interprogram-paste-function 'copy-from-osx)))
-  
   ;; y/n for  answering yes/no questions
   (fset 'yes-or-no-p 'y-or-n-p)
   ;; use ssh by default in tramp
@@ -266,10 +246,6 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
   ;; enable `narrow-to-region` functionality
   (put 'narrow-to-region 'disabled nil)
-  ;; enable relative numbers
-  (setq display-line-numbers 'relative) 
-  ;; setting column indicator to 100
-  (setq display-fill-column-indicator-column 100)
 #+end_src
 ** BINDINGS
 :PROPERTIES:
