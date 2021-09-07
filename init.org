@@ -1337,7 +1337,7 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 :header-args: :tangle ~/.config/emacs/lisp/PYTHON.el
 :header-args: :results none
 :END:
-** Jedi
+** COMMENT Jedi
 - first, install python-virtualenv on your system
     #+BEGIN_SRC emacs-lisp
       (use-package jedi
