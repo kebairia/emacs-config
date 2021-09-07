@@ -237,8 +237,9 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (ad-activate 'term-sentinel)
   
   ;; display line number in text/prog & fundamental modes
+  (setq display-line-numbers 'relative)    ; Enable relative number
   (setq-default
-   display-line-numbers-current-absolute t ;  Enable the line nubmers
+   display-line-numbers-current-absolute t ; Enable the line nubmers
    display-line-numbers-width 2
    display-line-numbers-widen t)
   (add-hook 'text-mode-hook #'display-line-numbers-mode)
