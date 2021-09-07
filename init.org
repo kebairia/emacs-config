@@ -1351,7 +1351,15 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
   (use-package flycheck
   :init (global-flycheck-mode))
 #+END_SRC
-** Elpy
+** EGLOT
+#+begin_src emacs-lisp
+  (use-package eglot)
+  (add-to-list 'eglot-server-programs
+               `(python-mode . ("pyls" "-v" "--tcp" "--host"
+                                "localhost" "--port" :autoport)))
+  (add-hook 'python-mode-hook 'eglot-ensure)
+#+end_src
+** COMMENT Elpy
 #+begin_src emacs-lisp
   (use-package elpy
     :init
