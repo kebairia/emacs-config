@@ -25,23 +25,27 @@
 (global-set-key (kbd "C-c m") 'zk/split-go-down)
 
 ;; Move between buffer
-(global-set-key (kbd "M-n") 'switch-to-next-buffer)
-(global-set-key (kbd "M-p") 'switch-to-prev-buffer)
+;; (global-set-key (kbd "M-n") 'switch-to-next-buffer)
+;; (global-set-key (kbd "M-p") 'switch-to-prev-buffer)
+;; winner mode
+(winner-mode +1)
+(define-key winner-mode-map (kbd "M-p") #'winner-undo)
+(define-key winner-mode-map (kbd "M-n") #'winner-redo)
 
-;; Move between Windows
-(global-set-key (kbd "C-c k") 'windmove-up)
-(global-set-key (kbd "C-c j") 'windmove-down)
-(global-set-key (kbd "C-c l") 'windmove-right)
-(global-set-key (kbd "C-c h") 'windmove-left)
+   ;; Move between Windows
+   (global-set-key (kbd "C-c k") 'windmove-up)
+   (global-set-key (kbd "C-c j") 'windmove-down)
+   (global-set-key (kbd "C-c l") 'windmove-right)
+   (global-set-key (kbd "C-c h") 'windmove-left)
 
-;; Resize windows
-(global-set-key (kbd "C-M-l") 'shrink-window-horizontally)
-(global-set-key (kbd "C-M-h") 'enlarge-window-horizontally)
-(global-set-key (kbd "C-M-j") 'shrink-window)
-(global-set-key (kbd "C-M-k") 'enlarge-window)
+   ;; Resize windows
+   (global-set-key (kbd "C-M-l") 'shrink-window-horizontally)
+   (global-set-key (kbd "C-M-h") 'enlarge-window-horizontally)
+   (global-set-key (kbd "C-M-j") 'shrink-window)
+   (global-set-key (kbd "C-M-k") 'enlarge-window)
 
-(global-set-key (kbd "M-o") 'delete-other-windows)
-(global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
+   (global-set-key (kbd "M-o") 'delete-other-windows)
+   (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
 
 (global-set-key (kbd "C-x b") 'consult-buffer)
 (global-set-key (kbd "C-c s") 'zk/set-save-bookmark)

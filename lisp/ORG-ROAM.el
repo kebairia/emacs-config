@@ -41,10 +41,6 @@
 ;; Garbage Collection
 (setq org-roam-db-gc-threshold most-positive-fixnum)
 
-;; winner mode
-(winner-mode +1)
-(define-key winner-mode-map (kbd "<M-left>") #'winner-undo)
-(define-key winner-mode-map (kbd "<M-right>") #'winner-redo)
 
 ;;   )
 
