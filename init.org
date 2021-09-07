@@ -148,8 +148,10 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   ;; No line breat space points
   (setq auto-fill-mode nil)
   
+  ;; column indicator to 100
+  (setq display-fill-column-indicator-column 100)
   ;; Fill column at 80
-  (setq fill-column 80)
+  ;; (setq fill-column 80)
   
   ;; No confirmation for visiting non-existent files
   (setq confirm-nonexistent-file-or-buffer nil)
