@@ -13,7 +13,7 @@
 (setq initial-buffer-choice nil)
 ;; No frame title
 (setq frame-title-format nil)
-;; No file fialog
+;; No file dialog
 (setq use-file-dialog nil)
 ;; No dialog box
 (setq use-dialog-box nil)
@@ -35,8 +35,10 @@
 ;; No line breat space points
 (setq auto-fill-mode nil)
 
+;; column indicator to 100
+(setq display-fill-column-indicator-column 100)
 ;; Fill column at 80
-(setq fill-column 80)
+;; (setq fill-column 80)
 
 ;; No confirmation for visiting non-existent files
 (setq confirm-nonexistent-file-or-buffer nil)
@@ -74,26 +76,6 @@
 ;;   #'company-indent-or-complete-common)
 ;; Pixel scroll (as opposed to char scrool)
 (pixel-scroll-mode t)
-;; Mac specific
-;; (setq ns-use-native-fullscreen t
-;;       mac-option-key-is-meta nil
-;;       mac-command-key-is-meta t
-;;       mac-command-modifier 'meta
-;;       mac-option-modifier nil
-;;       mac-use-title-bar nil)
-
-;; Make sure clipboard works properly in tty mode on OSX
-                                        ;(defun copy-from-osx ()
-                                        ;(shell-command-to-string "pbpaste"))
-                                        ;(defun paste-to-osx (text &optional push)
-                                        ;(let ((process-connection-type nil))
-                                        ;(let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-                                        ;(process-send-string proc text)
-                                        ;(process-send-eof proc))))
-                                        ;(if (not (display-graphic-p))
-                                        ;(progn (setq interprogram-cut-function 'paste-to-osx)
-                                        ;(setq interprogram-paste-function 'copy-from-osx)))
-
 ;; y/n for  answering yes/no questions
 (fset 'yes-or-no-p 'y-or-n-p)
 ;; use ssh by default in tramp
@@ -142,8 +124,9 @@
 (ad-activate 'term-sentinel)
 
 ;; display line number in text/prog & fundamental modes
+(setq display-line-numbers 'relative)    ; Enable relative number
 (setq-default
- display-line-numbers-current-absolute t ;  Enable the line nubmers
+ display-line-numbers-current-absolute t ; Enable the line nubmers
  display-line-numbers-width 2
  display-line-numbers-widen t)
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
@@ -151,7 +134,3 @@
 (add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
 ;; enable `narrow-to-region` functionality
 (put 'narrow-to-region 'disabled nil)
-;; enable relative numbers
-(setq display-line-numbers 'relative) 
-;; setting column indicator to 100
-(setq display-fill-column-indicator-column 100)

@@ -44,7 +44,7 @@
 (global-set-key (kbd "C-x p") 'zk/org-agenda-process-inbox-item)
 
 (global-set-key (kbd "C-x b") 'consult-buffer)
-(global-set-key (kbd "C-c s") 'zk-set-save-bookmark)
+(global-set-key (kbd "C-c s") 'zk/set-save-bookmark)
 ;; set a bookmark then save it on the bookmark file 
  (defun zk/set-save-bookmark()
    (interactive)

@@ -49,7 +49,7 @@
   "l" 'org-roam-buffer-toggle
   "z" 'term
   "c" 'org-capture
-  "b" 'bookmark-bmenu-list
+  "b" 'bookmark-jump
   "L" 'org-insert-link
   "q" 'kill-current-buffer
   "F" 'pdf-links-action-perform
@@ -66,16 +66,9 @@
   "r b" 'org-ref-bibliography
   "r g" 'org-ref-add-glossary-entry
   "r a" 'org-ref-add-acronym-entry
-  ;; "w i"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/chps/intro.org"))
-  ;; "w m"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/main.org"))
-  ;; "w s"  (lambda()(interactive)(find-file "~/dox/wrk/pfe/docs/thesis_infra/lib/thesis_setup.org"))
 )
 ;; "r" 'consult-recent-file
-;; "I" 'org-roam-insert-immediate
-;; "b" 'ibuffer
 ;;"l" 'org-store-link
-;; "B" 'zetteldeft-new-file-and-backlink
-;;"B" 'zetteldeft-backlink-add
 ;;"s" 'zk/gen-scratch-buffer
 ;; )
 
