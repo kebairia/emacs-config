@@ -56,3 +56,8 @@
                                 (number-to-string (emacs-pid))
                                 ") started in "
                                 (emacs-init-time)))))
+
+(defun enable-writing-minor-modes ()
+  "Enable flyspell and visual line mode for calling from mode hooks"
+  (visual-line-mode 1)
+  (flyspell-mode 1))

@@ -1,4 +1,5 @@
-(straight-use-package 'org)
+(use-package org
+  :hook (org-mode . enable-writing-minor-modes))
 
 (setq evil-want-keybinding nil)                   
 ;; put this before loading evil to work
