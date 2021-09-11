@@ -425,6 +425,10 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (require 'nano-sidebar)
   (nano-sidebar-toggle)
 #+end_src
+** bookmark-plus
+#+begin_src emacs-lisp
+  (use-package bookmark+)
+#+end_src
 ** evil
 #+begin_src emacs-lisp
   (setq evil-want-keybinding nil)                   
