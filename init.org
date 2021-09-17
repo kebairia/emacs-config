@@ -417,15 +417,10 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (use-package org
     :hook (org-mode . enable-writing-minor-modes))
 #+end_src
-** COMMENT nano-sidebar
+** COMMENT bookmark-plus
 #+begin_src emacs-lisp
-  (straight-use-package '(nano-sidebar
-                          :type git :host github
-                          :repo "rougier/nano-sidebar"))
-  (require 'nano-sidebar)
-  (nano-sidebar-toggle)
+  (use-package bookmark+)
 #+end_src
-** bookmark-plus
 ** visual-fill-column
 Instead of wrapping lines at the window edge, --which is the standard
 behaviour of visual-line-mode, it wraps lines at fill-column
