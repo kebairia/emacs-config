@@ -426,8 +426,12 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (nano-sidebar-toggle)
 #+end_src
 ** bookmark-plus
+** visual-fill-column
+Instead of wrapping lines at the window edge, --which is the standard
+behaviour of visual-line-mode, it wraps lines at fill-column
 #+begin_src emacs-lisp
-  (use-package bookmark+)
+  (use-package visual-fill-column)
+  (add-hook 'visual-fill-column-mode-hook #'visual-line-mode)
 #+end_src
 ** evil
 #+begin_src emacs-lisp

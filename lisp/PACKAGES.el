@@ -1,6 +1,9 @@
 (use-package org
   :hook (org-mode . enable-writing-minor-modes))
 
+(use-package visual-fill-column)
+(add-hook 'visual-fill-column-mode-hook #'visual-line-mode)
+
 (setq evil-want-keybinding nil)                   
 ;; put this before loading evil to work
 (setq evil-want-C-i-jump nil)
