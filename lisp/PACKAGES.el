@@ -93,18 +93,13 @@
 ;; speed up projectile by enabling caching
 (setq projectile-enable-caching t)
 
-(straight-use-package 'aggressive-indent)
-
-(global-aggressive-indent-mode 1)
-
-(straight-use-package 'which-key)
-(which-key-mode)
-(setq which-key-popup-type 'minibuffer)
-;; (which-key-setup-side-window-right)
-
 (use-package undo-tree
   ;;turn on everywhere
   :init (global-undo-tree-mode 1))
+
+(straight-use-package 'aggressive-indent)
+
+(global-aggressive-indent-mode 1)
 
 (straight-use-package 'ibuffer)
 ;; disable linum-mode
@@ -145,6 +140,33 @@
           '(lambda ()
              (ibuffer-auto-mode 1)
              (ibuffer-switch-to-saved-filter-groups "default"))) ;; use the group default
+
+(straight-use-package 'which-key)
+(which-key-mode)
+(setq which-key-popup-type 'minibuffer)
+;; (which-key-setup-side-window-right)
+
+;; Enable richer annotations using the Marginalia package
+(use-package marginalia
+  ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+  :bind (("M-A" . marginalia-cycle)
+         :map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
+
+  ;; The :init configuration is always executed (Not lazy!)
+  :init
+
+  ;; Must be in the :init section of use-package such that the mode gets
+  ;; enabled right away. Note that this forces loading the package.
+  (marginalia-mode))
+;; disable marginalia by default
+(defun marginalia-use-builtin ()
+  (interactive)
+  (mapc
+   (lambda (x)
+     (setcdr x (cons 'none (remq 'builtin (cdr x)))))
+   marginalia-annotator-registry))
+(marginalia-use-builtin)
 
 (straight-use-package 'selectrum)
 (selectrum-mode +1)

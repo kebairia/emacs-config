@@ -537,6 +537,12 @@ behaviour of visual-line-mode, it wraps lines at fill-column
   (setq projectile-enable-caching t)
   
 #+end_src
+** undo tree
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    ;;turn on everywhere
+    :init (global-undo-tree-mode 1))
+#+end_src
 ** aggressive indent
 #+begin_src emacs-lisp
   (straight-use-package 'aggressive-indent)
@@ -552,21 +558,6 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+end_example
 #+begin_src emacs-lisp
   (global-aggressive-indent-mode 1)
-#+end_src
-** which key
-    Which-key Package show me a helpful menu when i press "C-x" and wait
-#+begin_src emacs-lisp
-  (straight-use-package 'which-key)
-  (which-key-mode)
-  (setq which-key-popup-type 'minibuffer)
-  ;; (which-key-setup-side-window-right)
-  
-#+end_src
-** undo tree
-#+begin_src emacs-lisp
-  (use-package undo-tree
-    ;;turn on everywhere
-    :init (global-undo-tree-mode 1))
 #+end_src
 ** ibuffer
 #+begin_src emacs-lisp
@@ -609,6 +600,39 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
             '(lambda ()
                (ibuffer-auto-mode 1)
                (ibuffer-switch-to-saved-filter-groups "default"))) ;; use the group default
+#+end_src
+** which key
+    Which-key Package show me a helpful menu when i press "C-x" and wait
+#+begin_src emacs-lisp
+  (straight-use-package 'which-key)
+  (which-key-mode)
+  (setq which-key-popup-type 'minibuffer)
+  ;; (which-key-setup-side-window-right)
+  
+#+end_src
+** marginalia
+#+begin_src emacs-lisp
+  ;; Enable richer annotations using the Marginalia package
+  (use-package marginalia
+    ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+    :bind (("M-A" . marginalia-cycle)
+           :map minibuffer-local-map
+           ("M-A" . marginalia-cycle))
+  
+    ;; The :init configuration is always executed (Not lazy!)
+    :init
+  
+    ;; Must be in the :init section of use-package such that the mode gets
+    ;; enabled right away. Note that this forces loading the package.
+    (marginalia-mode))
+  ;; disable marginalia by default
+  (defun marginalia-use-builtin ()
+    (interactive)
+    (mapc
+     (lambda (x)
+       (setcdr x (cons 'none (remq 'builtin (cdr x)))))
+     marginalia-annotator-registry))
+  (marginalia-use-builtin)
 #+end_src
 ** selectrum
 #+begin_src emacs-lisp
@@ -974,10 +998,11 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+end_src
 *** org ref
 #+begin_src emacs-lisp
+  ;; (setq org-ref-default-bibliography '("~/dox/wrk/pfe/docs/thesis_infra/lib/refs.bib")
   (use-package org-ref
     :after org
     :config
-    (setq org-ref-default-bibliography '("~/dox/wrk/pfe/docs/thesis_infra/lib/refs.bib")
+    (setq org-ref-default-bibliography '("~/org/bib/refs.bib")
           org-ref-bibliography-notes "~/dox/std/ESI/pfe/docs/thesis_infra/lib/refs.notes"
           org-ref-pdf-directory "~/dox/std/ESI/pfe/docs/thesis_infra/lib/papers"
           org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
