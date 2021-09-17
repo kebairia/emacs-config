@@ -201,3 +201,10 @@
 (use-package eterm-256color)
 
 (straight-use-package 'yaml-mode)
+
+(use-package elfeed)
+(use-package elfeed-org
+  :config
+  (elfeed-org)
+  (setq rmh-elfeed-org-files (list "~/.config/elfeed/elfeed.org")))
+(global-set-key (kbd "C-x w") 'elfeed)

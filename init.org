@@ -684,6 +684,15 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+begin_src emacs-lisp
   (straight-use-package 'yaml-mode)
 #+end_src
+** elfeed
+#+begin_src emacs-lisp
+  (use-package elfeed)
+  (use-package elfeed-org
+    :config
+    (elfeed-org)
+    (setq rmh-elfeed-org-files (list "~/.config/elfeed/elfeed.org")))
+  (global-set-key (kbd "C-x w") 'elfeed)
+#+end_src
 
 * ORG MODE
 :PROPERTIES:
