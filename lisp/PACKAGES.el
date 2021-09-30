@@ -4,6 +4,12 @@
 (use-package visual-fill-column)
 (add-hook 'visual-fill-column-mode-hook #'visual-line-mode)
 
+;; after evil
+(straight-use-package
+ '(secret-mode
+   :type git
+   :host github :repo "/bkaestner/secret-mode.el"))
+
 (setq evil-want-keybinding nil)                   
 ;; put this before loading evil to work
 (setq evil-want-C-i-jump nil)
@@ -57,7 +63,7 @@
   "L" 'org-insert-link
   "q" 'kill-current-buffer
   "F" 'pdf-links-action-perform
-  "s" 'zk/gen-scratch-buffer
+  "s" 'secret-mode
   "n" 'org-noter
   "m i" 'org-noter-insert-note
   "m p" 'org-noter-insert-precise-note

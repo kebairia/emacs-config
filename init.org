@@ -428,6 +428,14 @@ behaviour of visual-line-mode, it wraps lines at fill-column
   (use-package visual-fill-column)
   (add-hook 'visual-fill-column-mode-hook #'visual-line-mode)
 #+end_src
+** secret mode
+#+begin_src emacs-lisp
+  (straight-use-package
+   '(secret-mode
+     :type git
+     :host github :repo "/bkaestner/secret-mode.el"))
+  
+#+end_src
 ** evil
 #+begin_src emacs-lisp
   (setq evil-want-keybinding nil)                   
@@ -490,7 +498,7 @@ behaviour of visual-line-mode, it wraps lines at fill-column
     "L" 'org-insert-link
     "q" 'kill-current-buffer
     "F" 'pdf-links-action-perform
-    "s" 'zk/gen-scratch-buffer
+    "s" 'secret-mode
     "n" 'org-noter
     "m i" 'org-noter-insert-note
     "m p" 'org-noter-insert-precise-note
