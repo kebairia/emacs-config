@@ -230,6 +230,8 @@
 
 (straight-use-package 'yaml-mode)
 
+(straight-use-package 'dockerfile-mode)
+
 (use-package elfeed)
 (use-package elfeed-org
   :config

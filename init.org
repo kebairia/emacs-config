@@ -716,6 +716,10 @@ The variable ~aggressive-indent-dont-indent-if~ lets you customize when you don'
 #+begin_src emacs-lisp
   (straight-use-package 'yaml-mode)
 #+end_src
+*** dockerfile mode
+#+begin_src emacs-lisp
+(straight-use-package 'dockerfile-mode)
+#+end_src
 ** elfeed
 #+begin_src emacs-lisp
   (use-package elfeed)
