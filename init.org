@@ -417,7 +417,7 @@ I'm using [[https://github.com/raxod502/straight.el][straight.el]] as my main pa
   (use-package org
     :hook (org-mode . enable-writing-minor-modes))
 #+end_src
-** COMMENT bookmark-plus
+** bookmark-plus
 #+begin_src emacs-lisp
   (use-package bookmark+)
 #+end_src

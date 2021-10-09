@@ -1,10 +1,11 @@
 (use-package org
   :hook (org-mode . enable-writing-minor-modes))
 
+(use-package bookmark+)
+
 (use-package visual-fill-column)
 (add-hook 'visual-fill-column-mode-hook #'visual-line-mode)
 
-;; after evil
 (straight-use-package
  '(secret-mode
    :type git
