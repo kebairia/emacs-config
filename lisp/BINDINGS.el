@@ -25,12 +25,12 @@
 (global-set-key (kbd "C-c m") 'zk/split-go-down)
 
 ;; Move between buffer
-;; (global-set-key (kbd "M-n") 'switch-to-next-buffer)
-;; (global-set-key (kbd "M-p") 'switch-to-prev-buffer)
+(global-set-key (kbd "M-n") 'switch-to-next-buffer)
+(global-set-key (kbd "M-p") 'switch-to-prev-buffer)
 ;; winner mode
-(winner-mode +1)
-(define-key winner-mode-map (kbd "M-p") #'winner-undo)
-(define-key winner-mode-map (kbd "M-n") #'winner-redo)
+;; (winner-mode +1)
+;; (define-key winner-mode-map (kbd "M-p") #'winner-undo)
+;; (define-key winner-mode-map (kbd "M-n") #'winner-redo)
 
    ;; Move between Windows
    (global-set-key (kbd "C-c k") 'windmove-up)
