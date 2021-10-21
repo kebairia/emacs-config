@@ -11,6 +11,11 @@
    :type git
    :host github :repo "/bkaestner/secret-mode.el"))
 
+(straight-use-package
+ '(nano-agenda
+   :type git
+   :host github :repo "rougier/nano-agenda"))
+
 (setq evil-want-keybinding nil)                   
 ;; put this before loading evil to work
 (setq evil-want-C-i-jump nil)
@@ -89,6 +94,11 @@
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 ;; '(magit-display-buffer-function 'magit-display-buffer-traditional))
 (straight-use-package 'evil-magit)
+
+(straight-use-package
+ '(git-modes
+   :type git
+   :host github :repo "magit/git-modes"))
 
 (use-package projectile
 :config (projectile-mode)

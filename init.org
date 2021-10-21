@@ -436,6 +436,20 @@ behaviour of visual-line-mode, it wraps lines at fill-column
      :host github :repo "/bkaestner/secret-mode.el"))
   
 #+end_src
+** nano-agenda
+#+begin_src emacs-lisp
+  (straight-use-package
+   '(nano-agenda
+     :type git
+     :host github :repo "rougier/nano-agenda"))
+#+end_src
+** COMMENT org-real
+#+begin_src emacs-lisp
+  (straight-use-package
+   '(org-real
+     :type git
+     :host github :repo "/emacsmirror/org-real"))
+#+end_src
 ** evil
 #+begin_src emacs-lisp
   (setq evil-want-keybinding nil)                   
@@ -526,11 +540,18 @@ behaviour of visual-line-mode, it wraps lines at fill-column
   ;; '(magit-display-buffer-function 'magit-display-buffer-traditional))
   (straight-use-package 'evil-magit)
 #+end_src
-*** COMMENT forge                                                 :ARCHIVE:
+*** COMMENT forge
 - forge is a utility that let you pull your issues and pull-requests from the remote repo into magit interface
 #+begin_src emacs-lisp
   (use-package forge
     :after magit)
+#+end_src
+*** git-modes
+#+begin_src emacs-lisp
+  (straight-use-package
+   '(git-modes
+     :type git
+     :host github :repo "magit/git-modes"))
 #+end_src
 ** projectile
 #+begin_src emacs-lisp
