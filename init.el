@@ -15,15 +15,16 @@
 (add-hook 'after-init-hook
           #'(lambda () (setq gc-cons-threshold (* 8 1024 1024))))
 
+(setq package-enable-at-startup nil)
 (setq straight-check-for-modifications nil)
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
+      (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
          'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
@@ -374,6 +375,10 @@
 (setq nano-font-family-monospaced "FantasqueSansMono")
 (setq nano-font-family-proportional nil)
 (setq nano-font-size 17)
+
+(require 'nano-theme)
+;; (setq nano-fonts-use t) ; Use theme font stack
+(nano-modeline-mode)    ; Use nano-modeline
 
 (setq-default fill-column 80                          ; Default line width 
               sentence-end-double-space nil           ; Use a single space after dots
@@ -746,7 +751,7 @@
 
 (setq org-roam-directory (file-truename "/home/zakaria/dox/braindump/org-files"))
 (org-roam-db-autosync-mode)                    ; autosync for db
-;; (setq org-roam-dailies-directory (file-truename "/home/zakaria/org/daily")) ; directory for my dailies
+(setq org-roam-dailies-directory (file-truename "/home/zakaria/org/daily")) ; directory for my dailies
 (setq org-roam-db-gc-threshold most-positive-fixnum) ; Garbage collection
 ; Keybindings
 (bind-key "C-c n f" #'org-roam-node-find)
