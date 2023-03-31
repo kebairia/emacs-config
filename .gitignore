@@ -8,3 +8,7 @@ straight/
 transient/
 url/
 var/
+*.bak
+.org-id-locations
+recentf
+saveplace
