@@ -104,6 +104,8 @@ Packages used in this specific configuration. You may want to adapt this list. T
 (setq package-list
       '(cape                ; Completion At Point Extensions
         orderless           ; Completion style for matching regexps in any order
+        vertico             ; VERTical Interactive COmpletion
+        marginalia          ; Enrich existing commands with completion annotations
         evil                ; A VI layer for Emacs
         evil-collection
         evil-org
@@ -583,6 +585,7 @@ The mode displays the key bindings following your currently entered incomplete c
 (require 'which-key)
 
 (which-key-mode)
+
 
 #+end_src
 
@@ -1127,7 +1130,7 @@ For the [[help:consult-goto-line][consult-goto-line]] and ~consult-line~ command
 
 #+end_src
 
-** COMMENT Vertico :ADVICE:HOOK:BINDING:MODE:FACE:
+** Vertico :ADVICE:HOOK:BINDING:MODE:FACE:
 
 [[https://github.com/minad/vertico][Vertico]] provides a performant and minimalistic vertical completion UI based on the default completion system but aims to be highly flexible, extensible and modular.
 
@@ -1236,7 +1239,7 @@ See https://github.com/minad/vertico/issues/145
 (add-hook 'minibuffer-setup-hook #'minibuffer-vertico-setup)
 
 #+end_src
-** COMMENT Marginalia :MODE:
+** Marginalia :MODE:
 
 Pretty straightforward.
 
@@ -1352,7 +1355,7 @@ We start the nano modeline.
 
 #+end_src
 
-** COMMENT Minibuffer :MODE:HOOK:
+** Minibuffer :MODE:HOOK:
 
 Headerline (fake) for minibuffer
 
@@ -1502,7 +1505,7 @@ No prompt editing and recursive minibuffer
 
 #+end_src
 
-** COMMENT Miniframe :MODE:FACE:BUGFIX:
+** Miniframe :MODE:FACE:BUGFIX:
 
 #+begin_src emacs-lisp
 
