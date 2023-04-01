@@ -408,25 +408,25 @@
 ;; (require 'nano-splash)
 
 (set-face-attribute 'default nil
-                    :family "Roboto Mono"
+                    :family "FantasqueSansMono"
                     :weight 'light
                     :height 140)
 
 (set-face-attribute 'bold nil
-                    :family "Roboto Mono"
+                    :family "FantasqueSansMono"
                     :weight 'regular)
 
 (set-face-attribute 'italic nil
-                    :family "Victor Mono"
+                    :family "FantasqueSansMono"
                     :weight 'semilight
                     :slant 'italic)
 
 (set-fontset-font t 'unicode
-                    (font-spec :name "Inconsolata Light"
+                    (font-spec :name "FantasqueSansMono"
                                :size 16) nil)
 
 (set-fontset-font t '(#xe000 . #xffdd)
-                     (font-spec :name "RobotoMono Nerd Font"
+                     (font-spec :name "FantasqueSansMono"
                                 :size 12) nil)
 
 (setq-default fill-column 80                          ; Default line width 
