@@ -582,12 +582,12 @@
 (set-face-attribute 'nano-modeline-active-secondary nil
                     :inherit '(nano-faded nano-modeline-active))
 
-(set-face-attribute 'nano-modeline-active-status-RW nil
-                    :inherit '(nano-faded-i nano-strong nano-modeline-active))
-(set-face-attribute 'nano-modeline-active-status-** nil
-                    :inherit '(nano-popout-i nano-strong nano-modeline-active))
-(set-face-attribute 'nano-modeline-active-status-RO nil
-                    :inherit '(nano-default-i nano-strong nano-modeline-active))
+;; (set-face-attribute 'nano-modeline-active-status-RW nil
+;;                     :inherit '(nano-faded-i nano-strong nano-modeline-active))
+;; (set-face-attribute 'nano-modeline-active-status-** nil
+;;                     :inherit '(nano-popout-i nano-strong nano-modeline-active))
+;; (set-face-attribute 'nano-modeline-active-status-RO nil
+;;                     :inherit '(nano-default-i nano-strong nano-modeline-active))
 
 (set-face-attribute 'nano-modeline-inactive-name nil
                     :inherit '(nano-faded nano-strong

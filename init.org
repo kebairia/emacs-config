@@ -1,13 +1,3 @@
-# ------------------------------------------------------------------------------
-#+TITLE:     My Emacs's Configuration
-#+SUBTITLE:  Kebairia Zakaria - Mai 2022
-#+AUTHOR:    Kebairia Zakaria
-#+EMAIL:     4.kebairia@gmail.com
-#+LANGUAGE:  en
-#+STARTUP:   content showstars indent inlineimages hideblocks
-#+PROPERTY:  header-args :results none :tangle ~/.config/emacs/init.el
-#+ARCHIVE:   ~/org/archive/config_archive.org::
-# ------------------------------------------------------------------------------
 #+TITLE: Emacs literate configuration
 #+AUTHOR: Kebairia Zakaria
 #+DATE: 03/2023
@@ -23,7 +13,7 @@
 (put 'downcase-region 'disabled nil)    ; Enable downcase-region
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
  native-comp-async-report-warnings-errors 'silent ; Skip compilation error buffers
- read-process-output-max (* 1024 1024)  ; Increase read size per process
+ read-process-output-max (* 1024 1024)) ; Increase read size per process
 
 #+end_src
 * Core
@@ -1266,7 +1256,6 @@ Pretty straightforward.
 We're using [[https://github.com/rougier/nano-modeline][nano-modeline]] and modify some settings here.
 
 #+begin_src emacs-lisp
-
 (require 'nano-theme)
 (require 'nano-modeline)
 
@@ -1304,12 +1293,12 @@ We're using [[https://github.com/rougier/nano-modeline][nano-modeline]] and modi
 (set-face-attribute 'nano-modeline-active-secondary nil
                     :inherit '(nano-faded nano-modeline-active))
 
-(set-face-attribute 'nano-modeline-active-status-RW nil
-                    :inherit '(nano-faded-i nano-strong nano-modeline-active))
-(set-face-attribute 'nano-modeline-active-status-** nil
-                    :inherit '(nano-popout-i nano-strong nano-modeline-active))
-(set-face-attribute 'nano-modeline-active-status-RO nil
-                    :inherit '(nano-default-i nano-strong nano-modeline-active))
+;; (set-face-attribute 'nano-modeline-active-status-RW nil
+;;                     :inherit '(nano-faded-i nano-strong nano-modeline-active))
+;; (set-face-attribute 'nano-modeline-active-status-** nil
+;;                     :inherit '(nano-popout-i nano-strong nano-modeline-active))
+;; (set-face-attribute 'nano-modeline-active-status-RO nil
+;;                     :inherit '(nano-default-i nano-strong nano-modeline-active))
 
 (set-face-attribute 'nano-modeline-inactive-name nil
                     :inherit '(nano-faded nano-strong
