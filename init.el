@@ -225,6 +225,31 @@
 (unless (server-running-p)
   (server-start))
 
+(defun zk/split-go-right()
+  (interactive)
+  (split-window-horizontally)
+  (windmove-right))
+(defun zk/split-go-down()
+  (interactive)
+  (split-window-vertically)
+  (windmove-down))
+
+(bind-key "C-c C" (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
+(bind-key "C-c b" (lambda() (interactive)(find-file "~/org/books.org")))
+
+(bind-key "M-n" 'switch-to-next-buffer)
+(bind-key "M-p" 'switch-to-prev-buffer)
+
+(bind-key "C-c k" 'window-up)
+(bind-key "C-c j" 'window-down)
+(bind-key "C-c l" 'window-right)
+(bind-key "C-c h" 'window-left)
+
+(bind-key "C-c i" 'zk/split-go-right)
+(bind-key "C-c m" 'zk/split-go-down)
+
+(bind-key "C-c c" 'org-capture)
+
 (my/report-time "Core")
 
 (setq my/section-start-time (current-time))

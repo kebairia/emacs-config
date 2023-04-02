@@ -379,6 +379,44 @@ Server start.
 
 #+end_src
 
+** Keybinding :BINDING:
+Functions
+#+begin_src emacs-lisp
+(defun zk/split-go-right()
+  (interactive)
+  (split-window-horizontally)
+  (windmove-right))
+(defun zk/split-go-down()
+  (interactive)
+  (split-window-vertically)
+  (windmove-down))
+#+end_src
+Special files
+#+begin_src emacs-lisp
+(bind-key "C-c C" (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
+(bind-key "C-c b" (lambda() (interactive)(find-file "~/org/books.org")))
+#+end_src
+Move between buffer
+#+begin_src emacs-lisp
+(bind-key "M-n" 'switch-to-next-buffer)
+(bind-key "M-p" 'switch-to-prev-buffer)
+#+end_src
+Move between Windows
+#+begin_src emacs-lisp
+(bind-key "C-c k" 'window-up)
+(bind-key "C-c j" 'window-down)
+(bind-key "C-c l" 'window-right)
+(bind-key "C-c h" 'window-left)
+#+end_src
+Spliting windows
+#+begin_src emacs-lisp
+(bind-key "C-c i" 'zk/split-go-right)
+(bind-key "C-c m" 'zk/split-go-down)
+#+end_src
+Org mode
+#+begin_src emacs-lisp
+(bind-key "C-c c" 'org-capture)
+#+end_src
 ** Benchmark
 
 #+begin_src emacs-lisp
@@ -536,6 +574,47 @@ No question after killing a buffer (kill-buffer asks you which buffer to switch 
 
 (bind-key "C-x k" #'kill-current-buffer)
 
+#+end_src
+*** Ibuffer configuration
+#+begin_src emacs-lisp
+  ;; disable linum-mode
+  (add-hook 'ibuffer-mode (lambda() (linum-mode -1)))
+  (global-set-key (kbd "C-x C-b") 'ibuffer) ;; Use Ibuffer for Buffer List
+  ;; create a function that define a group
+  (setq ibuffer-saved-filter-groups
+        '(("default"
+           ("Emacs"  (or
+                      (name . "^\\*Messages\\*$")
+                      (name . "^\\*scratch\\*$")
+                      ))
+           ("Agenda"  (or
+                       (name . "inbox.org")
+                       (name . "next.org")
+                       (name . "someday.org")
+                       (name . "emails.org")
+                       (name . "archive.org")
+                       (name . "habits.org")
+                       (name . "projects.org")
+                       (name . "weekly_reviews.org")
+                       ))
+
+           ("Org"  (name . "^.*org$"))
+           ("PDF"  (name . "^.*pdf"))
+           ("Python"  (name . "^.*py$"))
+           ("Lisp"  (name . "^.*el"))
+           ("Web"  (or
+                    (name . "^.*html$")
+                    (name . "^.*css")
+                    (name . "^.*php")
+                    ))
+           ("Dired"  (mode . dired-mode))
+           ))
+        )
+
+  (add-hook 'ibuffer-mode-hook
+            '(lambda ()
+               (ibuffer-auto-mode 1)
+               (ibuffer-switch-to-saved-filter-groups "default"))) ;; use the group default
 #+end_src
 ** File
 
