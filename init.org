@@ -1976,18 +1976,6 @@ Show hidden emphasis markers when moving accross the word
 #+begin_src emacs-lisp
 (require 'org-glossary)
 #+end_src
-** COMMENT org bullets
-#+begin_src emacs-lisp
-  (straight-use-package 'org-bullets)
-  ;; enable org-bullets with org-mode
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  ;; change org-bullets faces
-  (setq org-bullets-bullet-list
-        '("▶" "⚫" "◆" "◉" "○" "◇" "▸"))
-  ;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
-  ;;     ;;; Small
-  ;;     ;; ► • ★ ▸
-#+end_src
 * Agenda
 ** Global
 Keybiding for Agenda(s)
