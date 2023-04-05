@@ -109,6 +109,8 @@ Packages used in this specific configuration. You may want to adapt this list. T
         evil                ; A VI layer for Emacs
         evil-collection
         evil-org
+        org-roam            ; Roam implementation for Emacs/org
+        org-roam-ui         ; A graph generator for org-roam notes
         f                   ; Modern API for working with files and directories
         corfu               ; Completion Overlay Region FUnction
         deft                ; Quickly browse, filter, and edit plain text notes
@@ -978,6 +980,20 @@ Make sure underline is positionned at the very bottom.
 
 #+end_src
 
+** Navigation mode (Evil)
+
+Put this before loading evil to work
+#+begin_src emacs-lisp
+(setq evil-want-C-i-jump nil)
+(setq evil-want-abbrev-expand-on-insert-exit nil)
+(setq evil-want-keybinding nil)
+#+end_src
+Then we start evil and evil-collection modes
+#+begin_src emacs-lisp
+(evil-mode 1)
+(when (require 'evil-collection nil t)
+(evil-collection-init))
+#+end_src
 ** Default mode :HOOK:MODE:
 
 Default & initial mode is text.
@@ -1434,7 +1450,7 @@ We start the nano modeline.
 
 #+end_src
 
-** Minibuffer :MODE:HOOK:
+** COMMENT Minibuffer :MODE:HOOK:
 
 Headerline (fake) for minibuffer
 
@@ -1584,7 +1600,7 @@ No prompt editing and recursive minibuffer
 
 #+end_src
 
-** Miniframe :MODE:FACE:BUGFIX:
+** COMMENT Miniframe :MODE:FACE:BUGFIX:
 
 #+begin_src emacs-lisp
 
@@ -1706,4 +1722,480 @@ This function used as value for `resize-mini-frames' variable."
 
 (my/report-time "Minibuffer/Modeline")
 
+#+end_src
+
+* Note Taking
+** Org roam 
+Global configuratoin
+#+begin_src emacs-lisp
+  (setq org-roam-directory (file-truename "/home/zakaria/dox/braindump/org-files"))
+  (org-roam-db-autosync-mode)                    ; autosync for db
+  (setq org-roam-dailies-directory (file-truename "/home/zakaria/org/daily")) ; directory for my dailies
+  (setq org-roam-db-gc-threshold most-positive-fixnum) ; Garbage collection
+
+#+end_src
+
+Keybindings
+#+begin_src emacs-lisp
+(bind-key "C-c n f" #'org-roam-node-find)
+(bind-key "C-c n l" #'org-roam-buffer-toggle)
+(bind-key "C-c n g" #'org-roam-ui-mode)
+(bind-key "C-c n i" #'org-roam-node-insert)
+(bind-key "C-c n t" #'org-roam-tag-add)
+(bind-key "C-c n r" #'org-roam-ref-add)
+(bind-key "C-c n c" #'org-roam-capture)
+(bind-key "C-c n j" #'org-roam-dailies-capture-today)
+(bind-key "C-c n d" #'org-roam-dailies-map)
+;; (require 'org-roam-protocol))
+#+end_src
+
+Configuring the Org-roam buffer display
+
+#+begin_src emacs-lisp
+(add-to-list 'display-buffer-alist
+             '("\\*org-roam\\*"
+               (display-buffer-in-direction)
+               (direction . right)
+               (window-width . 0.45)
+               (window-height . fit-window-to-buffer)))
+#+end_src
+*** org roam templates
+#+begin_src emacs-lisp
+  ;; org-roam templates
+  (setq org-roam-capture-templates
+        '(("m" "main" plain
+           "%?"
+           :if-new
+           (file+head "main/%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("r" "reference" plain "%?\n* References :ignore:\n#+print_bibliography"
+           :if-new
+           (file+head "refs/%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("c" "comp-sci" plain "%?"
+           :if-new
+           (file+head "cs/%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+title: ${title}\n#+filetags: :computer-science:\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("a" "article" plain "%?"
+           :if-new
+           (file+head "articles/%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+title: ${title}\n#+filetags: :article:\n")
+           :immediate-finish t
+           :unnarrowed t)))
+
+  ;; (cl-defmethod org-roam-node-type ((node org-roam-node))
+  ;;   "Return the TYPE of NODE."
+  ;;   (condition-case nil
+  ;;       (file-name-nondirectory
+  ;;        (directory-file-name
+  ;;         (file-name-directory
+  ;;          (file-relative-name (org-roam-node-file node) org-roam-directory))))
+  ;;     (error "")))
+  ;; TODO: use icons instead
+  ;; (setq org-roam-node-display-template
+  ;;       (concat "${type:10} ${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
+  (setq org-roam-node-display-template
+        (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
+#+end_src
+** org-roam-ui
+#+begin_src emacs-lisp
+(setq org-roam-ui-sync-theme nil
+      org-roam-ui-follow t
+      org-roam-ui-update-on-save t
+      org-roam-ui-open-on-start t)
+#+end_src
+** Deft
+- The Deft interface can slow down quickly when the number of files get huge.
+- ~Notdeft~ is a fork of Deft that uses an external search engine and indexer.
+  #+BEGIN_SRC emacs-lisp
+    ;; disable linum-mode (line number)
+    (add-hook 'deft
+              '(lambda () (linum-mode nil)))
+    (use-package deft
+      :commands (deft)
+      :custom       (deft-directory "~/org/notes" )
+      (deft-recursive t)
+      (deft-extensions '("org" "md" "txt") )
+      (deft-use-filename-as-title t)
+      (deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase))
+        deft-org-mode-title-prefix t
+        deft-text-mode 'org-mode))
+    
+    
+  #+END_SRC
+** TODO Testing 
+#+begin_src emacs-lisp
+(cl-defmethod org-roam-node-directories ((node org-roam-node))
+  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (format "%s" (car (split-string dirs "/")))
+    ""))
+
+(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
+  (let* ((count (caar (org-roam-db-query
+                       [:select (funcall count source)
+                                :from links
+                                :where (= dest $s1)
+                                :and (= type "id")]
+                       (org-roam-node-id node)))))
+    (format "[%d]" count)))
+
+
+(setq org-roam-node-display-template
+      (concat "${directories:10} ${title:*} ${backlinkscount:6}" (propertize "${tags:20}" 'face 'org-tag) ))
+#+end_src
+
+
+
+* ORG
+** General
+
+#+begin_src emacs-lisp
+(setq-default org-directory "~/org"
+              org-ellipsis " …"              ; Nicer ellipsis
+              org-tags-column 1              ; Tags next to header title
+              org-hide-emphasis-markers t    ; Hide markers
+              org-cycle-separator-lines 2    ; Number of empty lines between sections
+              org-use-tag-inheritance nil    ; Tags ARE NOT inherited 
+              org-use-property-inheritance t ; Properties ARE inherited
+              org-indent-indentation-per-level 2 ; Indentation per level
+              org-link-use-indirect-buffer-for-internals t ; Indirect buffer for internal links
+              org-fontify-quote-and-verse-blocks t ; Specific face for quote and verse blocks
+              org-return-follows-link nil    ; Follow links when hitting return
+              org-image-actual-width nil     ; Resize image to window width
+              org-indirect-buffer-display 'other-window ; Tab on a task expand it in a new window
+              org-outline-path-complete-in-steps nil ; No steps in path display
+              org-log-into-drawer t)         ; Log into drawers
+#+end_src
+#+begin_src emacs-lisp
+  (setq my/section-start-time (current-time))
+#+end_src
+Better latex preview (see https://stackoverflow.com/questions/30151338)
+#+begin_src emacs-lisp
+  (setq org-latex-create-formula-image-program 'dvisvgm)
+#+end_src
+Use points "•" for items instead of "-"
+#+begin_src emacs-lisp
+  (setq org-ellipsis " ⤵")
+  ;; use '•' instead of '-' in lists
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 ()
+                                  (compose-region
+                                   (match-beginning 1)
+                                   (match-end 1) "•"))))))
+#+end_src
+** Faces
+#+begin_src emacs-lisp
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED")))
+(setq org-todo-keyword-faces
+      '(
+        ("TODO" . (:foreground "brown2" :weight bold))
+        ("READ" . (:foreground "brown2" :weight bold))
+        
+        ("NEXT" . (:foreground "#00b0d1"  :weight bold ))
+        ("READING" . (:foreground "#00b0d1"  :weight bold ))
+        
+        ("DONE" . (:foreground "#16a637" :weight bold))
+        
+        ("HOLD" . (:foreground "orange"  :weight bold))
+        
+        ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
+        ))
+#+end_src
+** org-appear
+Show hidden emphasis markers when moving accross the word
+#+begin_src emacs-lisp
+(setq org-appear-autolinks t
+      org-appear-autosubmarkers t)
+(add-hook 'org-mode-hook (lambda () (org-appear-mode 1)))
+#+end_src
+** org capture
+#+begin_src emacs-lisp
+(setq org-capture-templates
+      `(("i" " inbox" entry  (file "~/org/gtd/inbox.org")
+         ,(concat "* TODO %?\n"
+                  "/Entered on/ %U"))
+
+        ("p" " post" entry  (file "~/org/posts.org")
+         ,(concat "* TODO %?\n"
+                  "/Entered on/ %U"))
+
+        ("L" " link" entry (file+headline "~/org/gtd/inbox.org" "Links")
+         ,(concat "* TODO %a %?\n"
+                  "/Entered on/ %U") :immediate-finish t)
+
+        ("s" " slipbox" entry (file "~/dox/braindump/org-files/fleetnotes.org")
+         "* %<%a, %d %b %y (%H:%M)> : %?\n")
+
+        ;; ("e" " email" entry (file+headline "~/org/gtd/emails.org" "Emails")
+        ;;  "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+
+        ;; ("m" "mood" entry (file "~/org/mood.org" )
+        ;;  ,(concat "* %? \n %^{MOOD} \n"
+        ;;           "/Entered on/ %U") :immediate-finish t)
+        ))
+#+end_src
+** org protocol
+#+begin_src emacs-lisp
+(require 'org-protocol)
+#+end_src
+** COMMENT org-gloassary
+#+begin_example
+- Usage :: 
+  - term :: definition         # implicit plural form
+  - term, terms :: definition  # explicit plural form
+  Apple and ACRs, why not substitute something.
+  : An apple and ACR, why not substitute something.
+
+  Mentioning apple again, and now bananas.
+
+  This is an org document.
+
+  * Glossary
+  - apple :: A fruit.
+  - banana :: Another fruit.
+  - pear :: Yet another fruit.
+  * Acronyms
+  - ACR :: Absolutely Credible acRonym
+  * Text Substitutions
+  - substitute :: replace
+  * Index Terms
+  - org
+    - ACR :: test
+#+end_example
+#+begin_src emacs-lisp
+(require 'org-glossary)
+#+end_src
+** COMMENT org bullets
+#+begin_src emacs-lisp
+  (straight-use-package 'org-bullets)
+  ;; enable org-bullets with org-mode
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  ;; change org-bullets faces
+  (setq org-bullets-bullet-list
+        '("▶" "⚫" "◆" "◉" "○" "◇" "▸"))
+  ;;     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
+  ;;     ;;; Small
+  ;;     ;; ► • ★ ▸
+#+end_src
+* Agenda
+** Global
+Keybiding for Agenda(s)
+#+begin_src emacs-lisp
+(defun zk/switch-to-agenda ()
+  (interactive)
+  (org-agenda nil "g"))
+
+(bind-key "C-c a" #'zk/switch-to-agenda)
+#+end_src
+Use evil mode with org-agenda (with evil-org-agenda)
+#+begin_src emacs-lisp
+(require 'evil-org)
+(require 'evil-org-agenda)
+(evil-org-agenda-set-keys)
+#+end_src
+Files
+#+begin_src emacs-lisp
+(setq org-agenda-directory "~/org/gtd/"
+      org-agenda-files '("~/org/gtd" ))                  ;; org-agenda-files
+#+end_src
+Settings
+#+begin_src emacs-lisp
+(setq org-agenda-dim-blocked-tasks nil                    ;; Do not dim blocked tasks
+      org-agenda-span 'day                                ;; show me one day
+      org-agenda-inhibit-startup t                        ;; Stop preparing agenda buffers on startup:
+      org-agenda-use-tag-inheritance nil                  ;; Disable tag inheritance for agendas:
+      org-agenda-show-log t
+      org-agenda-skip-scheduled-if-deadline-is-shown t     ;; skip scheduled if they are already shown as a deadline
+      org-agenda-deadline-leaders '("!D!: " "D%2d: " "")
+      org-agenda-scheduled-leaders '("" "S%3d: "))
+
+
+(setq org-agenda-start-on-weekday 0                          ;; Weekday start on Sunday
+      org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R,S-L skip the note/log info[used when fixing the state]
+      org-log-done 'time
+      org-agenda-tags-column -130                          ;; Set tags far to the right
+      org-clock-out-remove-zero-time-clocks t              ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+      org-clock-persist t                                  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+      org-use-fast-todo-selection t                        ;; from any todo state to any other state; using it keys
+      org-agenda-window-setup 'only-window)                 ;; Always open my agenda in fullscreen
+
+;; define org's states
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+;; sort my org-agenda preview
+
+;;Thanks to Erik Anderson, we can also add a hook that will log when we activate
+;;a task by creating an “ACTIVATED” property the first time the task enters the NEXT state:
+(defun log-todo-next-creation-date (&rest ignore)
+  "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
+  (when (and (string= (org-get-todo-state) "NEXT")
+             (not (org-entry-get nil "ACTIVATED")))
+    (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
+
+(add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
+(add-hook 'org-agenda-mode-hook                            ;; disable line-number when i open org-agenda view
+          (lambda() (display-line-numbers-mode -1)))
+
+;; (define-key global-map (kbd "C-c a") 'org-agenda)
+#+end_src
+Prefix config
+#+begin_src emacs-lisp
+(setq org-agenda-prefix-format
+      '((agenda . " %i %-12:c%?-12t %s")
+        (todo   . " ")
+        (tags   . " %i %-12:c")
+        (search . " %i %-12:c")))
+#+end_src
+#+begin_src emacs-lisp
+(setq org-agenda-time-grid
+      '((daily today require-timed)
+        ()
+        "......" "----------------"))
+
+(setq org-agenda-current-time-string "   now")
+;; (setq org-agenda-time-grid
+;;       '((daily today require-timed)
+;;         (800 1000 1200 1400 1600 1800 2000)
+;;         "......" "----------------"))
+#+end_src
+Sorting strategy
+#+begin_src emacs-lisp
+(setq org-agenda-sorting-strategy
+      '((agenda habit-down time-up scheduled-down
+                priority-down category-keep deadline-down)
+        (todo priority-down category-keep)
+        (tags priority-down category-keep)
+        (search category-keep)))
+#+end_src
+** Daily Agenda
+#+begin_src emacs-lisp
+(setq org-agenda-block-separator  9472)                  ;; use 'straight line' as a block-agenda divider
+(setq org-agenda-custom-commands
+      '(("g" "Get Things Done (GTD)"
+         ((agenda ""
+                  ((org-agenda-span 'day)
+                   (org-deadline-warning-days 365)))
+
+          (todo "NEXT"
+                ((org-agenda-overriding-header "In Progress")
+                 (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                 (org-agenda-files '("~/org/gtd/someday.org"
+                                     "~/org/gtd/projects.org"
+                                     "~/org/gtd/next.org"))
+                 ))
+          (todo "TODO"
+                ((org-agenda-overriding-header "inbox")
+                 (org-agenda-files '("~/org/gtd/inbox.org"))))
+
+          (todo "TODO"
+                ((org-agenda-overriding-header "Emails")
+                 (org-agenda-files '("~/org/gtd/emails.org"))))
+
+          (todo "TODO"
+                ((org-agenda-overriding-header "Projects")
+                 (org-agenda-files '("~/org/gtd/projects.org")))
+                )
+
+          (todo "TODO"
+                ((org-agenda-overriding-header "One-off Tasks")
+                 (org-agenda-files '("~/org/gtd/next.org"))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if
+                                             'deadline 'scheduled))))
+          nil))))
+#+end_src
+keybinding to my daily agenda
+#+begin_src emacs-lisp
+#+end_src
+NEXT and HOLD exchange for clocking out and clocking in
+#+begin_src emacs-lisp
+;; PS: check out the original code from here:
+;; https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
+;;clocking-out changes NEXT to HOLD
+;;clocking-in changes HOLD to NEXT
+(setq org-clock-in-switch-to-state 'zk/clock-in-to-next)
+(setq org-clock-out-switch-to-state 'zk/clock-out-to-hold)
+(defun zk/clock-in-to-next (kw)
+  "Switch a task from TODO to NEXT when clocking in.
+                  Skips capture tasks, projects, and subprojects.
+                  Switch projects and subprojects from NEXT back to TODO"
+  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+    (cond
+     ((and (member (org-get-todo-state) (list "TODO")))
+      "NEXT")
+     ((and (member (org-get-todo-state) (list "HOLD")))
+      "NEXT")
+     )))
+(defun zk/clock-out-to-hold (kw)
+  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+    (cond
+     ((and (member (org-get-todo-state) (list "NEXT")))  "HOLD")
+     )))
+#+end_src
+** Habit
+    #+BEGIN_SRC emacs-lisp
+      (require 'org-habit)
+      (add-to-list 'org-modules 'org-habit)
+      (setq org-habit-graph-column 48)
+      (setq org-habit-show-habits-only-for-today t)
+    #+END_SRC
+** Refiling
+    #+begin_src emacs-lisp
+      ;; Refiling [need reading]
+      ;;tell org-mode we want to specify a refile target using the file path.
+      (setq org-refile-use-outline-path 'file
+       org-outline-path-complete-in-steps nil)
+      (setq org-refile-allow-creating-parent-nodes 'confirm)
+      (setq org-refile-targets '(("~/org/gtd/next.org" :level . 0)
+                                 ("~/org/ideas.org" :level . 1)
+                                 ("~/org/links.org" :level . 1)
+                                 ("~/org/gtd/someday.org" :regexp . "\\(?:\\(?:Task\\|idea\\|p\\(?:\\(?:os\\|rojec\\)t\\)\\)s\\)")
+                                 ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
+      ;;("someday.org" :level . 0)
+    #+end_src
+
+** Babel
+A shortcut for emacs-lisp source blocks. Type “<S” (in org-mode) then press tab.
+#+begin_src emacs-lisp
+  ;; (require 'org-tempo)
+  ;; (add-to-list 'org-structure-template-alist
+  ;;              '("S" . "src emacs-lisp"
+  ;;                "P" . "src python"
+  ;;                ))
+#+end_src
+#+begin_src emacs-lisp
+(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
+              org-adapt-indentation nil          ; Adaptive indentation
+              org-src-tab-acts-natively t        ; Tab acts as in source editing
+              org-confirm-babel-evaluate nil     ; No confirmation before executing code
+              org-edit-src-content-indentation 0 ; No relative indentation for code blocks
+              org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+#+end_src
+Add languages to babel
+#+begin_src emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (shell . t)
+   (emacs-lisp . t)
+   (R . t)
+   ))
+#+end_src
+* Versioning  
+** Magit
+Prevent magit from writing in the header line.
+#+begin_src emacs-lisp
+(bind-key "C-c g" #'magit)
+(advice-add 'magit-set-header-line-format :override #'ignore)
 #+end_src

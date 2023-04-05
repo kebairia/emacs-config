@@ -53,6 +53,8 @@
         evil                ; A VI layer for Emacs
         evil-collection
         evil-org
+        org-roam            ; Roam implementation for Emacs/org
+        org-roam-ui         ; A graph generator for org-roam notes
         f                   ; Modern API for working with files and directories
         corfu               ; Completion Overlay Region FUnction
         deft                ; Quickly browse, filter, and edit plain text notes
@@ -327,6 +329,45 @@
 
 (bind-key "C-x k" #'kill-current-buffer)
 
+;; disable linum-mode
+(add-hook 'ibuffer-mode (lambda() (linum-mode -1)))
+(global-set-key (kbd "C-x C-b") 'ibuffer) ;; Use Ibuffer for Buffer List
+;; create a function that define a group
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("Emacs"  (or
+                    (name . "^\\*Messages\\*$")
+                    (name . "^\\*scratch\\*$")
+                    ))
+         ("Agenda"  (or
+                     (name . "inbox.org")
+                     (name . "next.org")
+                     (name . "someday.org")
+                     (name . "emails.org")
+                     (name . "archive.org")
+                     (name . "habits.org")
+                     (name . "projects.org")
+                     (name . "weekly_reviews.org")
+                     ))
+
+         ("Org"  (name . "^.*org$"))
+         ("PDF"  (name . "^.*pdf"))
+         ("Python"  (name . "^.*py$"))
+         ("Lisp"  (name . "^.*el"))
+         ("Web"  (or
+                  (name . "^.*html$")
+                  (name . "^.*css")
+                  (name . "^.*php")
+                  ))
+         ("Dired"  (mode . dired-mode))
+         ))
+      )
+
+(add-hook 'ibuffer-mode-hook
+          '(lambda ()
+             (ibuffer-auto-mode 1)
+             (ibuffer-switch-to-saved-filter-groups "default"))) ;; use the group default
+
 (setq vc-follow-symlinks t)
 
 (setq-default show-help-function nil    ; No help text
@@ -485,6 +526,14 @@
 (my/report-time "Visual")
 
 (setq my/section-start-time (current-time))
+
+(setq evil-want-C-i-jump nil)
+(setq evil-want-abbrev-expand-on-insert-exit nil)
+(setq evil-want-keybinding nil)
+
+(evil-mode 1)
+(when (require 'evil-collection nil t)
+(evil-collection-init))
 
 (setq-default initial-major-mode 'text-mode   ; Initial mode is text
               default-major-mode 'text-mode)  ; Default mode is text
@@ -727,206 +776,360 @@
 
 (nano-modeline-mode 1)
 
-(require 'minibuffer-header)
-
-(setq minibuffer-header-show-message t
-      minibuffer-header-hide-prompt t
-      minibuffer-header-default-message "")
-
-(set-face-attribute 'minibuffer-header-face nil
-                    :inherit 'nano-subtle
-                    :extend t)
-(set-face-attribute 'minibuffer-header-message-face nil
-                    :inherit '(nano-subtle nano-faded)
-                    :extend t)
-
-(defun my/minibuffer-header-format (prompt)
-  "Minibuffer header"
-  
-  (let* ((prompt (replace-regexp-in-string "[: \t]*$" "" prompt))
-         (depth (minibuffer-depth))
-         (prompt (cond ((string= prompt "M-x") "Extended command")
-                       ((string= prompt "Function") "Help on function")
-                       ((string= prompt "Callable") "Help on function or macro")
-                       ((string= prompt "Variable") "Help on variable")
-                       ((string= prompt "Command") "Help on command")
-                       ((string= prompt "Eval") "Evaluate lisp expression")
-                       (t prompt))))
-    (concat
-     (propertize (format " %d " depth)
-                 'face `(:inherit (nano-salient-i nano-strong)
-                         :extend t))
-     (propertize " "
-                 'face 'nano-subtle 'display `(raise ,nano-modeline-space-top))
-
-     (propertize prompt
-                 'face `(:inherit (nano-subtle nano-strong nano-salient)
-                         :extend t))
-     (propertize " "
-                 'face 'nano-subtle 'display `(raise ,nano-modeline-space-bottom))
-     (propertize "\n" 'face 'highlight)
-     (propertize " " 'face 'highlight
-                     'display `(raise ,nano-modeline-space-top))
-     (propertize "︎︎" 'face '(:inherit (nano-salient nano-strong)))
-     (propertize " " 'face 'highlight
-                     'display `(raise ,nano-modeline-space-bottom)))))
-
-(setq minibuffer-header-format #'my/minibuffer-header-format)
-
-(minibuffer-header-mode)
-
-(defun my/minibuffer-setup ()
-
-  (set-window-margins nil 0 0)
-  (set-fringe-style '(0 . 0))
-  (cursor-intangible-mode t)
-  (face-remap-add-relative 'default :inherit 'highlight))
-
-(add-hook 'minibuffer-setup-hook #'my/minibuffer-setup)
-
-;; Code from https://stackoverflow.com/questions/965263
-(defun my/lookup-function (keymap func)
-  (let ((all-bindings (where-is-internal (if (symbolp func)
-                                             func
-                                           (cl-first func))
-                                         keymap))
-        keys key-bindings)
-    (dolist (binding all-bindings)
-      (when (and (vectorp binding)
-                 (integerp (aref binding 0)))
-        (push binding key-bindings)))
-    (push (mapconcat #'key-description key-bindings " or ") keys)
-    (car keys)))
-
-
-(defun my/minibuffer-show-last-command-setup ()
-  (setq minibuffer-header-default-message
-   (my/lookup-function (current-global-map) this-command)))
-
-(add-hook 'minibuffer-setup-hook #'my/minibuffer-show-last-command-setup)
-
-(defun my/minibuffer-show-last-command-exit ()
-  (setq minibuffer-header-default-message ""))
-(add-hook 'minibuffer-exit-hook #'my/minibuffer-show-last-command-exit)
-
-(defun my/vertico--resize-window (height)
-  "Resize active minibuffer window to HEIGHT."
-;;  (setq-local truncate-lines (< (point) (* 0.8 (vertico--window-width)))
-    (setq-local truncate-lines t
-                resize-mini-windows 'grow-only
-                max-mini-window-height 1.0)
-  (unless (frame-root-window-p (active-minibuffer-window))
-    (unless vertico-resize
-      (setq height (max height vertico-count)))
-    (let* ((window-resize-pixelwise t)
-           (dp (- (max (cdr (window-text-pixel-size))
-                       (* (default-line-height) (1+ height)))
-                  (window-pixel-height))))
-      (when (or (and (> dp 0) (/= height 0))
-                (and (< dp 0) (eq vertico-resize t)))
-        (window-resize nil dp nil nil 'pixelwise)))))
-
-(advice-add #'vertico--resize-window :override #'my/vertico--resize-window)
-
-(setq minibuffer-prompt-properties '(read-only t
-                                     cursor-intangible t
-                                     face minibuffer-prompt)
-      enable-recursive-minibuffers t)
-
-(require 'mini-frame)
-
-(defcustom my/minibuffer-position 'bottom
-  "Minibuffer position, one of 'top or 'bottom"
-  :type '(choice (const :tag "Top"    top)
-                 (const :tag "Bottom" bottom))
-  :group 'nano-minibuffer)
-
-
-(defun my/minibuffer--frame-parameters ()
-  "Compute minibuffer frame size and position."
-
-  ;; Quite precise computation to align the minibuffer and the
-  ;; modeline when they are both at top position
-  (let* ((edges (window-pixel-edges)) ;; (left top right bottom)
-         (body-edges (window-body-pixel-edges)) ;; (left top right bottom)
-         (left (nth 0 edges)) ;; Take margins into account
-         (top (nth 1 edges)) ;; Drop header line
-         (right (nth 2 edges)) ;; Take margins into account
-         (bottom (nth 3 body-edges)) ;; Drop header line
-         (left (if (eq left-fringe-width 0)
-                   left
-                 (- left (frame-parameter nil 'left-fringe))))
-         (right (nth 2 edges))
-         (right (if (eq right-fringe-width 0)
-                    right
-                  (+ right (frame-parameter nil 'right-fringe))))
-         (border 1)
-         (width (- right left (* 1 border)))
-
-         ;; Window divider mode
-         (width (- width (if (and (bound-and-true-p window-divider-mode)
-                                  (or (eq window-divider-default-places 'right-only)
-                                      (eq window-divider-default-places t))
-                                  (window-in-direction 'right (selected-window)))
-                             window-divider-default-right-width
-                           0)))
-         (y (- top border)))
-
-    (append `((left-fringe . 0)
-              (right-fringe . 0)
-              (user-position . t) 
-              (foreground-color . ,(face-foreground 'highlight nil 'default))
-              (background-color . ,(face-background 'highlight nil 'default)))
-            (cond ((and (eq my/minibuffer-position 'bottom))
-                   `((top . -1)
-                     (left . 0)
-                     (width . 1.0)
-                     (child-frame-border-width . 0)
-                     (internal-border-width . 0)))
-                  (t
-                   `((left . ,(- left border))
-                     (top . ,y)
-
-                     (width . (text-pixels . ,width))
-                     (child-frame-border-width . ,border)
-                     (internal-border-width . 0)))))))
-
-  (set-face-background 'child-frame-border (face-foreground 'nano-faded))
-  (setq mini-frame-default-height 3)
-  (setq mini-frame-create-lazy t)
-  (setq mini-frame-show-parameters 'my/minibuffer--frame-parameters)
-  (setq mini-frame-ignore-commands
-        '("edebug-eval-expression" debugger-eval-expression))
-  (setq mini-frame-internal-border-color (face-foreground 'nano-faded))
-
-  (setq mini-frame-resize-min-height 3)
-  (setq mini-frame-resize t)
-  ;; (setq mini-frame-resize 'grow-only)
-  ;; (setq mini-frame-default-height (+ 1 vertico-count))
-  ;; (setq mini-frame-resize-height (+ 1 vertico-count))
-  ;; (setq mini-frame-resize nil)
-
-;; (mini-frame-mode 1)
-
-(defun my/mini-frame--resize-mini-frame (frame)
-  "Resize FRAME vertically only.
-This function used as value for `resize-mini-frames' variable."
-  (funcall mini-frame--fit-frame-function
-           frame
-           mini-frame-resize-max-height
-           (if (eq mini-frame-resize 'grow-only)
-               (max (frame-parameter frame 'height)
-                    mini-frame-resize-min-height)
-             mini-frame-resize-min-height)
-           ;; A max-width must be included to work around a bug in Emacs which
-           ;; causes wrapping to not be taken into account in some situations
-           ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=56102
-           (window-body-width)
-           nil
-           'vertically)
-
-  (if (eq my/minibuffer-position 'top)
-      (modify-frame-parameters  mini-frame-completions-frame `((top . 0)))
-    (modify-frame-parameters  mini-frame-completions-frame `((top . (- 1))))))
-
 (my/report-time "Minibuffer/Modeline")
+
+(setq org-roam-directory (file-truename "/home/zakaria/dox/braindump/org-files"))
+(org-roam-db-autosync-mode)                    ; autosync for db
+(setq org-roam-dailies-directory (file-truename "/home/zakaria/org/daily")) ; directory for my dailies
+(setq org-roam-db-gc-threshold most-positive-fixnum) ; Garbage collection
+
+(bind-key "C-c n f" #'org-roam-node-find)
+(bind-key "C-c n l" #'org-roam-buffer-toggle)
+(bind-key "C-c n g" #'org-roam-ui-mode)
+(bind-key "C-c n i" #'org-roam-node-insert)
+(bind-key "C-c n t" #'org-roam-tag-add)
+(bind-key "C-c n r" #'org-roam-ref-add)
+(bind-key "C-c n c" #'org-roam-capture)
+(bind-key "C-c n j" #'org-roam-dailies-capture-today)
+(bind-key "C-c n d" #'org-roam-dailies-map)
+;; (require 'org-roam-protocol))
+
+(add-to-list 'display-buffer-alist
+             '("\\*org-roam\\*"
+               (display-buffer-in-direction)
+               (direction . right)
+               (window-width . 0.45)
+               (window-height . fit-window-to-buffer)))
+
+;; org-roam templates
+(setq org-roam-capture-templates
+      '(("m" "main" plain
+         "%?"
+         :if-new
+         (file+head "main/%<%Y%m%d%H%M%S>-${slug}.org"
+                    "#+title: ${title}\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("r" "reference" plain "%?\n* References :ignore:\n#+print_bibliography"
+         :if-new
+         (file+head "refs/%<%Y%m%d%H%M%S>-${slug}.org"
+                    "#+title: ${title}\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("c" "comp-sci" plain "%?"
+         :if-new
+         (file+head "cs/%<%Y%m%d%H%M%S>-${slug}.org"
+                    "#+title: ${title}\n#+filetags: :computer-science:\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("a" "article" plain "%?"
+         :if-new
+         (file+head "articles/%<%Y%m%d%H%M%S>-${slug}.org"
+                    "#+title: ${title}\n#+filetags: :article:\n")
+         :immediate-finish t
+         :unnarrowed t)))
+
+;; (cl-defmethod org-roam-node-type ((node org-roam-node))
+;;   "Return the TYPE of NODE."
+;;   (condition-case nil
+;;       (file-name-nondirectory
+;;        (directory-file-name
+;;         (file-name-directory
+;;          (file-relative-name (org-roam-node-file node) org-roam-directory))))
+;;     (error "")))
+;; TODO: use icons instead
+;; (setq org-roam-node-display-template
+;;       (concat "${type:10} ${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
+(setq org-roam-node-display-template
+      (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
+
+(setq org-roam-ui-sync-theme nil
+      org-roam-ui-follow t
+      org-roam-ui-update-on-save t
+      org-roam-ui-open-on-start t)
+
+;; disable linum-mode (line number)
+(add-hook 'deft
+          '(lambda () (linum-mode nil)))
+(use-package deft
+  :commands (deft)
+  :custom       (deft-directory "~/org/notes" )
+  (deft-recursive t)
+  (deft-extensions '("org" "md" "txt") )
+  (deft-use-filename-as-title t)
+  (deft-file-naming-rules
+    '((noslash . "-")
+      (nospace . "-")
+      (case-fn . downcase))
+    deft-org-mode-title-prefix t
+    deft-text-mode 'org-mode))
+
+(cl-defmethod org-roam-node-directories ((node org-roam-node))
+  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (format "%s" (car (split-string dirs "/")))
+    ""))
+
+(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
+  (let* ((count (caar (org-roam-db-query
+                       [:select (funcall count source)
+                                :from links
+                                :where (= dest $s1)
+                                :and (= type "id")]
+                       (org-roam-node-id node)))))
+    (format "[%d]" count)))
+
+
+(setq org-roam-node-display-template
+      (concat "${directories:10} ${title:*} ${backlinkscount:6}" (propertize "${tags:20}" 'face 'org-tag) ))
+
+(setq-default org-directory "~/org"
+              org-ellipsis " …"              ; Nicer ellipsis
+              org-tags-column 1              ; Tags next to header title
+              org-hide-emphasis-markers t    ; Hide markers
+              org-cycle-separator-lines 2    ; Number of empty lines between sections
+              org-use-tag-inheritance nil    ; Tags ARE NOT inherited 
+              org-use-property-inheritance t ; Properties ARE inherited
+              org-indent-indentation-per-level 2 ; Indentation per level
+              org-link-use-indirect-buffer-for-internals t ; Indirect buffer for internal links
+              org-fontify-quote-and-verse-blocks t ; Specific face for quote and verse blocks
+              org-return-follows-link nil    ; Follow links when hitting return
+              org-image-actual-width nil     ; Resize image to window width
+              org-indirect-buffer-display 'other-window ; Tab on a task expand it in a new window
+              org-outline-path-complete-in-steps nil ; No steps in path display
+              org-log-into-drawer t)         ; Log into drawers
+
+(setq my/section-start-time (current-time))
+
+(setq org-latex-create-formula-image-program 'dvisvgm)
+
+(setq org-ellipsis " ⤵")
+;; use '•' instead of '-' in lists
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 ()
+                                (compose-region
+                                 (match-beginning 1)
+                                 (match-end 1) "•"))))))
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED")))
+(setq org-todo-keyword-faces
+      '(
+        ("TODO" . (:foreground "brown2" :weight bold))
+        ("READ" . (:foreground "brown2" :weight bold))
+        
+        ("NEXT" . (:foreground "#00b0d1"  :weight bold ))
+        ("READING" . (:foreground "#00b0d1"  :weight bold ))
+        
+        ("DONE" . (:foreground "#16a637" :weight bold))
+        
+        ("HOLD" . (:foreground "orange"  :weight bold))
+        
+        ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
+        ))
+
+(setq org-appear-autolinks t
+      org-appear-autosubmarkers t)
+(add-hook 'org-mode-hook (lambda () (org-appear-mode 1)))
+
+(setq org-capture-templates
+      `(("i" " inbox" entry  (file "~/org/gtd/inbox.org")
+         ,(concat "* TODO %?\n"
+                  "/Entered on/ %U"))
+
+        ("p" " post" entry  (file "~/org/posts.org")
+         ,(concat "* TODO %?\n"
+                  "/Entered on/ %U"))
+
+        ("L" " link" entry (file+headline "~/org/gtd/inbox.org" "Links")
+         ,(concat "* TODO %a %?\n"
+                  "/Entered on/ %U") :immediate-finish t)
+
+        ("s" " slipbox" entry (file "~/dox/braindump/org-files/fleetnotes.org")
+         "* %<%a, %d %b %y (%H:%M)> : %?\n")
+
+        ;; ("e" " email" entry (file+headline "~/org/gtd/emails.org" "Emails")
+        ;;  "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+
+        ;; ("m" "mood" entry (file "~/org/mood.org" )
+        ;;  ,(concat "* %? \n %^{MOOD} \n"
+        ;;           "/Entered on/ %U") :immediate-finish t)
+        ))
+
+(require 'org-protocol)
+
+(defun zk/switch-to-agenda ()
+  (interactive)
+  (org-agenda nil "g"))
+
+(bind-key "C-c a" #'zk/switch-to-agenda)
+
+(require 'evil-org)
+(require 'evil-org-agenda)
+(evil-org-agenda-set-keys)
+
+(setq org-agenda-directory "~/org/gtd/"
+      org-agenda-files '("~/org/gtd" ))                  ;; org-agenda-files
+
+(setq org-agenda-dim-blocked-tasks nil                    ;; Do not dim blocked tasks
+      org-agenda-span 'day                                ;; show me one day
+      org-agenda-inhibit-startup t                        ;; Stop preparing agenda buffers on startup:
+      org-agenda-use-tag-inheritance nil                  ;; Disable tag inheritance for agendas:
+      org-agenda-show-log t
+      org-agenda-skip-scheduled-if-deadline-is-shown t     ;; skip scheduled if they are already shown as a deadline
+      org-agenda-deadline-leaders '("!D!: " "D%2d: " "")
+      org-agenda-scheduled-leaders '("" "S%3d: "))
+
+
+(setq org-agenda-start-on-weekday 0                          ;; Weekday start on Sunday
+      org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R,S-L skip the note/log info[used when fixing the state]
+      org-log-done 'time
+      org-agenda-tags-column -130                          ;; Set tags far to the right
+      org-clock-out-remove-zero-time-clocks t              ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+      org-clock-persist t                                  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+      org-use-fast-todo-selection t                        ;; from any todo state to any other state; using it keys
+      org-agenda-window-setup 'only-window)                 ;; Always open my agenda in fullscreen
+
+;; define org's states
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+;; sort my org-agenda preview
+
+;;Thanks to Erik Anderson, we can also add a hook that will log when we activate
+;;a task by creating an “ACTIVATED” property the first time the task enters the NEXT state:
+(defun log-todo-next-creation-date (&rest ignore)
+  "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
+  (when (and (string= (org-get-todo-state) "NEXT")
+             (not (org-entry-get nil "ACTIVATED")))
+    (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
+
+(add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
+(add-hook 'org-agenda-mode-hook                            ;; disable line-number when i open org-agenda view
+          (lambda() (display-line-numbers-mode -1)))
+
+;; (define-key global-map (kbd "C-c a") 'org-agenda)
+
+(setq org-agenda-prefix-format
+      '((agenda . " %i %-12:c%?-12t %s")
+        (todo   . " ")
+        (tags   . " %i %-12:c")
+        (search . " %i %-12:c")))
+
+(setq org-agenda-time-grid
+      '((daily today require-timed)
+        ()
+        "......" "----------------"))
+
+(setq org-agenda-current-time-string "   now")
+;; (setq org-agenda-time-grid
+;;       '((daily today require-timed)
+;;         (800 1000 1200 1400 1600 1800 2000)
+;;         "......" "----------------"))
+
+(setq org-agenda-sorting-strategy
+      '((agenda habit-down time-up scheduled-down
+                priority-down category-keep deadline-down)
+        (todo priority-down category-keep)
+        (tags priority-down category-keep)
+        (search category-keep)))
+
+(setq org-agenda-block-separator  9472)                  ;; use 'straight line' as a block-agenda divider
+(setq org-agenda-custom-commands
+      '(("g" "Get Things Done (GTD)"
+         ((agenda ""
+                  ((org-agenda-span 'day)
+                   (org-deadline-warning-days 365)))
+
+          (todo "NEXT"
+                ((org-agenda-overriding-header "In Progress")
+                 (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                 (org-agenda-files '("~/org/gtd/someday.org"
+                                     "~/org/gtd/projects.org"
+                                     "~/org/gtd/next.org"))
+                 ))
+          (todo "TODO"
+                ((org-agenda-overriding-header "inbox")
+                 (org-agenda-files '("~/org/gtd/inbox.org"))))
+
+          (todo "TODO"
+                ((org-agenda-overriding-header "Emails")
+                 (org-agenda-files '("~/org/gtd/emails.org"))))
+
+          (todo "TODO"
+                ((org-agenda-overriding-header "Projects")
+                 (org-agenda-files '("~/org/gtd/projects.org")))
+                )
+
+          (todo "TODO"
+                ((org-agenda-overriding-header "One-off Tasks")
+                 (org-agenda-files '("~/org/gtd/next.org"))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if
+                                             'deadline 'scheduled))))
+          nil))))
+
+
+
+;; PS: check out the original code from here:
+;; https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
+;;clocking-out changes NEXT to HOLD
+;;clocking-in changes HOLD to NEXT
+(setq org-clock-in-switch-to-state 'zk/clock-in-to-next)
+(setq org-clock-out-switch-to-state 'zk/clock-out-to-hold)
+(defun zk/clock-in-to-next (kw)
+  "Switch a task from TODO to NEXT when clocking in.
+                  Skips capture tasks, projects, and subprojects.
+                  Switch projects and subprojects from NEXT back to TODO"
+  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+    (cond
+     ((and (member (org-get-todo-state) (list "TODO")))
+      "NEXT")
+     ((and (member (org-get-todo-state) (list "HOLD")))
+      "NEXT")
+     )))
+(defun zk/clock-out-to-hold (kw)
+  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+    (cond
+     ((and (member (org-get-todo-state) (list "NEXT")))  "HOLD")
+     )))
+
+(require 'org-habit)
+(add-to-list 'org-modules 'org-habit)
+(setq org-habit-graph-column 48)
+(setq org-habit-show-habits-only-for-today t)
+
+;; Refiling [need reading]
+;;tell org-mode we want to specify a refile target using the file path.
+(setq org-refile-use-outline-path 'file
+ org-outline-path-complete-in-steps nil)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-refile-targets '(("~/org/gtd/next.org" :level . 0)
+                           ("~/org/ideas.org" :level . 1)
+                           ("~/org/links.org" :level . 1)
+                           ("~/org/gtd/someday.org" :regexp . "\\(?:\\(?:Task\\|idea\\|p\\(?:\\(?:os\\|rojec\\)t\\)\\)s\\)")
+                           ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
+;;("someday.org" :level . 0)
+
+;; (require 'org-tempo)
+;; (add-to-list 'org-structure-template-alist
+;;              '("S" . "src emacs-lisp"
+;;                "P" . "src python"
+;;                ))
+
+(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
+              org-adapt-indentation nil          ; Adaptive indentation
+              org-src-tab-acts-natively t        ; Tab acts as in source editing
+              org-confirm-babel-evaluate nil     ; No confirmation before executing code
+              org-edit-src-content-indentation 0 ; No relative indentation for code blocks
+              org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (shell . t)
+   (emacs-lisp . t)
+   (R . t)
+   ))
+
+(bind-key "C-c g" #'magit)
+(advice-add 'magit-set-header-line-format :override #'ignore)
