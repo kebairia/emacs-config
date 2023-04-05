@@ -1337,12 +1337,12 @@ note (thought) consistent
   ;; setting variables
   (setq _title (zk/capitalize-first-char _post)
         _author "Zakaria.K"
-        _email (message-user-mail-address)
+        _email "4.kebairia@gmail.com"
         _date (format-time-string "%d %b %Y %a")
-        _other "#+OPTIONS: html5-fancy: t\n#+begin_date\n{{{date}}}\n#+end_date\n")
+        _other "#+OPTIONS: html5-fancy:t tex:t\n#+begin_date\n{{{date}}}\n#+end_date\n")
 
   ;; insert template
-  (insert (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s \n#+EMAIL: %s \n#+DATE: %s \n#+KEYWORDS: \n%s"
+  (insert (format "#+TITLE: %s\n#+SUBTITLE: -- \n#+AUTHOR: %s \n#+EMAIL: %s \n#+DATE: %s \n#+KEYWORDS: blog,\n%s"
                   _title
                   _author
                   _email
