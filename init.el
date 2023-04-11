@@ -52,9 +52,12 @@
         marginalia          ; Enrich existing commands with completion annotations
         evil                ; A VI layer for Emacs
         evil-collection
+        aggressive-indent   ; Keeps your code always indented 
         evil-org
         org-roam            ; Roam implementation for Emacs/org
         org-roam-ui         ; A graph generator for org-roam notes
+        org-appear          ; Make invisible parts of Org elements appear visible.
+        org-cliplink        ; Insert org-mode links from clipboard
         f                   ; Modern API for working with files and directories
         corfu               ; Completion Overlay Region FUnction
         deft                ; Quickly browse, filter, and edit plain text notes
@@ -71,6 +74,8 @@
         use-package         ; A configuration macro for simplifying your .emacs
         vc-backup           ; VC backend for versioned backups
         yaml-mode           ; YAML mode
+        hcl-mode            ; HCL mode
+        jinja2-mode         ; Jinja2 mode
         ;; org-auto-tangle     ; Tangle org file when it is saved
         which-key))         ; Display available keybindings in popup
 
@@ -286,7 +291,7 @@
 ;; Default frame settings
 (setq initial-frame-alist default-frame-alist)
 
-(bind-key "M-n"        #'my/make-frame)
+;; (bind-key "M-n"        #'my/make-frame)
 (bind-key "C-x C-c"    #'my/kill-emacs)
 (bind-key "M-`"        #'other-frame)
 (bind-key "C-z"        nil)
@@ -535,6 +540,8 @@
 (when (require 'evil-collection nil t)
 (evil-collection-init))
 
+(global-aggressive-indent-mode 1)
+
 (setq-default initial-major-mode 'text-mode   ; Initial mode is text
               default-major-mode 'text-mode)  ; Default mode is text
 
@@ -555,6 +562,8 @@
 (setq show-paren-when-point-in-periphery t)
 (setq show-paren-when-point-inside-paren nil)
 (show-paren-mode)
+
+(electric-pair-mode)
 
 (require 'imenu-list)
 
@@ -898,8 +907,6 @@
               org-outline-path-complete-in-steps nil ; No steps in path display
               org-log-into-drawer t)         ; Log into drawers
 
-(setq my/section-start-time (current-time))
-
 (setq org-latex-create-formula-image-program 'dvisvgm)
 
 (setq org-ellipsis " ⤵")
@@ -928,10 +935,6 @@
         ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
         ))
 
-(setq org-appear-autolinks t
-      org-appear-autosubmarkers t)
-(add-hook 'org-mode-hook (lambda () (org-appear-mode 1)))
-
 (setq org-capture-templates
       `(("i" " inbox" entry  (file "~/org/gtd/inbox.org")
          ,(concat "* TODO %?\n"
@@ -957,6 +960,29 @@
         ))
 
 (require 'org-protocol)
+
+(setq org-appear-autolinks t
+      org-appear-autosubmarkers t)
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+(require 'org-cliplink)
+
+(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
+              org-adapt-indentation nil          ; Adaptive indentation
+              org-src-tab-acts-natively t        ; Tab acts as in source editing
+              org-confirm-babel-evaluate nil     ; No confirmation before executing code
+              org-edit-src-content-indentation 0 ; No relative indentation for code blocks
+              org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (shell . t)
+   (emacs-lisp . t)
+   (R . t)
+   ))
+
+(my/report-time "Org")
 
 (defun zk/switch-to-agenda ()
   (interactive)

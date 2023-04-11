@@ -108,9 +108,12 @@ Packages used in this specific configuration. You may want to adapt this list. T
         marginalia          ; Enrich existing commands with completion annotations
         evil                ; A VI layer for Emacs
         evil-collection
+        aggressive-indent   ; Keeps your code always indented 
         evil-org
         org-roam            ; Roam implementation for Emacs/org
         org-roam-ui         ; A graph generator for org-roam notes
+        org-appear          ; Make invisible parts of Org elements appear visible.
+        org-cliplink        ; Insert org-mode links from clipboard
         f                   ; Modern API for working with files and directories
         corfu               ; Completion Overlay Region FUnction
         deft                ; Quickly browse, filter, and edit plain text notes
@@ -127,6 +130,8 @@ Packages used in this specific configuration. You may want to adapt this list. T
         use-package         ; A configuration macro for simplifying your .emacs
         vc-backup           ; VC backend for versioned backups
         yaml-mode           ; YAML mode
+        hcl-mode            ; HCL mode
+        jinja2-mode         ; Jinja2 mode
         ;; org-auto-tangle     ; Tangle org file when it is saved
         which-key))         ; Display available keybindings in popup
 
@@ -419,7 +424,7 @@ Org mode
 #+begin_src emacs-lisp
 (bind-key "C-c c" 'org-capture)
 #+end_src
-** Benchmark
+d** Benchmark
 
 #+begin_src emacs-lisp
 
@@ -492,7 +497,7 @@ Frame related binding (self explanatory).
 
 #+begin_src emacs-lisp
 
-(bind-key "M-n"        #'my/make-frame)
+;; (bind-key "M-n"        #'my/make-frame)
 (bind-key "C-x C-c"    #'my/kill-emacs)
 (bind-key "M-`"        #'other-frame)
 (bind-key "C-z"        nil)
@@ -994,6 +999,11 @@ Then we start evil and evil-collection modes
 (when (require 'evil-collection nil t)
 (evil-collection-init))
 #+end_src
+
+** Indentation
+#+begin_src emacs-lisp
+(global-aggressive-indent-mode 1)
+#+end_src
 ** Default mode :HOOK:MODE:
 
 Default & initial mode is text.
@@ -1043,6 +1053,11 @@ Paren mode for highlighting matcing paranthesis
 (setq show-paren-when-point-inside-paren nil)
 (show-paren-mode)
 
+#+end_src
+
+Insert matching delimiters
+#+begin_src emacs-lisp
+(electric-pair-mode)
 #+end_src
 
 ** Imenu list
@@ -1803,6 +1818,27 @@ Configuring the Org-roam buffer display
   (setq org-roam-node-display-template
         (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
 #+end_src
+*** Find node template 
+#+begin_src emacs-lisp
+(cl-defmethod org-roam-node-directories ((node org-roam-node))
+  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (format "%s" (car (split-string dirs "/")))
+    ""))
+
+(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
+  (let* ((count (caar (org-roam-db-query
+                       [:select (funcall count source)
+                                :from links
+                                :where (= dest $s1)
+                                :and (= type "id")]
+                       (org-roam-node-id node)))))
+    (format "[%d]" count)))
+
+
+(setq org-roam-node-display-template
+      (concat "${directories:10} ${title:*} ${backlinkscount:6}" (propertize "${tags:20}" 'face 'org-tag) ))
+#+end_src
+
 ** org-roam-ui
 #+begin_src emacs-lisp
 (setq org-roam-ui-sync-theme nil
@@ -1832,32 +1868,13 @@ Configuring the Org-roam buffer display
     
     
   #+END_SRC
-** TODO Testing 
-#+begin_src emacs-lisp
-(cl-defmethod org-roam-node-directories ((node org-roam-node))
-  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
-      (format "%s" (car (split-string dirs "/")))
-    ""))
-
-(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
-  (let* ((count (caar (org-roam-db-query
-                       [:select (funcall count source)
-                                :from links
-                                :where (= dest $s1)
-                                :and (= type "id")]
-                       (org-roam-node-id node)))))
-    (format "[%d]" count)))
-
-
-(setq org-roam-node-display-template
-      (concat "${directories:10} ${title:*} ${backlinkscount:6}" (propertize "${tags:20}" 'face 'org-tag) ))
-#+end_src
-
-
-
 * ORG
-** General
+#+begin_src emacs-lisp
 
+(setq my/section-start-time (current-time))
+
+#+end_src
+** General
 #+begin_src emacs-lisp
 (setq-default org-directory "~/org"
               org-ellipsis " …"              ; Nicer ellipsis
@@ -1874,9 +1891,6 @@ Configuring the Org-roam buffer display
               org-indirect-buffer-display 'other-window ; Tab on a task expand it in a new window
               org-outline-path-complete-in-steps nil ; No steps in path display
               org-log-into-drawer t)         ; Log into drawers
-#+end_src
-#+begin_src emacs-lisp
-  (setq my/section-start-time (current-time))
 #+end_src
 Better latex preview (see https://stackoverflow.com/questions/30151338)
 #+begin_src emacs-lisp
@@ -1912,14 +1926,8 @@ Use points "•" for items instead of "-"
         ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
         ))
 #+end_src
-** org-appear
-Show hidden emphasis markers when moving accross the word
-#+begin_src emacs-lisp
-(setq org-appear-autolinks t
-      org-appear-autosubmarkers t)
-(add-hook 'org-mode-hook (lambda () (org-appear-mode 1)))
-#+end_src
-** org capture
+
+** Org capture
 #+begin_src emacs-lisp
 (setq org-capture-templates
       `(("i" " inbox" entry  (file "~/org/gtd/inbox.org")
@@ -1945,9 +1953,44 @@ Show hidden emphasis markers when moving accross the word
         ;;           "/Entered on/ %U") :immediate-finish t)
         ))
 #+end_src
-** org protocol
+** Org protocol
 #+begin_src emacs-lisp
 (require 'org-protocol)
+#+end_src
+
+** Org-appear
+Show hidden emphasis markers when moving accross the word
+#+begin_src emacs-lisp
+(setq org-appear-autolinks t
+      org-appear-autosubmarkers t)
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+#+end_src
+** Org-cliplink
+Insert org-mode links from clipboard
+
+#+begin_src emacs-lisp
+(require 'org-cliplink)
+#+end_src
+
+** Babel
+#+begin_src emacs-lisp
+(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
+              org-adapt-indentation nil          ; Adaptive indentation
+              org-src-tab-acts-natively t        ; Tab acts as in source editing
+              org-confirm-babel-evaluate nil     ; No confirmation before executing code
+              org-edit-src-content-indentation 0 ; No relative indentation for code blocks
+              org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+#+end_src
+Add languages to babel
+#+begin_src emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (shell . t)
+   (emacs-lisp . t)
+   (R . t)
+   ))
 #+end_src
 ** COMMENT org-gloassary
 #+begin_example
@@ -1976,7 +2019,15 @@ Show hidden emphasis markers when moving accross the word
 #+begin_src emacs-lisp
 (require 'org-glossary)
 #+end_src
-* Agenda
+** Benchmark
+#+begin_src emacs-lisp
+
+(my/report-time "Org")
+
+#+end_src
+
+
+* TODO Agenda
 ** Global
 Keybiding for Agenda(s)
 #+begin_src emacs-lisp
@@ -2153,37 +2204,82 @@ NEXT and HOLD exchange for clocking out and clocking in
       ;;("someday.org" :level . 0)
     #+end_src
 
-** Babel
-A shortcut for emacs-lisp source blocks. Type “<S” (in org-mode) then press tab.
+* Blog
+
 #+begin_src emacs-lisp
-  ;; (require 'org-tempo)
-  ;; (add-to-list 'org-structure-template-alist
-  ;;              '("S" . "src emacs-lisp"
-  ;;                "P" . "src python"
-  ;;                ))
+
+(setq my/section-start-time (current-time))
+
 #+end_src
+Start a local server for my blog
 #+begin_src emacs-lisp
-(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
-              org-adapt-indentation nil          ; Adaptive indentation
-              org-src-tab-acts-natively t        ; Tab acts as in source editing
-              org-confirm-babel-evaluate nil     ; No confirmation before executing code
-              org-edit-src-content-indentation 0 ; No relative indentation for code blocks
-              org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+(defun zk/start-blog ()
+  "Start the local web server for the blog."
+  (interactive)
+  (let ((httpd-root "~/dox/blog/public")
+        (httpd-port "8080"))
+    (httpd-start)))
 #+end_src
-Add languages to babel
+** Create Blog post
+A function to create a Blog post, and start the local web server
 #+begin_src emacs-lisp
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)
-   (shell . t)
-   (emacs-lisp . t)
-   (R . t)
-   ))
+(defun zk/create-post ()
+  "Create a new blog post. Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
+  (interactive)
+  ;; Get the post name and format the date
+  (let* ((_post (read-string " Post: "))
+         (_date (format-time-string "%Y-%m-%d" (current-time)))
+         (_ext ".org")
+         (_path "/home/zakaria/dox/blog/content/")
+         ;; Concatenate the filename components and replace whitespace with hyphens
+         (filename (concat _path _date "-" (replace-regexp-in-string " " "-" (downcase _post)) _ext)))
+    ;; If the file already exists, display a message and do nothing
+    (if (file-exists-p filename)
+        (message (format "File '%s' already exists" _post))
+      ;; Otherwise, create the file and switch to its buffer
+      (switch-to-buffer (find-file filename))
+      ;; Insert the post template
+      (let ((_title (capitalize _post))
+            (_author "Zakaria.K")
+            (_email "4.kebairia@gmail.com")
+            (_date (format-time-string "%d %b %Y %a"))
+            (_options "#+OPTIONS: html5-fancy: t\n")
+            (_begin_date "#+begin_date\n{{{date}}}\n")
+            (_end_date "#+end_date\n"))
+        (insert (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s\n#+EMAIL: %s\n#+DATE: %s\n#+KEYWORDS: \n%s%s%s"
+                        _title _author _email _date _options _begin_date _end_date))))
+    ;; Start the local server
+    (zk/start-blog)))
+
+
+;; Bind the function to the key "C-c P"
+(global-set-key (kbd "C-c P") 'zk/create-post)
+
 #+end_src
+
+** Benchmark
+#+begin_src emacs-lisp
+
+(my/report-time "Blog")
+
+#+end_src
+
 * Versioning  
 ** Magit
 Prevent magit from writing in the header line.
 #+begin_src emacs-lisp
 (bind-key "C-c g" #'magit)
 (advice-add 'magit-set-header-line-format :override #'ignore)
+#+end_src
+
+* Profiling
+** Final report
+#+begin_src emacs-lisp
+(let ((init-time (float-time (time-subtract (current-time) my/init-start-time)))
+      (total-time (string-to-number (emacs-init-time "%f"))))
+
+  (message "---------------------------------------------------------------")
+  (message "Initialization time:                 %.2fs (+ %.2f system time)"
+           init-time (- total-time init-time)))
+  (message "---------------------------------------------------------------")
 #+end_src
