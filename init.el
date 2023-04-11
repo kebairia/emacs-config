@@ -852,6 +852,24 @@
 (setq org-roam-node-display-template
       (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
 
+(cl-defmethod org-roam-node-directories ((node org-roam-node))
+  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (format "%s" (car (split-string dirs "/")))
+    ""))
+
+(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
+  (let* ((count (caar (org-roam-db-query
+                       [:select (funcall count source)
+                                :from links
+                                :where (= dest $s1)
+                                :and (= type "id")]
+                       (org-roam-node-id node)))))
+    (format "[%d]" count)))
+
+
+(setq org-roam-node-display-template
+      (concat "${directories:10} ${title:*} ${backlinkscount:6}" (propertize "${tags:20}" 'face 'org-tag) ))
+
 (setq org-roam-ui-sync-theme nil
       org-roam-ui-follow t
       org-roam-ui-update-on-save t
@@ -873,23 +891,7 @@
     deft-org-mode-title-prefix t
     deft-text-mode 'org-mode))
 
-(cl-defmethod org-roam-node-directories ((node org-roam-node))
-  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
-      (format "%s" (car (split-string dirs "/")))
-    ""))
-
-(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
-  (let* ((count (caar (org-roam-db-query
-                       [:select (funcall count source)
-                                :from links
-                                :where (= dest $s1)
-                                :and (= type "id")]
-                       (org-roam-node-id node)))))
-    (format "[%d]" count)))
-
-
-(setq org-roam-node-display-template
-      (concat "${directories:10} ${title:*} ${backlinkscount:6}" (propertize "${tags:20}" 'face 'org-tag) ))
+(setq my/section-start-time (current-time))
 
 (setq-default org-directory "~/org"
               org-ellipsis " …"              ; Nicer ellipsis
@@ -1136,26 +1138,56 @@
                            ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
 ;;("someday.org" :level . 0)
 
-;; (require 'org-tempo)
-;; (add-to-list 'org-structure-template-alist
-;;              '("S" . "src emacs-lisp"
-;;                "P" . "src python"
-;;                ))
+(setq my/section-start-time (current-time))
 
-(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
-              org-adapt-indentation nil          ; Adaptive indentation
-              org-src-tab-acts-natively t        ; Tab acts as in source editing
-              org-confirm-babel-evaluate nil     ; No confirmation before executing code
-              org-edit-src-content-indentation 0 ; No relative indentation for code blocks
-              org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+(defun zk/start-blog ()
+  "Start the local web server for the blog."
+  (interactive)
+  (let ((httpd-root "~/dox/blog/public")
+        (httpd-port "8080"))
+    (httpd-start)))
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)
-   (shell . t)
-   (emacs-lisp . t)
-   (R . t)
-   ))
+(defun zk/create-post ()
+  "Create a new blog post. Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
+  (interactive)
+  ;; Get the post name and format the date
+  (let* ((_post (read-string " Post: "))
+         (_date (format-time-string "%Y-%m-%d" (current-time)))
+         (_ext ".org")
+         (_path "/home/zakaria/dox/blog/content/")
+         ;; Concatenate the filename components and replace whitespace with hyphens
+         (filename (concat _path _date "-" (replace-regexp-in-string " " "-" (downcase _post)) _ext)))
+    ;; If the file already exists, display a message and do nothing
+    (if (file-exists-p filename)
+        (message (format "File '%s' already exists" _post))
+      ;; Otherwise, create the file and switch to its buffer
+      (switch-to-buffer (find-file filename))
+      ;; Insert the post template
+      (let ((_title (capitalize _post))
+            (_author "Zakaria.K")
+            (_email "4.kebairia@gmail.com")
+            (_date (format-time-string "%d %b %Y %a"))
+            (_options "#+OPTIONS: html5-fancy: t\n")
+            (_begin_date "#+begin_date\n{{{date}}}\n")
+            (_end_date "#+end_date\n"))
+        (insert (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s\n#+EMAIL: %s\n#+DATE: %s\n#+KEYWORDS: \n%s%s%s"
+                        _title _author _email _date _options _begin_date _end_date))))
+    ;; Start the local server
+    (zk/start-blog)))
+
+
+;; Bind the function to the key "C-c P"
+(global-set-key (kbd "C-c P") 'zk/create-post)
+
+(my/report-time "Blog")
 
 (bind-key "C-c g" #'magit)
 (advice-add 'magit-set-header-line-format :override #'ignore)
+
+(let ((init-time (float-time (time-subtract (current-time) my/init-start-time)))
+      (total-time (string-to-number (emacs-init-time "%f"))))
+
+  (message "---------------------------------------------------------------")
+  (message "Initialization time:                 %.2fs (+ %.2f system time)"
+           init-time (- total-time init-time)))
+  (message "---------------------------------------------------------------")
