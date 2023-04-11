@@ -1,22 +1,33 @@
+;; -*- lexical-binding: t -*-
+;; This file has been generated from init.org file. DO NOT EDIT.
+;; Sources are available from https://github.com/kebairia/emacs-config
+
+;; Copyright (C) 2023 Kebairia Zakaria
+
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; For a full copy of the GNU General Public License
+;; see <https://www.gnu.org/licenses/>.
+
 (defvar my/init-start-time (current-time) "Time when init.el was started")
 (defvar my/section-start-time (current-time) "Time when section was started")
-
-(setq
- site-run-file nil                         ; No site-wide run-time initializations. 
- inhibit-default-init t                    ; No site-wide default library
- gc-cons-threshold most-positive-fixnum    ; Very large threshold for garbage
-                                           ; collector during init
- package-enable-at-startup nil)            ; We'll use straight.el
-
-(setq native-comp-eln-load-path
-      (list (expand-file-name "eln-cache" user-emacs-directory)))
-
-;; Reset garbage collector limit after init process has ended (8Mo)
-(add-hook 'after-init-hook
-          #'(lambda () (setq gc-cons-threshold (* 8 1024 1024))))
+(defun my/report-time (section)
+  (message "%-36s %.2fs"
+           (concat section " " "section time: ")
+           (float-time (time-subtract (current-time) my/section-start-time))))
+(message "---------------------------------------------------------------")
 
 (setq package-enable-at-startup nil)
 (setq straight-check-for-modifications nil)
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -30,73 +41,82 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(add-to-list 'load-path
+             (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'custom-theme-load-path
+             (expand-file-name "theme" user-emacs-directory))
+
 (setq package-list
-      '(evil                                 ;; an extensible vi layer for Emacs
+      '(cape                ; Completion At Point Extensions
+        orderless           ; Completion style for matching regexps in any order
+        vertico             ; VERTical Interactive COmpletion
+        marginalia          ; Enrich existing commands with completion annotations
+        evil                ; A VI layer for Emacs
         evil-collection
-        evil-org                             ;; evil-leader is a dependency for evil-org (as I see)
-        evil-org-mode                        ;; Use evil with org and org-agenda
-        org
-        org-appear                           ;; show marker emphasis when moving accross the word
-        org-cliplink                         ;; see if we need that 
-        magit
-        ibuffer
-        which-key
-        ; Completion
-        selectrum
-        ctrlf
-        corfu
-        cape
-        eglot
-        aggressive-indent
-        indent-guide
-        use-package
-        pdf-tools
-        org-pdfview
-        org-noter
-        ;; Notes
-        org-roam                               ; Roam implementation for Emacs/org
-        org-roam-ui                            ; A graph generator for org-roam notes
-        deft                                   ; to list your notes
-        citar                                  ; A better ui completion for your bibliography
-        ;; IDE
-        ;;undo-redo                            ;; for Emacs 28
-        indent-guide
-        ;; MODES
-        yaml-mode
-        jinja2-mode
-        hcl-mode
-        terraform-mode
-        ;; LATEX
-        engrave-faces
-        ;; news
-        elfeed
-        elfeed-score
-        ;;elfeed-tube
-        ;;elfeed-tube-mpv
-        ;;mpv
-        )
-      )
-;; loop over the list above and install all the packages
+        aggressive-indent   ; Keeps your code always indented 
+        evil-org
+        org-roam            ; Roam implementation for Emacs/org
+        org-roam-ui         ; A graph generator for org-roam notes
+        org-appear          ; Make invisible parts of Org elements appear visible.
+        org-cliplink        ; Insert org-mode links from clipboard
+        f                   ; Modern API for working with files and directories
+        corfu               ; Completion Overlay Region FUnction
+        deft                ; Quickly browse, filter, and edit plain text notes
+        citar               ; Citation-related commands for org, latex, markdown
+        citeproc            ; A CSL 1.0.2 Citation Processor
+        flyspell-correct-popup ; Correcting words with flyspell via popup interface
+        flyspell-popup      ; Correcting words with Flyspell in popup menus
+        helpful             ; A better help buffer
+        htmlize             ; Convert buffer text and decorations to HTML
+        mini-frame          ; Show minibuffer in child frame on read-from-minibuffer
+        imenu-list          ; Show imenu entries in a separate buffer
+        magit               ; A Git porcelain inside Emacs.
+        markdown-mode       ; Major mode for Markdown-formatted text
+        use-package         ; A configuration macro for simplifying your .emacs
+        vc-backup           ; VC backend for versioned backups
+        yaml-mode           ; YAML mode
+        hcl-mode            ; HCL mode
+        jinja2-mode         ; Jinja2 mode
+        ;; org-auto-tangle     ; Tangle org file when it is saved
+        which-key))         ; Display available keybindings in popup
+
+;; Install packages that are not yet installed
 (dolist (package package-list)
   (straight-use-package package))
-
-
 
 ;; Special case for pdf-tools that has recently (2022) changed maintainer
 (straight-use-package
  '(pdf-tools :type git :host github :repo "vedang/pdf-tools"))
-;; Glossary, Acronyms, and Index capability within Org
-(straight-use-package
- '(org-glossary :type git :host github :repo "tecosaur/org-glossary"))
-(straight-use-package
- '(elfeed-tube :type git :host github :repo "karthink/elfeed-tube"))
+
+;; ;; Denote not yet on ELPA (2022-06-19)
+;; (straight-use-package
+;;  '(denote :type git :host github :repo "protesilaos/denote"))
+
+;; Display org properties in the agenda buffer (modified version)
+;; (straight-use-package
+;;  '(org-agenda-property :type git :host github :repo "Malabarba/org-agenda-property"
+;;                        :fork (:host github :repo "rougier/org-agenda-property")))
+
+;; NANO splash
+;; (straight-use-package
+;;  '(nano-splash :type git :host github :repo "rougier/nano-splash"))
 
 ;; NANO theme
 (straight-use-package
  '(nano-theme :type git :host github :repo "rougier/nano-theme"))
+
 ;; NANO modeline
 (straight-use-package
  '(nano-modeline :type git :host github :repo "rougier/nano-modeline"))
+
+;; NANO agenda
+(straight-use-package
+ '(nano-agenda :type git :host github :repo "rougier/nano-agenda"))
+
+;; NANO agenda
+(straight-use-package
+ '(minibuffer-header :type git :host github :repo "rougier/minibuffer-header"))
+
 ;; SVG tags, progress bars & icons
 (straight-use-package
  '(svg-lib :type git :host github :repo "rougier/svg-lib"))
@@ -104,6 +124,18 @@
 ;; Replace keywords with SVG tags
 (straight-use-package
  '(svg-tag-mode :type git :host github :repo "rougier/svg-tag-mode"))
+
+;; ;; Relative date formatting
+;; (straight-use-package
+;;  '(relative-date :type git :host github :repo "rougier/relative-date"))
+
+;; org imenu
+;; (straight-use-package
+;;  '(org-imenu :type git :host github :repo "rougier/org-imenu"))
+
+;; Bilbliography manager in org mode
+(straight-use-package
+  '(org-bib :type git :host github :branch "org-imenu" :repo "rougier/org-bib-mode"))
 
 (setq-default
  inhibit-startup-screen t               ; Disable start-up screen
@@ -114,7 +146,6 @@
 
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
 (prefer-coding-system       'utf-8)     ; Add utf-8 at the front for automatic detection.
-(set-default-coding-systems 'utf-8)     ; Set default value of various coding systems
 (set-terminal-coding-system 'utf-8)     ; Set coding system of terminal output
 (set-keyboard-coding-system 'utf-8)     ; Set coding system for keyboard input on TERMINAL
 (set-language-environment "English")    ; Set up multilingual environment
@@ -128,7 +159,7 @@
 (setq backup-directory-alist       ; File name patterns and backup directory names.
       `(("." . ,(expand-file-name "backups" user-emacs-directory)))
       make-backup-files t          ; Backup of a file the first time it is saved.
-      vc-make-backup-files nil     ; No backup of files under version contr
+      vc-make-backup-files t       ; No backup of files under version contr
       backup-by-copying t          ; Don't clobber symlinks
       version-control t            ; Version numbers for backup files
       delete-old-versions t        ; Delete excess backup files silently
@@ -136,7 +167,18 @@
       kept-new-versions 9          ; Number of new versions to keep
       delete-by-moving-to-trash t) ; Delete files to trash
 
+;; Back
+(require 'vc-backup)
+
 (setq bookmark-default-file (expand-file-name "bookmark" user-emacs-directory))
+
+(require 'recentf)
+
+(setq recentf-max-menu-items 10
+      recentf-max-saved-items 100)
+
+(let (message-log-max)
+  (recentf-mode 1))
 
 (defun unpropertize-kill-ring ()
   (setq kill-ring (mapcar 'substring-no-properties kill-ring)))
@@ -161,20 +203,30 @@
         bookmark-history
         file-name-history))
 
-(put 'minibuffer-history         'history-length 50)
-(put 'file-name-history          'history-length 50)
-(put 'set-variable-value-history 'history-length 25)
-(put 'custom-variable-history    'history-length 25)
-(put 'query-replace-history      'history-length 25)
-(put 'read-expression-history    'history-length 25)
-(put 'read-char-history          'history-length 25)
-(put 'face-name-history          'history-length 25)
-(put 'bookmark-history           'history-length 25)
+ (put 'minibuffer-history         'history-length 50)
+ (put 'file-name-history          'history-length 50)
+ (put 'set-variable-value-history 'history-length 25)
+ (put 'custom-variable-history    'history-length 25)
+ (put 'query-replace-history      'history-length 25)
+ (put 'read-expression-history    'history-length 25)
+ (put 'read-char-history          'history-length 25)
+ (put 'face-name-history          'history-length 25)
+ (put 'bookmark-history           'history-length 25)
 
 (setq history-delete-duplicates t)
 
 (let (message-log-max)
   (savehist-mode))
+
+(setq save-place-file (expand-file-name "saveplace" user-emacs-directory)
+      save-place-forget-unreadable-files t)
+
+(save-place-mode 1)
+
+(setq custom-file (concat user-emacs-directory "custom.el"))
+
+(when (file-exists-p custom-file)
+  (load custom-file nil t))
 
 (require 'server)
 
@@ -206,71 +258,82 @@
 
 (bind-key "C-c c" 'org-capture)
 
+(my/report-time "Core")
+
 (setq my/section-start-time (current-time))
 
 (defun my/make-frame ()
-"Create a new frame and switch to *scratch* buffer."
+  "Create a new frame and switch to *scratch* buffer."
 
-(interactive)
-(select-frame (make-frame))
-(switch-to-buffer "*scratch*"))
+  (interactive)
+  (select-frame (make-frame))
+  (switch-to-buffer "*scratch*"))
 
 (defun my/kill-emacs ()
-"Delete frame or kill Emacs if there is only one frame."
-
-(interactive)
-(condition-case nil
-    (delete-frame)
-(error (save-buffers-kill-terminal))))
+  "Delete frame or kill Emacs if there is only one frame."
+  
+  (interactive)
+  (condition-case nil
+      (delete-frame)
+    (error (save-buffers-kill-terminal))))
 
 (require 'frame)
 
 ;; Default frame settings
 (setq default-frame-alist '((min-height . 1)  '(height . 45)
-                        (min-width  . 1)  '(width  . 81)
-                        (vertical-scroll-bars . nil)
-                        (internal-border-width . 24)
-                        (left-fringe . 0)
-                        (right-fringe . 0)
-                        (tool-bar-lines . 0)
-                        (menu-bar-lines . 0)))
+                            (min-width  . 1)  '(width  . 81)
+                            (vertical-scroll-bars . nil)
+                            (internal-border-width . 24)
+                            (left-fringe . 0)
+                            (right-fringe . 0)
+                            (tool-bar-lines . 0)
+                            (menu-bar-lines . 1)))
 
 ;; Default frame settings
 (setq initial-frame-alist default-frame-alist)
 
-(bind-key "M-n"        #'my/make-frame)
-(bind-key "C-x k"    #'kill-this-buffer)
-(bind-key "C-c s"      #'nano-new-frame)
+;; (bind-key "M-n"        #'my/make-frame)
+(bind-key "C-x C-c"    #'my/kill-emacs)
 (bind-key "M-`"        #'other-frame)
 (bind-key "C-z"        nil)
 (bind-key "<M-return>" #'toggle-frame-maximized)
 
 (with-eval-after-load 'org
-(bind-key "<M-return>" #'toggle-frame-maximized 'org-mode-map))
+  (bind-key "<M-return>" #'toggle-frame-maximized 'org-mode-map))
 
 (setq-default window-divider-default-right-width 24
-            window-divider-default-places 'right-only
-            left-margin-width 0
-            right-margin-width 0
-            window-combination-resize nil) ; Do not resize windows proportionally
+              window-divider-default-places 'right-only
+              left-margin-width 0
+              right-margin-width 0
+              window-combination-resize nil) ; Do not resize windows proportionally
 
 (window-divider-mode 1)
+
+;; Make a window dedicated
+(defun my/toggle-window-dedicated ()
+  "Toggle whether the current active window is dedicated or not"
+  (interactive)
+  (message
+   (if (let (window (get-buffer-window (current-buffer)))
+     (set-window-dedicated-p window (not (window-dedicated-p window))))
+       "Window '%s' is dedicated"
+     "Window '%s' is normal")
+   (current-buffer))
+  (force-window-update))
+
+(bind-key "C-c d" #'my/toggle-window-dedicated)
+
+(temp-buffer-resize-mode)
+(setq temp-buffer-max-height 8)
 
 (require 'uniquify)
 
 (setq uniquify-buffer-name-style 'reverse
-    uniquify-separator " • "
-    uniquify-after-kill-buffer-p t
-    uniquify-ignore-buffers-re "^\\*")
+      uniquify-separator " • "
+      uniquify-after-kill-buffer-p t
+      uniquify-ignore-buffers-re "^\\*")
 
-(setq display-line-numbers 'relative)    ; Enable relative number
-(setq-default
- display-line-numbers-current-absolute t ; Enable the line nubmers
- display-line-numbers-width 2
- display-line-numbers-widen t)
-(add-hook 'text-mode-hook #'display-line-numbers-mode)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
-(add-hook 'fundamental-mode-hook #'display-line-numbers-mode)
+(bind-key "C-x k" #'kill-current-buffer)
 
 ;; disable linum-mode
 (add-hook 'ibuffer-mode (lambda() (linum-mode -1)))
@@ -314,47 +377,76 @@
 (setq vc-follow-symlinks t)
 
 (setq-default show-help-function nil    ; No help text
-            use-file-dialog nil       ; No file dialog
-            use-dialog-box nil        ; No dialog box
-            pop-up-windows nil)       ; No popup windows
+              use-file-dialog nil       ; No file dialog
+              use-dialog-box nil        ; No dialog box
+              pop-up-windows nil)       ; No popup windows
 
-;; (tooltip-mode -1)                       ; No tooltips
+(tooltip-mode -1)                       ; No tooltips
 (scroll-bar-mode -1)                    ; No scroll bars
 (tool-bar-mode -1)                      ; No toolbar
-(menu-bar-mode 1)                       ; No menu bar
+
+(menu-bar-mode nil)
 
 (require 'which-key)
+
 (which-key-mode)
 
-;; put this before loading evil to work
-(setq evil-want-C-i-jump nil)
-;; ;; this statement is required to enable evil/evil-colleciton mode
-(setq evil-want-abbrev-expand-on-insert-exit nil)
-(setq evil-want-keybinding nil)
-(evil-mode 1)
-(when (require 'evil-collection nil t)
-(evil-collection-init))
-
 (setq-default cursor-in-non-selected-windows nil ; Hide the cursor in inactive windows
-            cursor-type '(hbar . 2)            ; Underline-shaped cursor
-            cursor-intangible-mode t           ; Enforce cursor intangibility
-            x-stretch-cursor nil)              ; Don't stretch cursor to the glyph width
+              cursor-type '(hbar . 2)            ; Underline-shaped cursor
+              cursor-intangible-mode t           ; Enforce cursor intangibility
+              x-stretch-cursor nil)              ; Don't stretch cursor to the glyph width
 
 (blink-cursor-mode 0)                            ; Still cursor
 
 (setq-default use-short-answers t                     ; Replace yes/no prompts with y/n
-            confirm-nonexistent-file-or-buffer nil) ; Ok to visit non existent files
+              confirm-nonexistent-file-or-buffer nil) ; Ok to visit non existent files
 
 (delete-selection-mode 1)
 
+(defun my/fill-unfill ()
+  "Like `fill-paragraph', but unfill if used twice."
+  
+  (interactive)
+  (let ((fill-column
+         (if (eq last-command #'my/fill-unfill)
+             (progn (setq this-command nil)
+                    (point-max))
+           fill-column)))
+    (call-interactively #'fill-paragraph)))
+
+(bind-key "M-q"  #'my/fill-unfill)
+;; (bind-key [remap fill-paragraph]  #'my/fill-unfill)
+
 (setq-default visible-bell nil             ; No visual bell      
-            ring-bell-function 'ignore)  ; No bell
+              ring-bell-function 'ignore)  ; No bell
+
+(setq-default mouse-yank-at-point t) ; Yank at point rather than pointer
+(mouse-avoidance-mode 'exile)        ; Avoid collision of mouse with point
+
+(unless (display-graphic-p)
+  (xterm-mouse-mode 1)
+  (global-set-key (kbd "<mouse-4>") #'scroll-down-line)
+  (global-set-key (kbd "<mouse-5>") #'scroll-up-line))
 
 (setq-default scroll-conservatively 101       ; Avoid recentering when scrolling far
-            scroll-margin 2                 ; Add a margin when scrolling vertically
-            recenter-positions '(5 bottom)) ; Set re-centering positions
+              scroll-margin 2                 ; Add a margin when scrolling vertically
+              recenter-positions '(5 bottom)) ; Set re-centering positions
 
 (setq-default select-enable-clipboard t) ; Merge system's and Emacs' clipboard
+
+(defun my/paste-from-osx ()
+  (shell-command-to-string "pbpaste"))
+
+(defun my/copy-to-osx (text &optional push)
+  (let ((process-connection-type nil))
+    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+      (process-send-string proc text)
+      (process-send-eof proc))))
+
+(when (and (not (display-graphic-p))
+           (eq system-type 'darwin))
+  (setq interprogram-cut-function   #'my/copy-to-osx
+        interprogram-paste-function #'my/paste-from-osx))
 
 (setq help-window-select t)             ; Focus new help windows when opened
 
@@ -365,25 +457,58 @@
 (bind-key "C-h F"   #'helpful-function) ; Look up *F*unctions (excludes macros).
 (bind-key "C-h C"   #'helpful-command)  ; Look up *C*ommands.
 
+(require 'nano-theme)
+;; (setq nano-fonts-use t) ; Use theme font stack
+(nano-modeline-mode)    ; Use nano-modeline
+
+(my/report-time "Interface")
+
 (setq my/section-start-time (current-time))
 
 (require 'nano-theme)
-;; (setq nano-fonts-use t) ; Use theme font stack
-(nano-modeline-mode)    ; Use nano-modeline
-(nano-mode)  
+(setq nano-fonts-use t) ; Use theme font stack
 (nano-dark)             ; Use theme dark version
-(setq nano-font-family-monospaced "FantasqueSansMono")
-(setq nano-font-family-proportional nil)
-(setq nano-font-size 17)
+(nano-mode)             ; Recommended settings
 
-(require 'nano-theme)
-;; (setq nano-fonts-use t) ; Use theme font stack
-(nano-modeline-mode)    ; Use nano-modeline
+
+(defun my/set-face (face style)
+  "Reset FACE and make it inherit STYLE."
+  (set-face-attribute face nil
+                      :foreground 'unspecified :background 'unspecified
+                      :family     'unspecified :slant      'unspecified
+                      :weight     'unspecified :height     'unspecified
+                      :underline  'unspecified :overline   'unspecified
+                      :box        'unspecified :inherit    style))
+(my/set-face 'italic 'nano-faded)
+
+;; (require 'nano-splash)
+
+(set-face-attribute 'default nil
+                    :family "FantasqueSansMono"
+                    :weight 'light
+                    :height 140)
+
+(set-face-attribute 'bold nil
+                    :family "FantasqueSansMono"
+                    :weight 'regular)
+
+(set-face-attribute 'italic nil
+                    :family "FantasqueSansMono"
+                    :weight 'semilight
+                    :slant 'italic)
+
+(set-fontset-font t 'unicode
+                    (font-spec :name "FantasqueSansMono"
+                               :size 16) nil)
+
+(set-fontset-font t '(#xe000 . #xffdd)
+                     (font-spec :name "FantasqueSansMono"
+                                :size 12) nil)
 
 (setq-default fill-column 80                          ; Default line width 
               sentence-end-double-space nil           ; Use a single space after dots
               bidi-paragraph-direction 'left-to-right ; Faster
-              truncate-string-ellipsis "…")
+              truncate-string-ellipsis "…")           ; Nicer ellipsis
 
 (require 'nano-theme)
 
@@ -399,14 +524,38 @@
 (set-display-table-slot standard-display-table
                         'wrap (make-glyph-code ?↩ 'wrap-symbol-face))
 
+(when (eq system-type 'darwin)
+  (add-hook 'term-mode-hook
+            (lambda ()
+              (setq buffer-display-table (make-display-table)))))
+
+(setq x-underline-at-descent-line nil
+      x-use-underline-position-properties t
+      underline-minimum-offset 10)
+
+(my/report-time "Visual")
+
 (setq my/section-start-time (current-time))
+
+(setq evil-want-C-i-jump nil)
+(setq evil-want-abbrev-expand-on-insert-exit nil)
+(setq evil-want-keybinding nil)
+
+(evil-mode 1)
+(when (require 'evil-collection nil t)
+(evil-collection-init))
+
+(global-aggressive-indent-mode 1)
+
+(setq-default initial-major-mode 'text-mode   ; Initial mode is text
+              default-major-mode 'text-mode)  ; Default mode is text
 
 (add-hook 'text-mode-hook 'visual-line-mode)
 (add-hook 'prog-mode-hook 'visual-line-mode)
 
 (setq-default indent-tabs-mode nil        ; Stop using tabs to indent
               tab-always-indent 'complete ; Indent first then try completions
-              tab-width 4)                ; Smaller width for tab characters
+              tab-width 2)                ; Smaller width for tab characters
 
 ;; Let Emacs guess Python indent silently
 (setq python-indent-guess-indent-offset t
@@ -419,42 +568,27 @@
 (setq show-paren-when-point-inside-paren nil)
 (show-paren-mode)
 
-(electric-pair-mode 1)
+(electric-pair-mode)
+
+(require 'imenu-list)
+
+(setq-default imenu-list-position 'left
+              imenu-max-item-length 1000)
 
 (require 'hl-line)
 
 (global-hl-line-mode)
 
-(indent-guide-mode t)
-(setq indent-guide-char "|")
+;; (require 'pdf-tools)
 
-(setq pdf-view-use-scaling t
-      pdf-view-use-imagemagick nil)
+(add-hook 'doc-view-mode-hook 'pdf-tools-install)
 
-(add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1))) ; set the pdf-view incompatible-modes[linum mode: line numbers]
+(setq-default pdf-view-use-scaling t
+              pdf-view-use-imagemagick nil)
 
-(require 'org-noter)
-(bind-key "C-c n n" #'org-noter)
+(my/report-time "Editing")
 
-(setq org-noter-auto-save-last-location t
-      org-noter-doc-split-fraction (quote (0.7 . 0.7))
-      org-noter-notes-window-behavior nil
-      org-noter-notes-window-location "Vertical"
-      org-noter-always-create-frame nil
-      org-noter-separate-notes-from-heading t)
-
-(selectrum-mode +1)                         ; enable selectrum mode
-(straight-use-package 'selectrum-prescient) ; to make sorting and filtering more intelligent
-(selectrum-prescient-mode +1)               ; same
-;; to save your command history on disk, so the sorting gets more
-;; intelligent over time
-(prescient-persist-mode 1)
-
-(setq ctrlf-default-search-style 'fuzzy-regexp)
-(setq ctrlf-auto-recenter 1)
-(setq ctrlf-highlight-line 1)
-
-(ctrlf-mode +1)
+(setq my/section-start-time (current-time))
 
 (require 'corfu)
 
@@ -489,11 +623,280 @@
 
 (add-to-list 'completion-at-point-functions 'cape-symbol)
 
-(require 'cape)
-(global-corfu-mode)
-;; (setq completion-at-point-functions 'cape)
-(add-to-list 'completion-at-point-functions #'cape-file)
-(add-to-list 'completion-at-point-functions #'cape-dabbrev)
+(require 'orderless)
+  
+(setq completion-styles '(substring orderless basic)
+      orderless-component-separator 'orderless-escapable-split-on-space
+      read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t
+      completion-ignore-case t)
+
+(my/report-time "Completion")
+
+(setq my/section-start-time (current-time))
+
+(require 'vertico)
+
+;; (setq completion-styles '(basic substring partial-completion flex))
+
+(setq vertico-resize nil        ; How to resize the Vertico minibuffer window.
+      vertico-count 8           ; Maximal number of candidates to show.
+      vertico-count-format nil) ; No prefix with number of entries
+
+(vertico-mode)
+
+(setq vertico-grid-separator
+      #("  |  " 2 3 (display (space :width (1))
+                             face (:background "#ECEFF1")))
+
+      vertico-group-format
+      (concat #(" " 0 1 (face vertico-group-title))
+              #(" " 0 1 (face vertico-group-separator))
+              #(" %s " 0 4 (face vertico-group-title))
+              #(" " 0 1 (face vertico-group-separator
+                          display (space :align-to (- right (-1 . right-margin) (- +1)))))))
+
+(set-face-attribute 'vertico-group-separator nil
+                    :strike-through t)
+(set-face-attribute 'vertico-current nil
+                    :inherit '(nano-strong nano-subtle))
+(set-face-attribute 'completions-first-difference nil
+                    :inherit '(nano-default))
+
+(bind-key "<backtab>" #'minibuffer-complete vertico-map)
+
+(setq completion-in-region-function
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args)))
+
+(defun minibuffer-format-candidate (orig cand prefix suffix index _start)
+  (let ((prefix (if (= vertico--index index)
+                    "  "
+                  "   "))) 
+    (funcall orig cand prefix suffix index _start)))
+
+(advice-add #'vertico--format-candidate
+           :around #'minibuffer-format-candidate)
+
+(defun vertico--prompt-selection ()
+  "Highlight the prompt"
+
+  (let ((inhibit-modification-hooks t))
+    (set-text-properties (minibuffer-prompt-end) (point-max)
+                         '(face (nano-strong nano-salient)))))
+
+(defun minibuffer-vertico-setup ()
+
+  (setq truncate-lines t)
+  (setq completion-in-region-function
+        (if vertico-mode
+            #'consult-completion-in-region
+          #'completion--in-region)))
+
+(add-hook 'vertico-mode-hook #'minibuffer-vertico-setup)
+(add-hook 'minibuffer-setup-hook #'minibuffer-vertico-setup)
+
+(require 'marginalia)
+
+(setq-default marginalia--ellipsis "…"    ; Nicer ellipsis
+              marginalia-align 'right     ; right alignment
+              marginalia-align-offset -1) ; one space on the right
+
+(marginalia-mode)
+
+(require 'nano-theme)
+(require 'nano-modeline)
+
+(setq nano-modeline-prefix 'status)
+(setq nano-modeline-prefix-padding 1)
+
+(set-face-attribute 'header-line nil)
+(set-face-attribute 'mode-line nil
+                    :foreground (face-foreground 'nano-subtle-i)
+                    :background (face-foreground 'nano-subtle-i)
+                    :inherit nil
+                    :box nil)
+(set-face-attribute 'mode-line-inactive nil
+                    :foreground (face-foreground 'nano-subtle-i)
+                    :background (face-foreground 'nano-subtle-i)
+                    :inherit nil
+                    :box nil)
+
+(set-face-attribute 'nano-modeline-active nil
+                    :underline (face-foreground 'nano-default-i)
+                    :background (face-background 'nano-subtle)
+                    :inherit '(nano-default-)
+                    :box nil)
+(set-face-attribute 'nano-modeline-inactive nil
+                    :foreground 'unspecified
+                    :underline (face-foreground 'nano-default-i)
+                    :background (face-background 'nano-subtle)
+                    :box nil)
+
+(set-face-attribute 'nano-modeline-active-name nil
+                    :foreground "white"
+                    :inherit '(nano-modeline-active nano-strong))
+(set-face-attribute 'nano-modeline-active-primary nil
+                    :inherit '(nano-modeline-active))
+(set-face-attribute 'nano-modeline-active-secondary nil
+                    :inherit '(nano-faded nano-modeline-active))
+
+;; (set-face-attribute 'nano-modeline-active-status-RW nil
+;;                     :inherit '(nano-faded-i nano-strong nano-modeline-active))
+;; (set-face-attribute 'nano-modeline-active-status-** nil
+;;                     :inherit '(nano-popout-i nano-strong nano-modeline-active))
+;; (set-face-attribute 'nano-modeline-active-status-RO nil
+;;                     :inherit '(nano-default-i nano-strong nano-modeline-active))
+
+(set-face-attribute 'nano-modeline-inactive-name nil
+                    :inherit '(nano-faded nano-strong
+                               nano-modeline-inactive))
+(set-face-attribute 'nano-modeline-inactive-primary nil
+                    :inherit '(nano-faded nano-modeline-inactive))
+
+(set-face-attribute 'nano-modeline-inactive-secondary nil
+                    :inherit '(nano-faded nano-modeline-inactive))
+(set-face-attribute 'nano-modeline-inactive-status-RW nil
+                    :inherit '(nano-modeline-inactive-secondary))
+(set-face-attribute 'nano-modeline-inactive-status-** nil
+                    :inherit '(nano-modeline-inactive-secondary))
+(set-face-attribute 'nano-modeline-inactive-status-RO nil
+                    :inherit '(nano-modeline-inactive-secondary))
+
+(defun my/thin-modeline ()
+  "Transform the modeline in a thin faded line"
+  
+  (nano-modeline-face-clear 'mode-line)
+  (nano-modeline-face-clear 'mode-line-inactive)
+  (setq mode-line-format (list ""))
+  (setq-default mode-line-format (list ""))
+  (set-face-attribute 'mode-line nil
+                      :box nil
+                      :inherit nil
+                      :foreground (face-background 'nano-subtle)
+                      :background (face-background 'nano-subtle)
+                      :height 0.1)
+  (set-face-attribute 'mode-line-inactive nil
+                      :box nil
+                      :inherit nil
+                      :foreground (face-background 'nano-subtle)
+                      :background (face-background 'nano-subtle)
+                      :height 0.1))
+
+(add-hook 'nano-modeline-mode-hook #'my/thin-modeline)
+
+(nano-modeline-mode 1)
+
+(my/report-time "Minibuffer/Modeline")
+
+(setq org-roam-directory (file-truename "/home/zakaria/dox/braindump/org-files"))
+(org-roam-db-autosync-mode)                    ; autosync for db
+(setq org-roam-dailies-directory (file-truename "/home/zakaria/org/daily")) ; directory for my dailies
+(setq org-roam-db-gc-threshold most-positive-fixnum) ; Garbage collection
+
+(bind-key "C-c n f" #'org-roam-node-find)
+(bind-key "C-c n l" #'org-roam-buffer-toggle)
+(bind-key "C-c n g" #'org-roam-ui-mode)
+(bind-key "C-c n i" #'org-roam-node-insert)
+(bind-key "C-c n t" #'org-roam-tag-add)
+(bind-key "C-c n r" #'org-roam-ref-add)
+(bind-key "C-c n c" #'org-roam-capture)
+(bind-key "C-c n j" #'org-roam-dailies-capture-today)
+(bind-key "C-c n d" #'org-roam-dailies-map)
+;; (require 'org-roam-protocol))
+
+(add-to-list 'display-buffer-alist
+             '("\\*org-roam\\*"
+               (display-buffer-in-direction)
+               (direction . right)
+               (window-width . 0.45)
+               (window-height . fit-window-to-buffer)))
+
+;; org-roam templates
+(setq org-roam-capture-templates
+      '(("m" "main" plain
+         "%?"
+         :if-new
+         (file+head "main/%<%Y%m%d%H%M%S>-${slug}.org"
+                    "#+title: ${title}\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("r" "reference" plain "%?\n* References :ignore:\n#+print_bibliography"
+         :if-new
+         (file+head "refs/%<%Y%m%d%H%M%S>-${slug}.org"
+                    "#+title: ${title}\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("c" "comp-sci" plain "%?"
+         :if-new
+         (file+head "cs/%<%Y%m%d%H%M%S>-${slug}.org"
+                    "#+title: ${title}\n#+filetags: :computer-science:\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("a" "article" plain "%?"
+         :if-new
+         (file+head "articles/%<%Y%m%d%H%M%S>-${slug}.org"
+                    "#+title: ${title}\n#+filetags: :article:\n")
+         :immediate-finish t
+         :unnarrowed t)))
+
+;; (cl-defmethod org-roam-node-type ((node org-roam-node))
+;;   "Return the TYPE of NODE."
+;;   (condition-case nil
+;;       (file-name-nondirectory
+;;        (directory-file-name
+;;         (file-name-directory
+;;          (file-relative-name (org-roam-node-file node) org-roam-directory))))
+;;     (error "")))
+;; TODO: use icons instead
+;; (setq org-roam-node-display-template
+;;       (concat "${type:10} ${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
+(setq org-roam-node-display-template
+      (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
+
+(cl-defmethod org-roam-node-directories ((node org-roam-node))
+  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (format "%s" (car (split-string dirs "/")))
+    ""))
+
+(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
+  (let* ((count (caar (org-roam-db-query
+                       [:select (funcall count source)
+                                :from links
+                                :where (= dest $s1)
+                                :and (= type "id")]
+                       (org-roam-node-id node)))))
+    (format "[%d]" count)))
+
+
+(setq org-roam-node-display-template
+      (concat "${directories:10} ${title:*} ${backlinkscount:6}" (propertize "${tags:20}" 'face 'org-tag) ))
+
+(setq org-roam-ui-sync-theme nil
+      org-roam-ui-follow t
+      org-roam-ui-update-on-save t
+      org-roam-ui-open-on-start t)
+
+;; disable linum-mode (line number)
+(add-hook 'deft
+          '(lambda () (linum-mode nil)))
+(use-package deft
+  :commands (deft)
+  :custom       (deft-directory "~/org/notes" )
+  (deft-recursive t)
+  (deft-extensions '("org" "md" "txt") )
+  (deft-use-filename-as-title t)
+  (deft-file-naming-rules
+    '((noslash . "-")
+      (nospace . "-")
+      (case-fn . downcase))
+    deft-org-mode-title-prefix t
+    deft-text-mode 'org-mode))
+
+(setq my/section-start-time (current-time))
 
 (setq-default org-directory "~/org"
               org-ellipsis " …"              ; Nicer ellipsis
@@ -510,8 +913,6 @@
               org-indirect-buffer-display 'other-window ; Tab on a task expand it in a new window
               org-outline-path-complete-in-steps nil ; No steps in path display
               org-log-into-drawer t)         ; Log into drawers
-
-(setq my/section-start-time (current-time))
 
 (setq org-latex-create-formula-image-program 'dvisvgm)
 
@@ -541,12 +942,6 @@
         ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
         ))
 
-(require 'org-glossary)
-
-(setq org-appear-autolinks t
-      org-appear-autosubmarkers t)
-(add-hook 'org-mode-hook (lambda () (org-appear-mode 1)))
-
 (setq org-capture-templates
       `(("i" " inbox" entry  (file "~/org/gtd/inbox.org")
          ,(concat "* TODO %?\n"
@@ -572,6 +967,29 @@
         ))
 
 (require 'org-protocol)
+
+(setq org-appear-autolinks t
+      org-appear-autosubmarkers t)
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+(require 'org-cliplink)
+
+(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
+              org-adapt-indentation nil          ; Adaptive indentation
+              org-src-tab-acts-natively t        ; Tab acts as in source editing
+              org-confirm-babel-evaluate nil     ; No confirmation before executing code
+              org-edit-src-content-indentation 0 ; No relative indentation for code blocks
+              org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (shell . t)
+   (emacs-lisp . t)
+   (R . t)
+   ))
+
+(my/report-time "Org")
 
 (defun zk/switch-to-agenda ()
   (interactive)
@@ -725,208 +1143,56 @@
                            ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
 ;;("someday.org" :level . 0)
 
-;; (require 'org-tempo)
-;; (add-to-list 'org-structure-template-alist
-;;              '("S" . "src emacs-lisp"
-;;                "P" . "src python"
-;;                ))
+(setq my/section-start-time (current-time))
 
-(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
-              org-adapt-indentation nil          ; Adaptive indentation
-              org-src-tab-acts-natively t        ; Tab acts as in source editing
-              org-confirm-babel-evaluate nil     ; No confirmation before executing code
-              org-edit-src-content-indentation 0 ; No relative indentation for code blocks
-              org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+(defun zk/start-blog ()
+  "Start the local web server for the blog."
+  (interactive)
+  (let ((httpd-root "~/dox/blog/public")
+        (httpd-port "8080"))
+    (httpd-start)))
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)
-   (shell . t)
-   (emacs-lisp . t)
-   (R . t)
-   ))
+(defun zk/create-post ()
+  "Create a new blog post. Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
+  (interactive)
+  ;; Get the post name and format the date
+  (let* ((_post (read-string " Post: "))
+         (_date (format-time-string "%Y-%m-%d" (current-time)))
+         (_ext ".org")
+         (_path "/home/zakaria/dox/blog/content/")
+         ;; Concatenate the filename components and replace whitespace with hyphens
+         (filename (concat _path _date "-" (replace-regexp-in-string " " "-" (downcase _post)) _ext)))
+    ;; If the file already exists, display a message and do nothing
+    (if (file-exists-p filename)
+        (message (format "File '%s' already exists" _post))
+      ;; Otherwise, create the file and switch to its buffer
+      (switch-to-buffer (find-file filename))
+      ;; Insert the post template
+      (let ((_title (capitalize _post))
+            (_author "Zakaria.K")
+            (_email "4.kebairia@gmail.com")
+            (_date (format-time-string "%d %b %Y %a"))
+            (_options "#+OPTIONS: html5-fancy: t\n")
+            (_begin_date "#+begin_date\n{{{date}}}\n")
+            (_end_date "#+end_date\n"))
+        (insert (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s\n#+EMAIL: %s\n#+DATE: %s\n#+KEYWORDS: \n%s%s%s"
+                        _title _author _email _date _options _begin_date _end_date))))
+    ;; Start the local server
+    (zk/start-blog)))
+
+
+;; Bind the function to the key "C-c P"
+(global-set-key (kbd "C-c P") 'zk/create-post)
+
+(my/report-time "Blog")
 
 (bind-key "C-c g" #'magit)
 (advice-add 'magit-set-header-line-format :override #'ignore)
 
-(setq org-roam-directory (file-truename "/home/zakaria/dox/braindump/org-files"))
-(org-roam-db-autosync-mode)                    ; autosync for db
-(setq org-roam-dailies-directory (file-truename "/home/zakaria/org/daily")) ; directory for my dailies
-(setq org-roam-db-gc-threshold most-positive-fixnum) ; Garbage collection
-; Keybindings
-(bind-key "C-c n f" #'org-roam-node-find)
-(bind-key "C-c n l" #'org-roam-buffer-toggle)
-(bind-key "C-c n g" #'org-roam-ui-mode)
-(bind-key "C-c n i" #'org-roam-node-insert)
-(bind-key "C-c n t" #'org-roam-tag-add)
-(bind-key "C-c n r" #'org-roam-ref-add)
-(bind-key "C-c n c" #'org-roam-capture)
-(bind-key "C-c n j" #'org-roam-dailies-capture-today)
-(bind-key "C-c n d" #'org-roam-dailies-map)
-;; (require 'org-roam-protocol))
+(let ((init-time (float-time (time-subtract (current-time) my/init-start-time)))
+      (total-time (string-to-number (emacs-init-time "%f"))))
 
-;;Configuring the Org-roam buffer display
-(add-to-list 'display-buffer-alist
-             '("\\*org-roam\\*"
-               (display-buffer-in-direction)
-               (direction . right)
-               (window-width . 0.45)
-               (window-height . fit-window-to-buffer)))
-
-;; org-roam templates
-(setq org-roam-capture-templates
-      '(("m" "main" plain
-         "%?"
-         :if-new
-         (file+head "main/%<%Y%m%d%H%M%S>-${slug}.org"
-                    "#+title: ${title}\n")
-         :immediate-finish t
-         :unnarrowed t)
-        ("r" "reference" plain "%?\n* References :ignore:\n#+print_bibliography"
-         :if-new
-         (file+head "refs/%<%Y%m%d%H%M%S>-${slug}.org"
-                    "#+title: ${title}\n")
-         :immediate-finish t
-         :unnarrowed t)
-        ("c" "comp-sci" plain "%?"
-         :if-new
-         (file+head "cs/%<%Y%m%d%H%M%S>-${slug}.org"
-                    "#+title: ${title}\n#+filetags: :computer-science:\n")
-         :immediate-finish t
-         :unnarrowed t)
-        ("a" "article" plain "%?"
-         :if-new
-         (file+head "articles/%<%Y%m%d%H%M%S>-${slug}.org"
-                    "#+title: ${title}\n#+filetags: :article:\n")
-         :immediate-finish t
-         :unnarrowed t)))
-
-;; (cl-defmethod org-roam-node-type ((node org-roam-node))
-;;   "Return the TYPE of NODE."
-;;   (condition-case nil
-;;       (file-name-nondirectory
-;;        (directory-file-name
-;;         (file-name-directory
-;;          (file-relative-name (org-roam-node-file node) org-roam-directory))))
-;;     (error "")))
-;; TODO: use icons instead
-;; (setq org-roam-node-display-template
-;;       (concat "${type:10} ${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
-(setq org-roam-node-display-template
-      (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
-
-(setq org-roam-ui-sync-theme nil
-      org-roam-ui-follow t
-      org-roam-ui-update-on-save t
-      org-roam-ui-open-on-start t)
-
-;; disable linum-mode (line number)
-(add-hook 'deft
-          '(lambda () (linum-mode nil)))
-(use-package deft
-  :commands (deft)
-  :custom       (deft-directory "~/org/notes" )
-  (deft-recursive t)
-  (deft-extensions '("org" "md" "txt") )
-  (deft-use-filename-as-title t)
-  (deft-file-naming-rules
-    '((noslash . "-")
-      (nospace . "-")
-      (case-fn . downcase))
-    deft-org-mode-title-prefix t
-    deft-text-mode 'org-mode))
-
-(cl-defmethod org-roam-node-directories ((node org-roam-node))
-  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
-      (format "%s" (car (split-string dirs "/")))
-    ""))
-
-(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
-  (let* ((count (caar (org-roam-db-query
-                       [:select (funcall count source)
-                                :from links
-                                :where (= dest $s1)
-                                :and (= type "id")]
-                       (org-roam-node-id node)))))
-    (format "[%d]" count)))
-
-
-(setq org-roam-node-display-template
-      (concat "${directories:10} ${title:*} ${backlinkscount:6}" (propertize "${tags:20}" 'face 'org-tag) ))
-
-(require 'engrave-faces)
-
-(setq blog-root-dir "~/dox/blog"
-      blog-path "~/dox/blog/content/"
-      blog-port "8080")
-
-
-;; (defun zk/create-blog(filename)
-;;   (interactive)
-;;   (find-file (concat blog-path 'filename)))
-
-;; I took `capitalize-first-char` function from this function is from
-;; https://emacs.stackexchange.com/a/12614
-
-(defun zk/capitalize-first-char (&optional string)
-  "Capitalize only the first character of the input STRING."
-  (when (and string (> (length string) 0))
-    (let ((first-char (substring string nil 1))
-          (rest-str   (substring string 1)))
-      (concat (capitalize first-char) rest-str))))
-
-;; Refine the post filename, remove spaces and subtitue that with '-'
-(defun zk/refine-post-filename(string)
-  "Remove space from STRING"
-  (downcase (replace-regexp-in-string " " "-" string)))
-
-(defun zk/create-post (&optional _post)
-  "Function for creating post
-               Prompt me for the post name, if it exist, warn me.
-               else write the post using the date as a prefix and use `.org' as an extension 
-               and then put some org keywords "
-  (interactive)
-  (setq _post (read-string " Post: ")
-        _date (format-time-string "%Y-%m-%d" (current-time))
-        _ext ".org"
-        _path "/home/zakaria/dox/blog/content/")
-
-  ;; concatenate all variables together, and subtitue all whitespaces with  `-'
-  ;; and downcase the name
-  (setq filename
-        (zk/refine-post-filename (concat  _path _date "-" _post _ext)))
-
-  (if (file-exists-p filename)
-      (message (concat  "File " (concat "'" _post "'" " already exists")))
-    (switch-to-buffer (find-file filename )))
-
-  ;; setting variables
-  (setq _title (zk/capitalize-first-char _post)
-        _author "Zakaria.K"
-        _email "4.kebairia@gmail.com"
-        _date (format-time-string "%d %b %Y %a")
-        _other "#+OPTIONS: html5-fancy:t tex:t\n#+begin_date\n{{{date}}}\n#+end_date\n")
-
-  ;; insert template
-  (insert (format "#+TITLE: %s\n#+SUBTITLE: -- \n#+AUTHOR: %s \n#+EMAIL: %s \n#+DATE: %s \n#+KEYWORDS: blog,\n%s"
-                  _title
-                  _author
-                  _email
-                  _date
-                  _other
-                  ))
-  ;; And then start the local server
-  (zk/start-blog)
-  )
-
-;; Keybinding for the function
-(global-set-key (kbd "C-c P") 'zk/create-post)
-
-(defun zk/start-blog()
-  (interactive)
-  (setq httpd-root "~/dox/blog/public"
-        httpd-port blog-port)
-  (httpd-start))
-
-(setq-default shell-file-name          "/bin/bash"
-              explicit-shell-file-name "/bin/bash")
+  (message "---------------------------------------------------------------")
+  (message "Initialization time:                 %.2fs (+ %.2f system time)"
+           init-time (- total-time init-time)))
+  (message "---------------------------------------------------------------")

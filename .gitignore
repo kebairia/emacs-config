@@ -8,8 +8,7 @@ straight/
 transient/
 url/
 var/
-/.org-id-locations
-/elpa/
-/*.bak
-/recentf
-/saveplace
+*.bak
+.org-id-locations
+recentf
+saveplace
