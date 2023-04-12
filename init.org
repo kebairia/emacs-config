@@ -2207,6 +2207,23 @@ NEXT and HOLD exchange for clocking out and clocking in
                                  ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
       ;;("someday.org" :level . 0)
     #+end_src
+** Processing Agenda Items
+#+begin_src emacs-lisp
+(defun zk/org-agenda-process-inbox-item ()
+  (interactive)
+  "Process a single item in the org-agenda."
+  (org-with-wide-buffer
+   (org-agenda-schedule t)
+   (org-agenda-set-tags)
+   (org-agenda-priority)
+   (org-agenda-refile nil nil t)))
+#+end_src
+Set keybinding for the function
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-c o") 'zk/org-agenda-process-inbox-item)
+
+#+end_src
 
 * Blog
 
