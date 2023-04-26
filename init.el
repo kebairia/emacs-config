@@ -54,11 +54,14 @@
         evil                ; A VI layer for Emacs
         evil-collection
         aggressive-indent   ; Keeps your code always indented 
-        evil-org
+        evil-org            ; Evil extensions for Org-mode
         org-roam            ; Roam implementation for Emacs/org
         org-roam-ui         ; A graph generator for org-roam notes
         org-appear          ; Make invisible parts of Org elements appear visible.
         org-cliplink        ; Insert org-mode links from clipboard
+        org-pdftools        ; A custom org link type for pdf-tools
+        org-noter-pdftools  ; Support for org-noter 
+        org-noter           ;Emacs document annotator, using Org-mode
         f                   ; Modern API for working with files and directories
         corfu               ; Completion Overlay Region FUnction
         deft                ; Quickly browse, filter, and edit plain text notes
@@ -896,6 +899,8 @@
     deft-org-mode-title-prefix t
     deft-text-mode 'org-mode))
 
+(require 'org-noter)
+
 (setq my/section-start-time (current-time))
 
 (setq-default org-directory "~/org"
@@ -996,6 +1001,7 @@
   (org-agenda nil "g"))
 
 (bind-key "C-c a" #'zk/switch-to-agenda)
+(bind-key "C-c w" #'org-agenda-week-view)
 
 (require 'evil-org)
 (require 'evil-org-agenda)

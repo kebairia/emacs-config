@@ -110,11 +110,14 @@ Packages used in this specific configuration. You may want to adapt this list. T
         evil                ; A VI layer for Emacs
         evil-collection
         aggressive-indent   ; Keeps your code always indented 
-        evil-org
+        evil-org            ; Evil extensions for Org-mode
         org-roam            ; Roam implementation for Emacs/org
         org-roam-ui         ; A graph generator for org-roam notes
         org-appear          ; Make invisible parts of Org elements appear visible.
         org-cliplink        ; Insert org-mode links from clipboard
+        org-pdftools        ; A custom org link type for pdf-tools
+        org-noter-pdftools  ; Support for org-noter 
+        org-noter           ;Emacs document annotator, using Org-mode
         f                   ; Modern API for working with files and directories
         corfu               ; Completion Overlay Region FUnction
         deft                ; Quickly browse, filter, and edit plain text notes
@@ -1872,6 +1875,19 @@ Configuring the Org-roam buffer display
     
     
   #+END_SRC
+** org noter
+#+begin_src emacs-lisp
+(require 'org-noter)
+(bind-key "C-c n n" 'org-noter-insert-note)
+(bind-key "C-c n N" 'org-noter-insert-precise-note)
+
+(setq org-noter-auto-save-last-location t
+      org-noter-doc-split-fraction (quote (0.7 . 0.7))
+      org-noter-notes-window-behavior nil
+      org-noter-notes-window-location "Vertical"
+      org-noter-always-create-frame nil
+      org-noter-separate-notes-from-heading t)
+#+end_src
 * ORG
 #+begin_src emacs-lisp
 
@@ -2040,6 +2056,7 @@ Keybiding for Agenda(s)
   (org-agenda nil "g"))
 
 (bind-key "C-c a" #'zk/switch-to-agenda)
+(bind-key "C-c w" #'org-agenda-week-view)
 #+end_src
 Use evil mode with org-agenda (with evil-org-agenda)
 #+begin_src emacs-lisp
@@ -2237,9 +2254,8 @@ Start a local server for my blog
 (defun zk/start-blog ()
   "Start the local web server for the blog."
   (interactive)
-  (let ((httpd-root "~/dox/blog/public")
-        (httpd-port "8080"))
-    (httpd-start)))
+  (let (httpd-root "~/dox/blog/public"))
+    (httpd-start))
 #+end_src
 ** Create Blog post
 A function to create a Blog post, and start the local web server
