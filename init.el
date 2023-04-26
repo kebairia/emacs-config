@@ -1143,14 +1143,24 @@
                            ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
 ;;("someday.org" :level . 0)
 
+(defun zk/org-agenda-process-inbox-item ()
+  (interactive)
+  "Process a single item in the org-agenda."
+  (org-with-wide-buffer
+   (org-agenda-schedule t)
+   (org-agenda-set-tags)
+   (org-agenda-priority)
+   (org-agenda-refile nil nil t)))
+
+(global-set-key (kbd "C-c o") 'zk/org-agenda-process-inbox-item)
+
 (setq my/section-start-time (current-time))
 
 (defun zk/start-blog ()
   "Start the local web server for the blog."
   (interactive)
-  (let ((httpd-root "~/dox/blog/public")
-        (httpd-port "8080"))
-    (httpd-start)))
+  (let (httpd-root "~/dox/blog/public"))
+    (httpd-start))
 
 (defun zk/create-post ()
   "Create a new blog post. Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
