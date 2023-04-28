@@ -69,6 +69,7 @@
         htmlize             ; Convert buffer text and decorations to HTML
         mini-frame          ; Show minibuffer in child frame on read-from-minibuffer
         imenu-list          ; Show imenu entries in a separate buffer
+        eglot               ; A client for Language Server Protocol servers
         magit               ; A Git porcelain inside Emacs.
         markdown-mode       ; Major mode for Markdown-formatted text
         use-package         ; A configuration macro for simplifying your .emacs
@@ -589,14 +590,16 @@
 
 (setq corfu-cycle t                ; Enable cycling for `corfu-next/previous'
       corfu-auto t                 ; Enable auto completion
-      corfu-auto-delay 60.0        ; Delay before auto-completion shows up
+      corfu-auto-delay 0        ; Delay before auto-completion shows up
+      corfu-auto-prefix 0
+      completion-styles '(basic)
       corfu-separator ?\s          ; Orderless field separator
       corfu-quit-at-boundary nil   ; Never quit at completion boundary
       corfu-quit-no-match t        ; Quit when no match
-      corfu-preview-current nil    ; Disable current candidate preview
+      corfu-preview-current t    ; Disable current candidate preview
       corfu-preselect-first nil    ; Disable candidate preselection
       corfu-on-exact-match nil     ; Configure handling of exact matches
-      corfu-echo-documentation nil ; Disable documentation in the echo area
+      corfu-echo-documentation t ; Disable documentation in the echo area
       corfu-scroll-margin 5)       ; Use scroll margin
 
 (global-corfu-mode)
@@ -1181,8 +1184,43 @@
 
 (my/report-time "Blog")
 
+(setq my/section-start-time (current-time))
+
 (bind-key "C-c g" #'magit)
 (advice-add 'magit-set-header-line-format :override #'ignore)
+
+(my/report-time "Versioning")
+
+(setq my/section-start-time (current-time))
+
+(require 'eglot)
+
+(setq linum-format "%3d ")
+
+(add-hook 'python-mode-hook 'linum-mode)
+(add-hook 'shell-mode-hook 'linum-mode)
+
+(add-to-list 'eglot-server-programs
+             `(python-mode . ("pylsp" "-v" "--tcp" "--host"
+                              "localhost" "--port" :autoport)))
+
+(add-to-list 'eglot-server-programs
+             `(shell-script-mode . ("bash-language-server" "start" )))
+
+(add-to-list 'eglot-server-programs
+             `(yaml-mode . ("yaml-language-server" "--stdio")))
+
+;; (add-to-list 'eglot-server-programs
+;;              `(markdown-mode . ("marksman")))
+(add-to-list 'eglot-server-programs '(markdown-mode . ("marksman")))
+(add-hook 'markdown-mode-hook #'eglot-ensure)
+
+(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'shell-script-mode 'eglot-ensure)
+(add-hook 'yaml-mode-hook 'eglot-ensure)
+(add-hook 'markdown-mode-hook 'eglot-ensure)
+
+(my/report-time "IDE")
 
 (let ((init-time (float-time (time-subtract (current-time) my/init-start-time)))
       (total-time (string-to-number (emacs-init-time "%f"))))

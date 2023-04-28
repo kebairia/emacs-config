@@ -125,6 +125,7 @@ Packages used in this specific configuration. You may want to adapt this list. T
         htmlize             ; Convert buffer text and decorations to HTML
         mini-frame          ; Show minibuffer in child frame on read-from-minibuffer
         imenu-list          ; Show imenu entries in a separate buffer
+        eglot               ; A client for Language Server Protocol servers
         magit               ; A Git porcelain inside Emacs.
         markdown-mode       ; Major mode for Markdown-formatted text
         use-package         ; A configuration macro for simplifying your .emacs
@@ -1124,14 +1125,16 @@ For retina display (OSX)
 
 (setq corfu-cycle t                ; Enable cycling for `corfu-next/previous'
       corfu-auto t                 ; Enable auto completion
-      corfu-auto-delay 60.0        ; Delay before auto-completion shows up
+      corfu-auto-delay 0        ; Delay before auto-completion shows up
+      corfu-auto-prefix 0
+      completion-styles '(basic)
       corfu-separator ?\s          ; Orderless field separator
       corfu-quit-at-boundary nil   ; Never quit at completion boundary
       corfu-quit-no-match t        ; Quit when no match
-      corfu-preview-current nil    ; Disable current candidate preview
+      corfu-preview-current t    ; Disable current candidate preview
       corfu-preselect-first nil    ; Disable candidate preselection
       corfu-on-exact-match nil     ; Configure handling of exact matches
-      corfu-echo-documentation nil ; Disable documentation in the echo area
+      corfu-echo-documentation t ; Disable documentation in the echo area
       corfu-scroll-margin 5)       ; Use scroll margin
 
 (global-corfu-mode)
@@ -2265,12 +2268,96 @@ A function to create a Blog post, and start the local web server
 #+end_src
 
 * Versioning  
+
+#+begin_src emacs-lisp
+
+(setq my/section-start-time (current-time))
+
+#+end_src
+
 ** Magit
 Prevent magit from writing in the header line.
 #+begin_src emacs-lisp
 (bind-key "C-c g" #'magit)
 (advice-add 'magit-set-header-line-format :override #'ignore)
 #+end_src
+
+** Benchmark
+#+begin_src emacs-lisp
+
+(my/report-time "Versioning")
+
+#+end_src
+
+* IDE
+
+#+begin_src emacs-lisp
+
+(setq my/section-start-time (current-time))
+
+#+end_src
+
+#+begin_src emacs-lisp
+(require 'eglot)
+#+end_src
+** Linum mode (number line)
+#+begin_src emacs-lisp
+(setq linum-format "%3d ")
+#+end_src
+Adding hook with python/shell files
+#+begin_src emacs-lisp
+(add-hook 'python-mode-hook 'linum-mode)
+(add-hook 'shell-mode-hook 'linum-mode)
+(add-hook 'yaml-mode-hook 'linum-mode)
+(add-hook 'markdown-mode-hook 'linum-mode)
+#+end_src
+ 
+Python server
+#+begin_src emacs-lisp
+(add-to-list 'eglot-server-programs
+             `(python-mode . ("pylsp" "-v" "--tcp" "--host"
+                              "localhost" "--port" :autoport)))
+
+#+end_src
+
+Bash server
+#+begin_src emacs-lisp
+(add-to-list 'eglot-server-programs
+             `(shell-script-mode . ("bash-language-server" "start" )))
+
+#+end_src
+
+YAML server
+#+begin_src emacs-lisp
+(add-to-list 'eglot-server-programs
+             `(yaml-mode . ("yaml-language-server" "--stdio")))
+
+#+end_src
+
+Markdown server
+#+begin_src emacs-lisp
+;; (add-to-list 'eglot-server-programs
+;;              `(markdown-mode . ("marksman")))
+(add-to-list 'eglot-server-programs '(markdown-mode . ("marksman")))
+(add-hook 'markdown-mode-hook #'eglot-ensure)
+
+#+end_src
+
+Hooks
+
+#+begin_src emacs-lisp
+(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'shell-script-mode 'eglot-ensure)
+(add-hook 'yaml-mode-hook 'eglot-ensure)
+(add-hook 'markdown-mode-hook 'eglot-ensure)
+#+end_src
+** Benchmark
+#+begin_src emacs-lisp
+
+(my/report-time "IDE")
+
+#+end_src
+
 
 * Profiling
 ** Final report
