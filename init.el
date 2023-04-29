@@ -472,13 +472,6 @@
 
 (setq my/section-start-time (current-time))
 
-;; (defun load-my-theme (frame)
-;;   (select-frame frame)
-;;   (load-theme 'nano t))
-;; (if (daemonp)
-;;     (add-hook 'after-make-frame-functions #'load-my-theme)
-;;     (load-my-theme (selected-frame)))
-
 (require 'nano-theme)
 (setq nano-fonts-use t) ; Use theme font stack
 (nano-dark)             ; Use theme dark version
@@ -494,6 +487,12 @@
                       :underline  'unspecified :overline   'unspecified
                       :box        'unspecified :inherit    style))
 (my/set-face 'italic 'nano-faded)
+
+(defun load-nano-dark-theme-after-startup ()
+  "A custom function to be executed after Emacs startup."
+  (nano-dark))
+
+(add-hook 'after-init-hook 'load-nano-dark-theme-after-startup)
 
 ;; (require 'nano-splash)
 

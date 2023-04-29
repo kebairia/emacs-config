@@ -863,13 +863,6 @@ A consistent theme for GNU Emacs. The light theme is based on Material colors an
 
 #+begin_src lisp
 
-;; (defun load-my-theme (frame)
-;;   (select-frame frame)
-;;   (load-theme 'nano t))
-;; (if (daemonp)
-;;     (add-hook 'after-make-frame-functions #'load-my-theme)
-;;     (load-my-theme (selected-frame)))
-
 (require 'nano-theme)
 (setq nano-fonts-use t) ; Use theme font stack
 (nano-dark)             ; Use theme dark version
@@ -887,6 +880,14 @@ A consistent theme for GNU Emacs. The light theme is based on Material colors an
 (my/set-face 'italic 'nano-faded)
 
 
+#+end_src
+Load nano-dark theme after startup, fixing the dark-theme issue with emacsclient
+#+begin_src emacs-lisp
+(defun load-nano-dark-theme-after-startup ()
+  "A custom function to be executed after Emacs startup."
+  (nano-dark))
+
+(add-hook 'after-init-hook 'load-nano-dark-theme-after-startup)
 #+end_src
 
 We still want the transient nano splash screen
@@ -2430,6 +2431,9 @@ Add hooks for eglot
 #+end_src
 
 * Profiling
+
+
+
 ** Final report
 #+begin_src emacs-lisp
 (let ((init-time (float-time (time-subtract (current-time) my/init-start-time)))
