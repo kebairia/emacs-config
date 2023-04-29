@@ -73,6 +73,7 @@
         htmlize             ; Convert buffer text and decorations to HTML
         mini-frame          ; Show minibuffer in child frame on read-from-minibuffer
         imenu-list          ; Show imenu entries in a separate buffer
+        eglot               ; A client for Language Server Protocol servers
         magit               ; A Git porcelain inside Emacs.
         markdown-mode       ; Major mode for Markdown-formatted text
         use-package         ; A configuration macro for simplifying your .emacs
@@ -597,14 +598,16 @@
 
 (setq corfu-cycle t                ; Enable cycling for `corfu-next/previous'
       corfu-auto t                 ; Enable auto completion
-      corfu-auto-delay 60.0        ; Delay before auto-completion shows up
+      corfu-auto-delay 0        ; Delay before auto-completion shows up
+      corfu-auto-prefix 0
+      completion-styles '(basic)
       corfu-separator ?\s          ; Orderless field separator
       corfu-quit-at-boundary nil   ; Never quit at completion boundary
       corfu-quit-no-match t        ; Quit when no match
-      corfu-preview-current nil    ; Disable current candidate preview
+      corfu-preview-current t    ; Disable current candidate preview
       corfu-preselect-first nil    ; Disable candidate preselection
       corfu-on-exact-match nil     ; Configure handling of exact matches
-      corfu-echo-documentation nil ; Disable documentation in the echo area
+      corfu-echo-documentation t ; Disable documentation in the echo area
       corfu-scroll-margin 5)       ; Use scroll margin
 
 (global-corfu-mode)
@@ -932,43 +935,42 @@
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "CANCELED")))
+
 (setq org-todo-keyword-faces
       '(
-        ("TODO" . (:foreground "brown2" :weight bold))
-        ("READ" . (:foreground "brown2" :weight bold))
+        ("TODO" . (:foreground "brown2" :weight bold)) ; brown foreground color, bold
+        ("READ" . (:foreground "brown2" :weight bold)) ; brown foreground color, bold
         
-        ("NEXT" . (:foreground "#00b0d1"  :weight bold ))
-        ("READING" . (:foreground "#00b0d1"  :weight bold ))
+        ("NEXT" . (:foreground "#00b0d1"  :weight bold )) ; blue-green foreground color, bold
+        ("READING" . (:foreground "#00b0d1"  :weight bold )) ; blue-green foreground color, bold
         
-        ("DONE" . (:foreground "#16a637" :weight bold))
+        ("DONE" . (:foreground "#16a637" :weight bold)) ; green foreground color, bold
         
-        ("HOLD" . (:foreground "orange"  :weight bold))
+        ("HOLD" . (:foreground "orange"  :weight bold)) ; orange foreground color, bold
         
-        ("CANCELED" . (:foreground "gray" :background "red1" :weight bold))
+        ("CANCELED" . (:foreground "gray" :background "red1" :weight bold)) ; gray foreground color, red background color, bold
         ))
 
 (setq org-capture-templates
-      `(("i" " inbox" entry  (file "~/org/gtd/inbox.org")
+      `(
+        ;; Inbox entry
+        ("i" " inbox" entry (file "~/org/gtd/inbox.org")
          ,(concat "* TODO %?\n"
                   "/Entered on/ %U"))
 
-        ("p" " post" entry  (file "~/org/posts.org")
+        ;; Post entry
+        ("p" " post" entry (file "~/org/posts.org")
          ,(concat "* TODO %?\n"
                   "/Entered on/ %U"))
 
+        ;; Link entry
         ("L" " link" entry (file+headline "~/org/gtd/inbox.org" "Links")
          ,(concat "* TODO %a %?\n"
                   "/Entered on/ %U") :immediate-finish t)
 
+        ;; Slipbox entry
         ("s" " slipbox" entry (file "~/dox/braindump/org-files/fleetnotes.org")
          "* %<%a, %d %b %y (%H:%M)> : %?\n")
-
-        ;; ("e" " email" entry (file+headline "~/org/gtd/emails.org" "Emails")
-        ;;  "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
-
-        ;; ("m" "mood" entry (file "~/org/mood.org" )
-        ;;  ,(concat "* %? \n %^{MOOD} \n"
-        ;;           "/Entered on/ %U") :immediate-finish t)
         ))
 
 (require 'org-protocol)
@@ -979,13 +981,14 @@
 
 (require 'org-cliplink)
 
-(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
+(setq-default org-src-fontify-natively t         ; Fontify code in code blocks
               org-adapt-indentation nil          ; Adaptive indentation
               org-src-tab-acts-natively t        ; Tab acts as in source editing
               org-confirm-babel-evaluate nil     ; No confirmation before executing code
               org-edit-src-content-indentation 0 ; No relative indentation for code blocks
               org-fontify-whole-block-delimiter-line t) ; Fontify whole block
 
+;; Add languages to babel
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((python . t)
@@ -1008,35 +1011,29 @@
 (evil-org-agenda-set-keys)
 
 (setq org-agenda-directory "~/org/gtd/"
-      org-agenda-files '("~/org/gtd" ))                  ;; org-agenda-files
+      org-agenda-files '("~/org/gtd")) ;; org-agenda-files
 
-(setq org-agenda-dim-blocked-tasks nil                    ;; Do not dim blocked tasks
-      org-agenda-span 'day                                ;; show me one day
-      org-agenda-inhibit-startup t                        ;; Stop preparing agenda buffers on startup:
-      org-agenda-use-tag-inheritance nil                  ;; Disable tag inheritance for agendas:
+(setq org-agenda-dim-blocked-tasks nil ;; Do not dim blocked tasks
+      org-agenda-span 'day ;; Show one day
+      org-agenda-inhibit-startup t ;; Stop preparing agenda buffers on startup
+      org-agenda-use-tag-inheritance nil ;; Disable tag inheritance for agendas
       org-agenda-show-log t
-      org-agenda-skip-scheduled-if-deadline-is-shown t     ;; skip scheduled if they are already shown as a deadline
+      org-agenda-skip-scheduled-if-deadline-is-shown t ;; Skip scheduled if already shown as a deadline
       org-agenda-deadline-leaders '("!D!: " "D%2d: " "")
-      org-agenda-scheduled-leaders '("" "S%3d: "))
-
-
-(setq org-agenda-start-on-weekday 0                          ;; Weekday start on Sunday
-      org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R,S-L skip the note/log info[used when fixing the state]
+      org-agenda-scheduled-leaders '("" "S%3d: ")
+      org-agenda-start-on-weekday 0 ;; Weekday start on Sunday
+      org-treat-S-cursor-todo-selection-as-state-change nil ;; S-R, S-L skip note/log info when fixing state
       org-log-done 'time
-      org-agenda-tags-column -130                          ;; Set tags far to the right
-      org-clock-out-remove-zero-time-clocks t              ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
-      org-clock-persist t                                  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-      org-use-fast-todo-selection t                        ;; from any todo state to any other state; using it keys
-      org-agenda-window-setup 'only-window)                 ;; Always open my agenda in fullscreen
+      org-agenda-tags-column -130 ;; Set tags far to the right
+      org-clock-out-remove-zero-time-clocks t ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+      org-clock-persist t ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+      org-use-fast-todo-selection t ;; from any todo state to any other state; using it keys
+      org-agenda-window-setup 'only-window) ;; Always open my agenda in fullscreen
 
-;; define org's states
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
         (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
-;; sort my org-agenda preview
 
-;;Thanks to Erik Anderson, we can also add a hook that will log when we activate
-;;a task by creating an “ACTIVATED” property the first time the task enters the NEXT state:
 (defun log-todo-next-creation-date (&rest ignore)
   "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
   (when (and (string= (org-get-todo-state) "NEXT")
@@ -1044,10 +1041,8 @@
     (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
 
 (add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
-(add-hook 'org-agenda-mode-hook                            ;; disable line-number when i open org-agenda view
-          (lambda() (display-line-numbers-mode -1)))
-
-;; (define-key global-map (kbd "C-c a") 'org-agenda)
+(add-hook 'org-agenda-mode-hook
+          (lambda() (display-line-numbers-mode -1))) ;; Disable line numbers in org-agenda view
 
 (setq org-agenda-prefix-format
       '((agenda . " %i %-12:c%?-12t %s")
@@ -1059,12 +1054,7 @@
       '((daily today require-timed)
         ()
         "......" "----------------"))
-
 (setq org-agenda-current-time-string "   now")
-;; (setq org-agenda-time-grid
-;;       '((daily today require-timed)
-;;         (800 1000 1200 1400 1600 1800 2000)
-;;         "......" "----------------"))
 
 (setq org-agenda-sorting-strategy
       '((agenda habit-down time-up scheduled-down
@@ -1073,7 +1063,8 @@
         (tags priority-down category-keep)
         (search category-keep)))
 
-(setq org-agenda-block-separator  9472)                  ;; use 'straight line' as a block-agenda divider
+(setq org-agenda-block-separator ?\u2500) ;; use 'straight line' as a block-agenda divider
+
 (setq org-agenda-custom-commands
       '(("g" "Get Things Done (GTD)"
          ((agenda ""
@@ -1085,20 +1076,20 @@
                  (org-agenda-prefix-format "  %i %-12:c [%e] ")
                  (org-agenda-files '("~/org/gtd/someday.org"
                                      "~/org/gtd/projects.org"
-                                     "~/org/gtd/next.org"))
-                 ))
+                                     "~/org/gtd/next.org"))))
+
           (todo "TODO"
-                ((org-agenda-overriding-header "inbox")
+                ((org-agenda-overriding-header "Inbox")
                  (org-agenda-files '("~/org/gtd/inbox.org"))))
 
-          (todo "TODO"
-                ((org-agenda-overriding-header "Emails")
-                 (org-agenda-files '("~/org/gtd/emails.org"))))
+          ;; Uncomment the following sections if needed
+          ;; (todo "TODO"
+          ;;       ((org-agenda-overriding-header "Emails")
+          ;;        (org-agenda-files '("~/org/gtd/emails.org"))))
 
-          (todo "TODO"
-                ((org-agenda-overriding-header "Projects")
-                 (org-agenda-files '("~/org/gtd/projects.org")))
-                )
+          ;; (todo "TODO"
+          ;;       ((org-agenda-overriding-header "Projects")
+          ;;        (org-agenda-files '("~/org/gtd/projects.org"))))
 
           (todo "TODO"
                 ((org-agenda-overriding-header "One-off Tasks")
@@ -1107,47 +1098,45 @@
                                              'deadline 'scheduled))))
           nil))))
 
+;; Clocking-out changes NEXT to HOLD
+;; Clocking-in changes HOLD to NEXT
+;; Original code: https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
 
-
-;; PS: check out the original code from here:
-;; https://github.com/gjstein/emacs.d/blob/master/config/gs-org.el
-;;clocking-out changes NEXT to HOLD
-;;clocking-in changes HOLD to NEXT
 (setq org-clock-in-switch-to-state 'zk/clock-in-to-next)
 (setq org-clock-out-switch-to-state 'zk/clock-out-to-hold)
+
 (defun zk/clock-in-to-next (kw)
   "Switch a task from TODO to NEXT when clocking in.
-                  Skips capture tasks, projects, and subprojects.
-                  Switch projects and subprojects from NEXT back to TODO"
-  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
-    (cond
-     ((and (member (org-get-todo-state) (list "TODO")))
-      "NEXT")
-     ((and (member (org-get-todo-state) (list "HOLD")))
-      "NEXT")
-     )))
+   Skips capture tasks, projects, and subprojects.
+   Switch projects and subprojects from NEXT back to TODO."
+  (unless (and (boundp 'org-capture-mode) org-capture-mode)
+    (when (member (org-get-todo-state) '("TODO" "HOLD"))
+      "NEXT")))
+
 (defun zk/clock-out-to-hold (kw)
-  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
-    (cond
-     ((and (member (org-get-todo-state) (list "NEXT")))  "HOLD")
-     )))
+  "Switch a task from NEXT to HOLD when clocking out."
+  (unless (and (boundp 'org-capture-mode) org-capture-mode)
+    (when (member (org-get-todo-state) '("NEXT"))
+      "HOLD")))
 
-(require 'org-habit)
-(add-to-list 'org-modules 'org-habit)
-(setq org-habit-graph-column 48)
-(setq org-habit-show-habits-only-for-today t)
+(with-eval-after-load 'org-habit
+  (add-to-list 'org-modules 'org-habit)
+  (setq org-habit-graph-column 48)
+  (setq org-habit-show-habits-only-for-today t))
 
-;; Refiling [need reading]
-;;tell org-mode we want to specify a refile target using the file path.
+;; Specify refile target using the file path
 (setq org-refile-use-outline-path 'file
- org-outline-path-complete-in-steps nil)
+      org-outline-path-complete-in-steps nil)
+
+;; Confirm creating parent nodes
 (setq org-refile-allow-creating-parent-nodes 'confirm)
-(setq org-refile-targets '(("~/org/gtd/next.org" :level . 0)
-                           ("~/org/ideas.org" :level . 1)
-                           ("~/org/links.org" :level . 1)
-                           ("~/org/gtd/someday.org" :regexp . "\\(?:\\(?:Task\\|idea\\|p\\(?:\\(?:os\\|rojec\\)t\\)\\)s\\)")
-                           ("projects.org" :regexp . "\\(?:Tasks\\)"))) 
-;;("someday.org" :level . 0)
+
+;; Define refile targets
+(setq org-refile-targets '(( "~/org/gtd/next.org" :level . 0) ; Next actions
+                           ("~/org/ideas.org" :level . 1) ; Ideas
+                           ("~/org/links.org" :level . 1) ; Links
+                           ("~/org/gtd/someday.org" :regexp . "\\(?:\\(?:Task\\|idea\\|p\\(?:\\(?:os\\|rojec\\)t\\)\\)s\\)") ; Someday/Maybe
+                           ("projects.org" :regexp . "\\(?:Tasks\\)"))) ; Projects
 
 (defun zk/org-agenda-process-inbox-item ()
   (interactive)
@@ -1202,8 +1191,63 @@
 
 (my/report-time "Blog")
 
+(setq my/section-start-time (current-time))
+
+;; Bind "C-c g" to 'magit' command
 (bind-key "C-c g" #'magit)
+
+;; Override 'magit-set-header-line-format' to ignore it
 (advice-add 'magit-set-header-line-format :override #'ignore)
+
+;; Remove 'magit-commit-diff' from 'server-switch-hook'
+(remove-hook 'server-switch-hook 'magit-commit-diff)
+
+;; Remove 'magit-commit-diff' from 'with-editor-filter-visit-hook'
+(remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff)
+
+(my/report-time "Versioning")
+
+(setq my/section-start-time (current-time))
+
+(require 'eglot)
+
+(defun my-display-line-numbers-hook ()
+  (display-line-numbers-mode 1)
+  (setq display-line-numbers-width-start 1))
+
+(add-hook 'prog-mode-hook 'my-display-line-numbers-hook)
+(add-hook 'text-mode-hook 'my-display-line-numbers-hook)
+
+(defun my-eglot-hook ()
+  (eglot-ensure))
+
+(add-hook 'python-mode-hook 'my-eglot-hook)
+(add-hook 'sh-script-mode-hook 'my-eglot-hook)
+(add-hook 'yaml-mode-hook 'my-eglot-hook)
+(add-hook 'markdown-mode-hook 'my-eglot-hook)
+
+;; Python server
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               `(python-mode . ("pylsp" "-v" "--tcp" "--host"
+                                "localhost" "--port" :autoport))))
+
+;; Bash server
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               `(sh-mode . ("bash-language-server" "start"))))
+
+;; YAML server
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               `(yaml-mode . ("yaml-language-server" "--stdio"))))
+
+;; Markdown server
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(markdown-mode . ("marksman"))))
+
+(my/report-time "IDE")
 
 (let ((init-time (float-time (time-subtract (current-time) my/init-start-time)))
       (total-time (string-to-number (emacs-init-time "%f"))))
