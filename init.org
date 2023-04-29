@@ -392,44 +392,54 @@ Server start.
 #+end_src
 
 ** Keybinding :BINDING:
-Functions
+
+Splitting windows and moving to the new window
 #+begin_src emacs-lisp
-(defun zk/split-go-right()
+(defun zk/split-go-right ()
+  "Split the current window horizontally and move to the new window on the right."
   (interactive)
   (split-window-horizontally)
   (windmove-right))
-(defun zk/split-go-down()
+
+(defun zk/split-go-down ()
+  "Split the current window vertically and move to the new window below."
   (interactive)
   (split-window-vertically)
   (windmove-down))
 #+end_src
-Special files
+
+Keybindings for opening special files
 #+begin_src emacs-lisp
-(bind-key "C-c C" (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
-(bind-key "C-c b" (lambda() (interactive)(find-file "~/org/books.org")))
+(bind-key "C-c C" (lambda () (interactive) (find-file "~/.config/emacs/init.org")))
+(bind-key "C-c b" (lambda () (interactive) (find-file "~/org/books.org")))
 #+end_src
-Move between buffer
+
+Keybindings for switching buffers
 #+begin_src emacs-lisp
 (bind-key "M-n" 'switch-to-next-buffer)
 (bind-key "M-p" 'switch-to-prev-buffer)
 #+end_src
-Move between Windows
+
+Keybindings for moving between windows
 #+begin_src emacs-lisp
-(bind-key "C-c k" 'window-up)
-(bind-key "C-c j" 'window-down)
-(bind-key "C-c l" 'window-right)
-(bind-key "C-c h" 'window-left)
+(bind-key "C-c k" 'windmove-up)
+(bind-key "C-c j" 'windmove-down)
+(bind-key "C-c l" 'windmove-right)
+(bind-key "C-c h" 'windmove-left)
+
 #+end_src
-Spliting windows
+
+Keybindings for splitting windows and moving to the new window
 #+begin_src emacs-lisp
 (bind-key "C-c i" 'zk/split-go-right)
 (bind-key "C-c m" 'zk/split-go-down)
 #+end_src
-Org mode
+
+Keybinding for Org mode capture
 #+begin_src emacs-lisp
 (bind-key "C-c c" 'org-capture)
+
 #+end_src
-d** Benchmark
 
 #+begin_src emacs-lisp
 
@@ -853,6 +863,13 @@ A consistent theme for GNU Emacs. The light theme is based on Material colors an
 
 #+begin_src lisp
 
+;; (defun load-my-theme (frame)
+;;   (select-frame frame)
+;;   (load-theme 'nano t))
+;; (if (daemonp)
+;;     (add-hook 'after-make-frame-functions #'load-my-theme)
+;;     (load-my-theme (selected-frame)))
+
 (require 'nano-theme)
 (setq nano-fonts-use t) ; Use theme font stack
 (nano-dark)             ; Use theme dark version
@@ -868,6 +885,7 @@ A consistent theme for GNU Emacs. The light theme is based on Material colors an
                       :underline  'unspecified :overline   'unspecified
                       :box        'unspecified :inherit    style))
 (my/set-face 'italic 'nano-faded)
+
 
 #+end_src
 

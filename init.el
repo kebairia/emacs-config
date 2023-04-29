@@ -237,25 +237,28 @@
 (unless (server-running-p)
   (server-start))
 
-(defun zk/split-go-right()
+(defun zk/split-go-right ()
+  "Split the current window horizontally and move to the new window on the right."
   (interactive)
   (split-window-horizontally)
   (windmove-right))
-(defun zk/split-go-down()
+
+(defun zk/split-go-down ()
+  "Split the current window vertically and move to the new window below."
   (interactive)
   (split-window-vertically)
   (windmove-down))
 
-(bind-key "C-c C" (lambda() (interactive)(find-file "~/.config/emacs/init.org")))
-(bind-key "C-c b" (lambda() (interactive)(find-file "~/org/books.org")))
+(bind-key "C-c C" (lambda () (interactive) (find-file "~/.config/emacs/init.org")))
+(bind-key "C-c b" (lambda () (interactive) (find-file "~/org/books.org")))
 
 (bind-key "M-n" 'switch-to-next-buffer)
 (bind-key "M-p" 'switch-to-prev-buffer)
 
-(bind-key "C-c k" 'window-up)
-(bind-key "C-c j" 'window-down)
-(bind-key "C-c l" 'window-right)
-(bind-key "C-c h" 'window-left)
+(bind-key "C-c k" 'windmove-up)
+(bind-key "C-c j" 'windmove-down)
+(bind-key "C-c l" 'windmove-right)
+(bind-key "C-c h" 'windmove-left)
 
 (bind-key "C-c i" 'zk/split-go-right)
 (bind-key "C-c m" 'zk/split-go-down)
@@ -468,6 +471,13 @@
 (my/report-time "Interface")
 
 (setq my/section-start-time (current-time))
+
+;; (defun load-my-theme (frame)
+;;   (select-frame frame)
+;;   (load-theme 'nano t))
+;; (if (daemonp)
+;;     (add-hook 'after-make-frame-functions #'load-my-theme)
+;;     (load-my-theme (selected-frame)))
 
 (require 'nano-theme)
 (setq nano-fonts-use t) ; Use theme font stack
