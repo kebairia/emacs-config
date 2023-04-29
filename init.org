@@ -2032,7 +2032,6 @@ Babel settings
 
 #+end_src
 
-
 * Agenda
 ** Global
 
@@ -2306,22 +2305,26 @@ A function to create a Blog post, and start the local web server
 #+end_src
 
 ** Magit
-Prevent magit from writing in the header line.
+Bind "C-c g" to 'magit' command
 #+begin_src emacs-lisp
-;; Bind "C-c g" to 'magit' command
 (bind-key "C-c g" #'magit)
-
-;; Override 'magit-set-header-line-format' to ignore it
-(advice-add 'magit-set-header-line-format :override #'ignore)
-
-;; Remove 'magit-commit-diff' from 'server-switch-hook'
-(remove-hook 'server-switch-hook 'magit-commit-diff)
-
-;; Remove 'magit-commit-diff' from 'with-editor-filter-visit-hook'
-(remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff)
 #+end_src
 
+Override =magit-set-header-line-format= to ignore it
+#+begin_src emacs-lisp
+(advice-add 'magit-set-header-line-format :override #'ignore)
+#+end_src
 
+Remove =magit-commit-diff= from =server-switch-hook=
+#+begin_src emacs-lisp
+(remove-hook 'server-switch-hook 'magit-commit-diff)
+#+end_src
+
+Remove =magit-commit-diff= from =with-editor-filter-visit-hook=
+
+#+begin_src emacs-lisp
+(remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff)
+#+end_src
 
 ** Benchmark
 #+begin_src emacs-lisp

@@ -903,6 +903,15 @@
     deft-text-mode 'org-mode))
 
 (require 'org-noter)
+(bind-key "C-c n n" 'org-noter-insert-note)
+(bind-key "C-c n N" 'org-noter-insert-precise-note)
+
+(setq org-noter-auto-save-last-location t
+      org-noter-doc-split-fraction (quote (0.7 . 0.7))
+      org-noter-notes-window-behavior nil
+      org-noter-notes-window-location "Vertical"
+      org-noter-always-create-frame nil
+      org-noter-separate-notes-from-heading t)
 
 (setq my/section-start-time (current-time))
 
@@ -1193,16 +1202,12 @@
 
 (setq my/section-start-time (current-time))
 
-;; Bind "C-c g" to 'magit' command
 (bind-key "C-c g" #'magit)
 
-;; Override 'magit-set-header-line-format' to ignore it
 (advice-add 'magit-set-header-line-format :override #'ignore)
 
-;; Remove 'magit-commit-diff' from 'server-switch-hook'
 (remove-hook 'server-switch-hook 'magit-commit-diff)
 
-;; Remove 'magit-commit-diff' from 'with-editor-filter-visit-hook'
 (remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff)
 
 (my/report-time "Versioning")
