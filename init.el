@@ -51,9 +51,9 @@
         orderless           ; Completion style for matching regexps in any order
         vertico             ; VERTical Interactive COmpletion
         marginalia          ; Enrich existing commands with completion annotations
+        aggressive-indent   ; Keeps your code always indented 
         evil                ; A VI layer for Emacs
         evil-collection
-        aggressive-indent   ; Keeps your code always indented 
         evil-org            ; Evil extensions for Org-mode
         org-roam            ; Roam implementation for Emacs/org
         org-roam-ui         ; A graph generator for org-roam notes
@@ -61,7 +61,7 @@
         org-cliplink        ; Insert org-mode links from clipboard
         org-pdftools        ; A custom org link type for pdf-tools
         org-noter-pdftools  ; Support for org-noter 
-        org-noter           ;Emacs document annotator, using Org-mode
+        org-noter           ; Emacs document annotator, using Org-mode
         f                   ; Modern API for working with files and directories
         corfu               ; Completion Overlay Region FUnction
         deft                ; Quickly browse, filter, and edit plain text notes
@@ -255,15 +255,18 @@
 (bind-key "M-n" 'switch-to-next-buffer)
 (bind-key "M-p" 'switch-to-prev-buffer)
 
-(bind-key "C-c k" 'windmove-up)
-(bind-key "C-c j" 'windmove-down)
-(bind-key "C-c l" 'windmove-right)
-(bind-key "C-c h" 'windmove-left)
+(bind-key "C-c k" #'windmove-up)
+(bind-key "C-c j" #'windmove-down)
+(bind-key "C-c l" #'windmove-right)
+(bind-key "C-c h" #'windmove-left)
 
-(bind-key "C-c i" 'zk/split-go-right)
-(bind-key "C-c m" 'zk/split-go-down)
+(bind-key "C-c i" #'zk/split-go-right)
+(bind-key "C-c m" #'zk/split-go-down)
 
-(bind-key "C-c c" 'org-capture)
+(bind-key "C-c c" #'org-capture)
+
+(bind-key "C-c t" #'imenu-list)
+(bind-key "C-c T" #'imenu)
 
 (my/report-time "Core")
 
@@ -342,9 +345,8 @@
 
 (bind-key "C-x k" #'kill-current-buffer)
 
-;; disable linum-mode
-(add-hook 'ibuffer-mode (lambda() (linum-mode -1)))
-(global-set-key (kbd "C-x C-b") 'ibuffer) ;; Use Ibuffer for Buffer List
+;; Use Ibuffer for Buffer List
+(bind-key "C-x C-b" #'ibuffer)
 ;; create a function that define a group
 (setq ibuffer-saved-filter-groups
       '(("default"
@@ -608,7 +610,7 @@
 (setq corfu-cycle t                ; Enable cycling for `corfu-next/previous'
       corfu-auto t                 ; Enable auto completion
       corfu-auto-delay 0        ; Delay before auto-completion shows up
-      corfu-auto-prefix 0
+      corfu-auto-prefix 2
       completion-styles '(basic)
       corfu-separator ?\s          ; Orderless field separator
       corfu-quit-at-boundary nil   ; Never quit at completion boundary
@@ -616,10 +618,10 @@
       corfu-preview-current t    ; Disable current candidate preview
       corfu-preselect-first nil    ; Disable candidate preselection
       corfu-on-exact-match nil     ; Configure handling of exact matches
-      corfu-echo-documentation t ; Disable documentation in the echo area
+      corfu-echo-documentation 0.25 ; Disable documentation in the echo area
       corfu-scroll-margin 5)       ; Use scroll margin
 
-(global-corfu-mode)
+(add-hook 'prog-mode-hook 'corfu-mode)
 
 ;; TAB cycle if there are only few candidates
 (setq completion-cycle-threshold 3)
@@ -1137,10 +1139,10 @@
     (when (member (org-get-todo-state) '("NEXT"))
       "HOLD")))
 
-(with-eval-after-load 'org-habit
-  (add-to-list 'org-modules 'org-habit)
-  (setq org-habit-graph-column 48)
-  (setq org-habit-show-habits-only-for-today t))
+(require 'org-habit)
+(add-to-list 'org-modules 'org-habit)
+(setq org-habit-graph-column 48)
+(setq org-habit-show-habits-only-for-today t)
 
 ;; Specify refile target using the file path
 (setq org-refile-use-outline-path 'file
@@ -1195,7 +1197,7 @@
             (_author "Zakaria.K")
             (_email "4.kebairia@gmail.com")
             (_date (format-time-string "%d %b %Y %a"))
-            (_options "#+OPTIONS: html5-fancy: t\n")
+            (_options "#+OPTIONS: html5-fancy:t tex:t \n")
             (_begin_date "#+begin_date\n{{{date}}}\n")
             (_end_date "#+end_date\n"))
         (insert (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s\n#+EMAIL: %s\n#+DATE: %s\n#+KEYWORDS: \n%s%s%s"
@@ -1237,7 +1239,7 @@
 
 (add-hook 'python-mode-hook 'my-eglot-hook)
 (add-hook 'sh-script-mode-hook 'my-eglot-hook)
-(add-hook 'yaml-mode-hook 'my-eglot-hook)
+;; (add-hook 'yaml-mode-hook 'my-eglot-hook)
 (add-hook 'markdown-mode-hook 'my-eglot-hook)
 
 ;; Python server
@@ -1252,9 +1254,9 @@
                `(sh-mode . ("bash-language-server" "start"))))
 
 ;; YAML server
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-               `(yaml-mode . ("yaml-language-server" "--stdio"))))
+;; (with-eval-after-load 'eglot
+;;   (add-to-list 'eglot-server-programs
+;;                `(yaml-mode . ("yaml-language-server" "--stdio"))))
 
 ;; Markdown server
 (with-eval-after-load 'eglot
