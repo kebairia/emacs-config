@@ -2334,25 +2334,17 @@ A function to create a Blog post, and start the local web server
 #+end_src
 
 ** Magit
-Bind "C-c g" to 'magit' command
+Bind the =C-c g= key to the =magit= command
+
 #+begin_src emacs-lisp
 (bind-key "C-c g" #'magit)
 #+end_src
 
-Override =magit-set-header-line-format= to ignore it
-#+begin_src emacs-lisp
-(advice-add 'magit-set-header-line-format :override #'ignore)
-#+end_src
-
-Remove =magit-commit-diff= from =server-switch-hook=
-#+begin_src emacs-lisp
-(remove-hook 'server-switch-hook 'magit-commit-diff)
-#+end_src
-
-Remove =magit-commit-diff= from =with-editor-filter-visit-hook=
+Disable the diff buffer when committing changes
+If you need to view the diff buffer after committing, use =C-c C-d=.
 
 #+begin_src emacs-lisp
-(remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff)
+(setq magit-commit-show-diff nil)
 #+end_src
 
 ** Benchmark
