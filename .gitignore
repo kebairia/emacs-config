@@ -12,3 +12,8 @@ var/
 .org-id-locations
 recentf
 saveplace
+/eln-cache/
+/elpa/
+/eshell/
+/projects
+/tramp
