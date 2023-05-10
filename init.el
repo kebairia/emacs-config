@@ -1185,37 +1185,43 @@
 
 (setq my/section-start-time (current-time))
 
+(defun execute-shell-command (command)
+  "Execute a shell command and print the output."
+  (interactive "sShell command: ")
+  (shell-command-to-string command))
+
 (defun zk/start-blog ()
   "Start the local web server for the blog."
   (interactive)
-  (let (httpd-root "~/dox/blog/public"))
+  (setq httpd-root "/home/zakaria/dox/blog/public/")
     (httpd-start))
 
 (defun zk/create-post ()
   "Create a new blog post. Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
   (interactive)
   ;; Get the post name and format the date
-  (let* ((_post (read-string " Post: "))
-         (_date (format-time-string "%Y-%m-%d" (current-time)))
-         (_ext ".org")
-         (_path "/home/zakaria/dox/blog/content/")
+  (let* ((blog_post (read-string " Post: "))
+         (blog_date (format-time-string "%Y-%m-%d" (current-time)))
+         (blog_ext ".org")
+         (blog_path "/home/zakaria/dox/blog/content/")
          ;; Concatenate the filename components and replace whitespace with hyphens
-         (filename (concat _path _date "-" (replace-regexp-in-string " " "-" (downcase _post)) _ext)))
+         (filename (concat blog_path blog_date "-" (replace-regexp-in-string " " "-" (downcase blog_post)) blog_ext)))
     ;; If the file already exists, display a message and do nothing
     (if (file-exists-p filename)
-        (message (format "File '%s' already exists" _post))
+        (message (format "File '%s' already exists" blog_post))
       ;; Otherwise, create the file and switch to its buffer
       (switch-to-buffer (find-file filename))
       ;; Insert the post template
-      (let ((_title (capitalize _post))
-            (_author "Zakaria.K")
-            (_email "4.kebairia@gmail.com")
-            (_date (format-time-string "%d %b %Y %a"))
-            (_options "#+OPTIONS: html5-fancy:t tex:t \n")
-            (_begin_date "#+begin_date\n{{{date}}}\n")
-            (_end_date "#+end_date\n"))
-        (insert (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s\n#+EMAIL: %s\n#+DATE: %s\n#+KEYWORDS: \n%s%s%s"
-                        _title _author _email _date _options _begin_date _end_date))))
+      (let ((blog_title (capitalize blog_post))
+            (blog_author "Zakaria.K")
+            (blog_email "4.kebairia@gmail.com")
+            (blog_date (format-time-string "%d %b %Y %a"))
+            (blog_options "#+OPTIONS: html5-fancy:t tex:t \n")
+            (blog_begin_date "#+begin_date\n{{{date}}}\n")
+            (blog_end_date "#+end_date\n"))
+        (insert
+         (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s\n#+EMAIL: %s\n#+DATE: %s\n#+STARTUP: show2levels indent hidestars\n#+KEYWORDS: \n%s%s%s"
+                 blog_title blog_author blog_email blog_date blog_options blog_begin_date blog_end_date))))
     ;; Start the local server
     (zk/start-blog)))
 
