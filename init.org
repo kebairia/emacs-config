@@ -2330,9 +2330,9 @@ A function to create a Blog post, and start the local web server
       (let ((blog_title (capitalize blog_post))
             (blog_author "Zakaria.K")
             (blog_email "4.kebairia@gmail.com")
-            (blog_date (format-time-string "%d %b %Y %a"))
+            (blog_date (format-time-string "%d %B %Y"))
             (blog_options "#+OPTIONS: html5-fancy:t tex:t \n")
-            (blog_begin_date "#+begin_date\n{{{date}}}\n")
+            (blog_begin_date "#+begin_date\nDate: {{{date}}}\n")
             (blog_end_date "#+end_date\n"))
         (insert
          (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s\n#+EMAIL: %s\n#+DATE: %s\n#+STARTUP: show2levels indent hidestars\n#+KEYWORDS: \n%s%s%s"
