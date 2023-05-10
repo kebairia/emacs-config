@@ -560,6 +560,31 @@
 (when (require 'evil-collection nil t)
 (evil-collection-init))
 
+;; (clear-abbrev-table 'global-abbrev-table)
+(define-abbrev-table 'global-abbrev-table
+  '(
+    ;; Words and Sentences
+    ("afaik" "as far as I know")
+    ("emacs" "Emacs")
+    ("realy" "really")
+    ("mnm" "Millennium")
+    ("thru" "through")
+    ("i" "I")
+    ("envr" "environment")
+    ("thanx" "thanks")
+    ("btw" "by the way")
+    ;; Emojies 
+    ("hrt" "❤")
+    (":)" "😀")
+    ;; Arrows 
+    ("ra" "→")
+    ("la" "←")
+    ("lra" "⟶")
+    ("lla" "⟵")
+    ))
+
+(abbrev-mode)
+
 (global-aggressive-indent-mode 1)
 
 (setq-default initial-major-mode 'text-mode   ; Initial mode is text
@@ -860,17 +885,6 @@
          :immediate-finish t
          :unnarrowed t)))
 
-;; (cl-defmethod org-roam-node-type ((node org-roam-node))
-;;   "Return the TYPE of NODE."
-;;   (condition-case nil
-;;       (file-name-nondirectory
-;;        (directory-file-name
-;;         (file-name-directory
-;;          (file-relative-name (org-roam-node-file node) org-roam-directory))))
-;;     (error "")))
-;; TODO: use icons instead
-;; (setq org-roam-node-display-template
-;;       (concat "${type:10} ${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
 (setq org-roam-node-display-template
       (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
 

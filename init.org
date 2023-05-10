@@ -1033,6 +1033,37 @@ Then we start evil and evil-collection modes
 (evil-collection-init))
 #+end_src
 
+** Abbreviations mode
+Define my abbreviations
+#+begin_src emacs-lisp
+;; (clear-abbrev-table 'global-abbrev-table)
+(define-abbrev-table 'global-abbrev-table
+  '(
+    ;; Words and Sentences
+    ("afaik" "as far as I know")
+    ("emacs" "Emacs")
+    ("realy" "really")
+    ("mnm" "Millennium")
+    ("thru" "through")
+    ("i" "I")
+    ("envr" "environment")
+    ("thanx" "thanks")
+    ("btw" "by the way")
+    ;; Emojies 
+    ("hrt" "❤")
+    (":)" "😀")
+    ;; Arrows 
+    ("ra" "→")
+    ("la" "←")
+    ("lra" "⟶")
+    ("lla" "⟵")
+    ))
+#+end_src
+Enable abbrev mode
+#+begin_src emacs-lisp
+(abbrev-mode)
+#+end_src
+
 ** Indentation
 #+begin_src emacs-lisp
 (global-aggressive-indent-mode 1)
@@ -1843,17 +1874,6 @@ Configuring the Org-roam buffer display
            :immediate-finish t
            :unnarrowed t)))
 
-  ;; (cl-defmethod org-roam-node-type ((node org-roam-node))
-  ;;   "Return the TYPE of NODE."
-  ;;   (condition-case nil
-  ;;       (file-name-nondirectory
-  ;;        (directory-file-name
-  ;;         (file-name-directory
-  ;;          (file-relative-name (org-roam-node-file node) org-roam-directory))))
-  ;;     (error "")))
-  ;; TODO: use icons instead
-  ;; (setq org-roam-node-display-template
-  ;;       (concat "${type:10} ${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
   (setq org-roam-node-display-template
         (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
 #+end_src
