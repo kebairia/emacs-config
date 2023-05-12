@@ -2339,11 +2339,20 @@ A function to create a Blog post, and start the local web server
                  blog_title blog_author blog_email blog_date blog_options blog_begin_date blog_end_date))))
     ;; Start the local server
     (zk/start-blog)))
+#+end_src
+** Menu for blogging
+I used a simple transient menu for my blogging activities
+#+begin_src emacs-lisp
+(transient-define-prefix zk/blogging ()
+  "Menu for my blogging activities"
+  [["Blog post options"
+    ("p" "Create a new post" zk/create-post)]
+   ["Local blog server"
+    ("s" "Start local blog" zk/start-blog)]]
+  )
 
-
-;; Bind the function to the key "C-c P"
-(global-set-key (kbd "C-c P") 'zk/create-post)
-
+;; Bind the transient menu to the key "C-c p"
+(global-set-key (kbd "C-c p") 'zk/blogging)
 #+end_src
 
 ** Benchmark
