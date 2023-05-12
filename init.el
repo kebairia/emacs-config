@@ -1250,9 +1250,10 @@
 ;; get all the blog post filenames, excluding the index.org file
 (defun zk/generate-list-of-blogs (path)
   (setq index-page (concat path "/index.org"))
-  (remove index-page (directory-files path t ".org" nil nil))
-  )
-(zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" )
+  (mapcar 'file-name-nondirectory 
+          (remove index-page (directory-files path t ".org" nil nil))
+          ))
+(setq blogs (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" ))
 
 ;; Calculate the number of blog posts
 (setq number-of-blogs (length (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" )))
@@ -1277,6 +1278,44 @@
 (zk/extract-blog-title "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
 (zk/extract-blog-title "2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org")
 
+;; Generate items for rss file
+;; ---------------------------
+;; (lambda () (insert (concat "<title>" (zk/extract-blog-title) "</title>")))
+(defun zk/generate-rss-title-item (filename)
+  (concat "<title>" (zk/extract-blog-title filename) "</title>"))
+(defun zk/generate-rss-link-item (filename)
+  (concat "<link>" (zk/blog-filename-to-html filename) "</link>"))
+
+(defun zk/generate-rss-item (filename)
+  (insert (format
+           "<item>
+%s
+%s
+</item>
+
+"
+           (zk/generate-rss-title-item filename)
+          (zk/generate-rss-link-item filename)
+  )))
+
+
+(zk/generate-rss-item "2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org")
+(zk/generate-rss-item "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
+(defun zk/generate-rss-file ()
+  (dolist (item (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content/"))
+    (zk/generate-rss-item item)
+    ))
+(zk/generate-rss-file)
+
+
+
+"2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org"
+"2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org"
+
+
+
+;; (zk/generate-rss-title-item "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
+;; (zk/generate-rss-link-item "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
 ;; Skeleton for the rss file
 (defun zk/generate-rss-file ()
   (let* ((rss-preamble "" )
