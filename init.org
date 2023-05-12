@@ -2306,7 +2306,8 @@ Start a local server for my blog
   "Start the local web server for the blog."
   (interactive)
   (setq httpd-root "/home/zakaria/dox/blog/public/")
-    (httpd-start))
+    (httpd-start)
+    (message "Check out your blog on `localhost:8080`"))
 #+end_src
 ** Create Blog post
 A function to create a Blog post, and start the local web server
@@ -2315,7 +2316,7 @@ A function to create a Blog post, and start the local web server
   "Create a new blog post. Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
   (interactive)
   ;; Get the post name and format the date
-  (let* ((blog_post (read-string " Post: "))
+  (let* ((blog_post (read-string " Name of the Post: "))
          (blog_date (format-time-string "%Y-%m-%d" (current-time)))
          (blog_ext ".org")
          (blog_path "/home/zakaria/dox/blog/content/")
@@ -2341,7 +2342,7 @@ A function to create a Blog post, and start the local web server
     (zk/start-blog)))
 #+end_src
 ** Menu for blogging
-I used a simple transient menu for my blogging activities
+I use a simple transient menu for my blogging activities
 #+begin_src emacs-lisp
 (transient-define-prefix zk/blogging ()
   "Menu for my blogging activities"
