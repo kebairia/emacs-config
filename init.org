@@ -2302,7 +2302,7 @@ This function helps me execute shell commands
 #+end_src
 Start a local server for my blog
 #+begin_src emacs-lisp
-(defun zk/start-blog ()
+(defun zk/start-local-server ()
   "Start the local web server for the blog."
   (interactive)
   (setq httpd-root "/home/zakaria/dox/blog/public/")
@@ -2310,46 +2310,84 @@ Start a local server for my blog
     (message "Check out your blog on `localhost:8080`"))
 #+end_src
 ** Create Blog post
-A function to create a Blog post, and start the local web server
+Functions for my blog writing workflow
+
+- Prompt user for blog title
+
 #+begin_src emacs-lisp
-(defun zk/create-post ()
+(defun zk/prompt_for_blog_title()
+  (read-string " Name of the Post: ")
+  )
+#+end_src
+
+- Generate the blog org file
+  
+#+begin_src emacs-lisp
+(defun zk/generate-blog-file ()
   "Create a new blog post. Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
   (interactive)
-  ;; Get the post name and format the date
-  (let* ((blog_post (read-string " Name of the Post: "))
-         (blog_date (format-time-string "%Y-%m-%d" (current-time)))
-         (blog_ext ".org")
-         (blog_path "/home/zakaria/dox/blog/content/")
-         ;; Concatenate the filename components and replace whitespace with hyphens
-         (filename (concat blog_path blog_date "-" (replace-regexp-in-string " " "-" (downcase blog_post)) blog_ext)))
-    ;; If the file already exists, display a message and do nothing
-    (if (file-exists-p filename)
-        (message (format "File '%s' already exists" blog_post))
-      ;; Otherwise, create the file and switch to its buffer
-      (switch-to-buffer (find-file filename))
-      ;; Insert the post template
-      (let ((blog_title (capitalize blog_post))
-            (blog_author "Zakaria.K")
-            (blog_email "4.kebairia@gmail.com")
-            (blog_date (format-time-string "%d %B %Y"))
-            (blog_options "#+OPTIONS: html5-fancy:t tex:t \n")
-            (blog_begin_date "#+begin_date\nDate: {{{date}}}\n")
-            (blog_end_date "#+end_date\n"))
+  (let* ((blog-post-title (read-string " Blog post title: "))          ; Prompt for the title of the blog post
+         (blog-date-prefix (format-time-string "%Y-%m-%d"))             ; Get the current date in the format YYYY-MM-DD
+         (blog-extension ".org")                                        ; Set the file extension as ".org"
+         (blog-path "/home/zakaria/dox/blog/content/")                  ; Specify the directory where the blog files are stored
+         (blog-filename (concat blog-path blog-date-prefix "-" (replace-regexp-in-string " " "-" (downcase blog-post-title)) blog-extension))
+                                        ; Generate the filename based on the date and post title
+         (blog-author "Zakaria.K")                                      ; Set the author name for the blog
+         (blog-email "4.kebairia@gmail.com")                            ; Set the email for the blog
+         (blog-html-options "html5-fancy:t tex:t")                      ; Set options for better HTML rendering
+         (blog-org-startup-options "show2levels indent hidestars")      ; Set options for better Org mode rendering
+         (blog-post-date (format-time-string "%d %B %Y"))               ; Format the current date for the blog post
+         (blog-begin-date "#+begin_date\nDate: {{{date}}}")             ; Define the beginning tag for the date
+         (blog-end-date "#+end_date\n"))                                ; Define the ending tag for the date
+
+    ;; Create the file
+    (if (file-exists-p blog-filename)
+        (message (format "File '%s' already exists" blog-post-title))
+      (with-current-buffer (find-file blog-filename)                    ; Open the file and switch to its buffer
         (insert
-         (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s\n#+EMAIL: %s\n#+DATE: %s\n#+STARTUP: show2levels indent hidestars\n#+KEYWORDS: \n%s%s%s"
-                 blog_title blog_author blog_email blog_date blog_options blog_begin_date blog_end_date))))
-    ;; Start the local server
-    (zk/start-blog)))
+         (format
+          "#+TITLE: %s
+#+SUBTITLE:
+#+AUTHOR: %s
+#+EMAIL: %s
+#+DATE: %s
+#+OPTIONS: %s
+#+STARTUP: %s
+#+KEYWORDS:
+
+"
+          (capitalize blog-post-title)  
+          blog-author                                                   
+          blog-email                                                    
+          blog-post-date                                                
+          blog-html-options                                             
+          blog-org-startup-options))))))
 #+end_src
+#+begin_src emacs-lisp
+(defun zk/create-post ()
+  (interactive)
+  (progn
+    (zk/generate-blog-file)
+    (zk/start-local-server)))
+#+end_src
+#+end_src
+
 ** Menu for blogging
 I use a simple transient menu for my blogging activities
+First we need to load transient
+#+begin_src emacs-lisp
+
+(require 'transient)
+
+#+end_src
+
 #+begin_src emacs-lisp
 (transient-define-prefix zk/blogging ()
   "Menu for my blogging activities"
   [["Blog post options"
     ("p" "Create a new post" zk/create-post)]
    ["Local blog server"
-    ("s" "Start local blog" zk/start-blog)]]
+    ("s" "Start local blog" zk/start-local-server)]]
   )
 
 ;; Bind the transient menu to the key "C-c p"

@@ -1190,44 +1190,126 @@
   (interactive "sShell command: ")
   (shell-command-to-string command))
 
-(defun zk/start-blog ()
+(defun zk/start-local-server ()
   "Start the local web server for the blog."
   (interactive)
   (setq httpd-root "/home/zakaria/dox/blog/public/")
-    (httpd-start))
+    (httpd-start)
+    (message "Check out your blog on `localhost:8080`"))
 
-(defun zk/create-post ()
+(defun zk/prompt_for_blog_title()
+  (read-string " Name of the Post: ")
+  )
+
+(defun zk/generate-blog-file ()
   "Create a new blog post. Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
   (interactive)
-  ;; Get the post name and format the date
-  (let* ((blog_post (read-string " Post: "))
-         (blog_date (format-time-string "%Y-%m-%d" (current-time)))
-         (blog_ext ".org")
-         (blog_path "/home/zakaria/dox/blog/content/")
-         ;; Concatenate the filename components and replace whitespace with hyphens
-         (filename (concat blog_path blog_date "-" (replace-regexp-in-string " " "-" (downcase blog_post)) blog_ext)))
-    ;; If the file already exists, display a message and do nothing
-    (if (file-exists-p filename)
-        (message (format "File '%s' already exists" blog_post))
-      ;; Otherwise, create the file and switch to its buffer
-      (switch-to-buffer (find-file filename))
-      ;; Insert the post template
-      (let ((blog_title (capitalize blog_post))
-            (blog_author "Zakaria.K")
-            (blog_email "4.kebairia@gmail.com")
-            (blog_date (format-time-string "%d %B %Y"))
-            (blog_options "#+OPTIONS: html5-fancy:t tex:t \n")
-            (blog_begin_date "#+begin_date\nDate: {{{date}}}\n")
-            (blog_end_date "#+end_date\n"))
+  (let* ((blog-post-title (read-string " Blog post title: "))          ; Prompt for the title of the blog post
+         (blog-date-prefix (format-time-string "%Y-%m-%d"))             ; Get the current date in the format YYYY-MM-DD
+         (blog-extension ".org")                                        ; Set the file extension as ".org"
+         (blog-path "/home/zakaria/dox/blog/content/")                  ; Specify the directory where the blog files are stored
+         (blog-filename (concat blog-path blog-date-prefix "-" (replace-regexp-in-string " " "-" (downcase blog-post-title)) blog-extension))
+                                        ; Generate the filename based on the date and post title
+         (blog-author "Zakaria.K")                                      ; Set the author name for the blog
+         (blog-email "4.kebairia@gmail.com")                            ; Set the email for the blog
+         (blog-html-options "html5-fancy:t tex:t")                      ; Set options for better HTML rendering
+         (blog-org-startup-options "show2levels indent hidestars")      ; Set options for better Org mode rendering
+         (blog-post-date (format-time-string "%d %B %Y"))               ; Format the current date for the blog post
+         (blog-begin-date "#+begin_date\nDate: {{{date}}}")             ; Define the beginning tag for the date
+         (blog-end-date "#+end_date\n"))                                ; Define the ending tag for the date
+
+    ;; Create the file
+    (if (file-exists-p blog-filename)
+        (message (format "File '%s' already exists" blog-post-title))
+      (with-current-buffer (find-file blog-filename)                    ; Open the file and switch to its buffer
         (insert
-         (format "#+TITLE: %s\n#+SUBTITLE: \n#+AUTHOR: %s\n#+EMAIL: %s\n#+DATE: %s\n#+STARTUP: show2levels indent hidestars\n#+KEYWORDS: \n%s%s%s"
-                 blog_title blog_author blog_email blog_date blog_options blog_begin_date blog_end_date))))
-    ;; Start the local server
-    (zk/start-blog)))
+         (format
+          "#+TITLE: %s
+#+SUBTITLE:
+#+AUTHOR: %s
+#+EMAIL: %s
+#+DATE: %s
+#+OPTIONS: %s
+#+STARTUP: %s
+#+KEYWORDS:
 
+"
+          (capitalize blog-post-title)  
+          blog-author                                                   
+          blog-email                                                    
+          blog-post-date                                                
+          blog-html-options                                             
+          blog-org-startup-options))))))
 
-;; Bind the function to the key "C-c P"
-(global-set-key (kbd "C-c P") 'zk/create-post)
+(defun zk/create-post ()
+  (interactive)
+  (progn
+    (zk/generate-blog-file)
+    (zk/start-local-server)))
+
+;; get all the blog post filenames, excluding the index.org file
+(defun zk/generate-list-of-blogs (path)
+  (setq index-page (concat path "/index.org"))
+  (remove index-page (directory-files path t ".org" nil nil))
+  )
+(zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" )
+
+;; Calculate the number of blog posts
+(setq number-of-blogs (length (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" )))
+
+;; Get date for the a specific blog post
+;; Extract blog post filename
+;; 2023-04-06-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org
+;; 2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org
+(defun zk/blog-filename-to-html (filename)
+  (string-replace  ".org" ".html" filename)
+  )
+(zk/blog-filename-to-html "2023-04-06-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
+;; Extract blog post Title
+(defun zk/extract-blog-title (filename)
+  ;; remove date
+  ;; remove '-'
+  (string-trim (capitalize
+                (string-replace ".org" ""
+                                (string-replace  "-" " "
+                                                 (replace-regexp-in-string "[0-9]" "" filename)))))
+  )
+(zk/extract-blog-title "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
+(zk/extract-blog-title "2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org")
+
+;; Skeleton for the rss file
+(defun zk/generate-rss-file ()
+  (let* ((rss-preamble "" )
+         ))
+  (print rss-preamble)
+  )
+(defun zk/generate-rss-file (rss-filename)
+  "Generate an RSS file."
+  (let* ((rss-preamble "<?xml version='1.0' encoding='UTF-8'?>
+<rss version='2.0'>
+<channel>
+<title>kebairia.github.io</title>
+<link>https://kebairia.github.io</link>
+<language>en-us</language>
+<description>Articles and tutorials about open source, BSD and GNU/Linux system administration, and programming - the pragmatic way.</description>")
+         (rss-post "</channel></rss>")
+         (rss-file "/tmp/rss.xml"))
+    ))
+
+(zk/generate-rss-file)
+
+(require 'transient)
+
+(transient-define-prefix zk/blogging ()
+  "Menu for my blogging activities"
+  [["Blog post options"
+    ("p" "Create a new post" zk/create-post)]
+   ["Local blog server"
+    ("s" "Start local blog" zk/start-local-server)]]
+  )
+
+;; Bind the transient menu to the key "C-c p"
+(global-set-key (kbd "C-c p") 'zk/blogging)
 
 (my/report-time "Blog")
 
