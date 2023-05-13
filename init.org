@@ -2375,10 +2375,11 @@ Functions for my blog writing workflow
 #+begin_src emacs-lisp
 ;; get all the blog post filenames, excluding the index.org file
 (defun zk/generate-list-of-blogs (path)
-  (setq index-page (concat path "/index.org"))
+  (setq index-page "index.org")
+  (remove index-page
   (mapcar 'file-name-nondirectory 
-          (remove index-page (directory-files path t ".org" nil nil))
-          ))
+          (directory-files path t ".org" nil nil)
+          )))
 (setq blogs (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" ))
 
 ;; Calculate the number of blog posts
@@ -2402,8 +2403,10 @@ Functions for my blog writing workflow
   (string-trim (capitalize
                 (string-replace ".org" ""
                                 (string-replace  "-" " "
-                                                 (replace-regexp-in-string "[0-9]" "" filename)))))
-  )
+                                                 (replace-regexp-in-string "[0-9]" "" filename))))))
+(defun zk/extract-blog-publication-date (filename)
+  (substring filename 0 10))
+
 (zk/extract-blog-title "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
 (zk/extract-blog-title "2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org")
 
@@ -2412,59 +2415,48 @@ Functions for my blog writing workflow
 ;; (lambda () (insert (concat "<title>" (zk/extract-blog-title) "</title>")))
 (defun zk/generate-rss-title-item (filename)
   (concat "<title>" (zk/extract-blog-title filename) "</title>"))
+
+(defun zk/generate-rss-pubdate-item (filename)
+  (concat "<pubDate>" (zk/extract-blog-publication-date filename) "</pubDate>"))
+
 (defun zk/generate-rss-link-item (filename)
   (concat "<link>" (zk/blog-filename-to-html filename) "</link>"))
 
 (defun zk/generate-rss-item (filename)
-  (insert (format
-           "<item>
+  (print (format
+          "<item>
+%s
 %s
 %s
 </item>
 
 "
-           (zk/generate-rss-title-item filename)
+          (zk/generate-rss-pubdate-item filename)
+          (zk/generate-rss-title-item filename)
           (zk/generate-rss-link-item filename)
-  )))
+          )))
 
 
-(zk/generate-rss-item "2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org")
-(zk/generate-rss-item "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
-(defun zk/generate-rss-file ()
+(defun zk/generate-rss-content ()
   (dolist (item (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content/"))
-    (zk/generate-rss-item item)
-    ))
-(zk/generate-rss-file)
+    (zk/generate-rss-item item)))
+(print "------------------------------------------------------")
 
 
-
-"2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org"
-"2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org"
-
-
-
-;; (zk/generate-rss-title-item "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
-;; (zk/generate-rss-link-item "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
-;; Skeleton for the rss file
-(defun zk/generate-rss-file ()
-  (let* ((rss-preamble "" )
-         ))
-  (print rss-preamble)
-  )
-(defun zk/generate-rss-file (rss-filename)
+(defun zk/generate-rss-file (filename)
   "Generate an RSS file."
-  (let* ((rss-preamble "<?xml version='1.0' encoding='UTF-8'?>
+  (with-temp-file filename (concat 
+                            "<?xml version='1.0' encoding='UTF-8'?>
 <rss version='2.0'>
 <channel>
 <title>kebairia.github.io</title>
 <link>https://kebairia.github.io</link>
 <language>en-us</language>
-<description>Articles and tutorials about open source, BSD and GNU/Linux system administration, and programming - the pragmatic way.</description>")
-         (rss-post "</channel></rss>")
-         (rss-file "/tmp/rss.xml"))
-    ))
-
-(zk/generate-rss-file)
+<description>Articles and tutorials about open source, BSD and GNU/Linux system administration, and programming - the pragmatic way.</description>"
+                            (zk/generate-rss-content)
+                            "</channel></rss>"
+                            )))
+(zk/generate-rss-file "/tmp/rssl.xml")
 #+end_src
 
 ** Menu for blogging
