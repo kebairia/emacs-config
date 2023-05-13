@@ -1333,10 +1333,15 @@
 
 (transient-define-prefix zk/blogging ()
   "Menu for my blogging activities"
-  [["Blog post options"
-    ("p" "Create a new post" zk/create-post)]
-   ["Local blog server"
-    ("s" "Start local blog" zk/start-local-server)]]
+  ;; First row
+  [ "Blog"
+    ["Blog post options" ("p" "Create a new post" zk/create-post)]
+    ["Local blog server" ("s" "Start local blog" zk/start-local-server)]
+    ]
+  ;; Second row
+  ["RSS"
+   [ ("r" "Update RSS file " zk/start-local-server)]
+   ]
   )
 
 ;; Bind the transient menu to the key "C-c p"
