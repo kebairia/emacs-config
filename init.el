@@ -43,8 +43,8 @@
 
 (add-to-list 'load-path
              (expand-file-name "lisp" user-emacs-directory))
-(add-to-list 'custom-theme-load-path
-             (expand-file-name "theme" user-emacs-directory))
+;; (add-to-list 'custom-theme-load-path
+;;              (expand-file-name "theme" user-emacs-directory))
 
 (setq package-list
       '(cape                ; Completion At Point Extensions
@@ -1194,22 +1194,28 @@
   "Start the local web server for the blog."
   (interactive)
   (setq httpd-root "/home/zakaria/dox/blog/public/")
-    (httpd-start)
-    (message "Check out your blog on `localhost:8080`"))
+  (httpd-start)
+  (message "Check out your blog on `%s'" (propertize "localhost:8080" 'face 'ansi-color-red)))
 
 (defun zk/prompt_for_blog_title()
   (read-string " Name of the Post: ")
   )
 
 (defun zk/generate-blog-file ()
-  "Create a new blog post. Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
+  "Create a new blog post.
+  Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
   (interactive)
   (let* ((blog-post-title (read-string " Blog post title: "))          ; Prompt for the title of the blog post
          (blog-date-prefix (format-time-string "%Y-%m-%d"))             ; Get the current date in the format YYYY-MM-DD
          (blog-extension ".org")                                        ; Set the file extension as ".org"
-         (blog-path "/home/zakaria/dox/blog/content/")                  ; Specify the directory where the blog files are stored
-         (blog-filename (concat blog-path blog-date-prefix "-" (replace-regexp-in-string " " "-" (downcase blog-post-title)) blog-extension))
-                                        ; Generate the filename based on the date and post title
+         (blog-directory "/home/zakaria/dox/blog/content/")             ; Specify the directory where the blog files are stored
+         (blog-filename
+          (concat                                                       ; Generate the filename based on the date and post title
+           blog-directory
+           blog-date-prefix
+           "-"
+           (replace-regexp-in-string " " "-" (downcase blog-post-title))
+           blog-extension)) 
          (blog-author "Zakaria.K")                                      ; Set the author name for the blog
          (blog-email "4.kebairia@gmail.com")                            ; Set the email for the blog
          (blog-html-options "html5-fancy:t tex:t")                      ; Set options for better HTML rendering
@@ -1218,7 +1224,8 @@
          (blog-begin-date "#+begin_date\nDate: {{{date}}}")             ; Define the beginning tag for the date
          (blog-end-date "#+end_date\n"))                                ; Define the ending tag for the date
 
-    ;; Create the file
+    ;; Check if the file already exists, first
+    ;; If not, create it with the required options
     (if (file-exists-p blog-filename)
         (message (format "File '%s' already exists" blog-post-title))
       (with-current-buffer (find-file blog-filename)                    ; Open the file and switch to its buffer
@@ -1243,91 +1250,8 @@
 
 (defun zk/create-post ()
   (interactive)
-  (progn
     (zk/generate-blog-file)
-    (zk/start-local-server)))
-
-;; get all the blog post filenames, excluding the index.org file
-(defun zk/generate-list-of-blogs (path)
-  (setq index-page "index.org")
-  (remove index-page
-  (mapcar 'file-name-nondirectory 
-          (directory-files path t ".org" nil nil)
-          )))
-(setq blogs (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" ))
-
-;; Calculate the number of blog posts
-(setq number-of-blogs (length (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" )))
-
-;; Get date for the a specific blog post
-;; Extract blog post filename
-;; 2023-04-06-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org
-;; 2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org
-(defun zk/blog-filename-to-html (filename)
-  (string-replace  ".org" ".html" filename)
-  )
-(zk/blog-filename-to-html "2023-04-06-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
-;; Extract blog post Title
-(defun zk/extract-blog-title (filename)
-  ;; remove date
-  ;; remove '-'
-  (string-trim (capitalize
-                (string-replace ".org" ""
-                                (string-replace  "-" " "
-                                                 (replace-regexp-in-string "[0-9]" "" filename))))))
-(defun zk/extract-blog-publication-date (filename)
-  (substring filename 0 10))
-
-(zk/extract-blog-title "2023-12-12-building-a-homelab-with-kvm-and-kubernetes:-an-overview.org")
-(zk/extract-blog-title "2023-04-11-building-qemu-kvm-images-with-packer-(part-I).org")
-
-;; Generate items for rss file
-;; ---------------------------
-;; (lambda () (insert (concat "<title>" (zk/extract-blog-title) "</title>")))
-(defun zk/generate-rss-title-item (filename)
-  (concat "<title>" (zk/extract-blog-title filename) "</title>"))
-
-(defun zk/generate-rss-pubdate-item (filename)
-  (concat "<pubDate>" (zk/extract-blog-publication-date filename) "</pubDate>"))
-
-(defun zk/generate-rss-link-item (filename)
-  (concat "<link>" (zk/blog-filename-to-html filename) "</link>"))
-
-(defun zk/generate-rss-item (filename)
-  (print (format
-          "<item>
-%s
-%s
-%s
-</item>
-
-"
-          (zk/generate-rss-pubdate-item filename)
-          (zk/generate-rss-title-item filename)
-          (zk/generate-rss-link-item filename)
-          )))
-
-
-(defun zk/generate-rss-content ()
-  (dolist (item (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content/"))
-    (zk/generate-rss-item item)))
-(print "------------------------------------------------------")
-
-
-(defun zk/generate-rss-file (filename)
-  "Generate an RSS file."
-  (with-temp-file filename (concat 
-                            "<?xml version='1.0' encoding='UTF-8'?>
-<rss version='2.0'>
-<channel>
-<title>kebairia.github.io</title>
-<link>https://kebairia.github.io</link>
-<language>en-us</language>
-<description>Articles and tutorials about open source, BSD and GNU/Linux system administration, and programming - the pragmatic way.</description>"
-                            (zk/generate-rss-content)
-                            "</channel></rss>"
-                            )))
-(zk/generate-rss-file "/tmp/rssl.xml")
+    (zk/start-local-server))
 
 (require 'transient)
 
