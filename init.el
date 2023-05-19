@@ -81,6 +81,7 @@
         yaml-mode           ; YAML mode
         hcl-mode            ; HCL mode
         jinja2-mode         ; Jinja2 mode
+        terraform-mode         ; Terraform mode
         ;; org-auto-tangle     ; Tangle org file when it is saved
         which-key))         ; Display available keybindings in popup
 
@@ -1299,6 +1300,7 @@
 (add-hook 'sh-script-mode-hook 'my-eglot-hook)
 ;; (add-hook 'yaml-mode-hook 'my-eglot-hook)
 (add-hook 'markdown-mode-hook 'my-eglot-hook)
+(add-hook 'terraform-mode-hook 'my-eglot-hook)
 
 ;; Python server
 (with-eval-after-load 'eglot
@@ -1320,6 +1322,11 @@
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
                '(markdown-mode . ("marksman"))))
+
+;; Terraform server
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(markdown-mode . ("terraform-ls" "serve"))))
 
 (my/report-time "IDE")
 

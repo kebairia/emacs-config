@@ -2580,6 +2580,7 @@ Add hooks for eglot
 (add-hook 'sh-script-mode-hook 'my-eglot-hook)
 ;; (add-hook 'yaml-mode-hook 'my-eglot-hook)
 (add-hook 'markdown-mode-hook 'my-eglot-hook)
+(add-hook 'terraform-mode-hook 'my-eglot-hook)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2604,6 +2605,10 @@ Add hooks for eglot
   (add-to-list 'eglot-server-programs
                '(markdown-mode . ("marksman"))))
 
+;; Terraform server
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(markdown-mode . ("terraform-ls" "serve"))))
 #+end_src
 
 ** Benchmark
