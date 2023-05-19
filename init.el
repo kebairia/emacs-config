@@ -1207,13 +1207,13 @@
   Prompts for the post name, generates a filename based on the date and post name, and inserts a template for the post."
   (interactive)
   (let* ((blog-post-title (read-string " Blog post title: "))          ; Prompt for the title of the blog post
-         (blog-date-prefix (format-time-string "%Y-%m-%d"))             ; Get the current date in the format YYYY-MM-DD
+         (current-date (format-time-string "%Y-%m-%d"))                 ; Get the current date in the format YYYY-MM-DD
          (blog-extension ".org")                                        ; Set the file extension as ".org"
          (blog-directory "/home/zakaria/dox/blog/content/")             ; Specify the directory where the blog files are stored
          (blog-filename
           (concat                                                       ; Generate the filename based on the date and post title
            blog-directory
-           blog-date-prefix
+           current-date
            "-"
            (replace-regexp-in-string " " "-" (downcase blog-post-title))
            blog-extension)) 
