@@ -2415,14 +2415,21 @@ I used webfeeder to update my rss feeds
 
 - Generate an rss file
 #+begin_src emacs-lisp
-(webfeeder-build
- "/home/zakaria/dox/blog/content/files/feed2.rss"
- "/home/zakaria/dox/blog/public/"
- "https://www.kebairia.github.io"
- blogs-html
- :title "kebairia.github.io"
- :description  "Articles and tutorials about open source, BSD and GNU/Linux system administration, and programming - the pragmatic way."
- :builder 'webfeeder-make-rss)
+(setq rss-file "/home/zakaria/dox/blog/content/files/feed2.rss")
+(defun blog/update-rss ()
+  ""
+  (interactive)
+  (progn 
+    (webfeeder-build
+     rss-file
+     "/home/zakaria/dox/blog/public/"
+     "https://www.kebairia.github.io"
+     blogs-html
+     :title "kebairia.github.io"
+     :description  "Articles and tutorials about open source, BSD and GNU/Linux system administration, and programming - the pragmatic way."
+     :builder 'webfeeder-make-rss)
+    )
+  (message "RSS updated, check out `%s'" (propertize rss-file 'face 'ansi-color-green)))
 #+end_src
 ** COMMENT Update rss feed file
 - Generate a list of all blog posts
@@ -2539,7 +2546,7 @@ First we need to load transient
     ]
   ;; Second row
   ["RSS"
-   [ ("r" "Update RSS file " zk/start-local-server)]
+   [ ("r" "Update RSS file " blog/update-rss)]
    ]
   )
 

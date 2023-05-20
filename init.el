@@ -1276,14 +1276,21 @@
 ;; Calculate the number of blog posts
 (setq number-of-blogs (length (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" )))
 
-(webfeeder-build
- "/home/zakaria/dox/blog/content/files/feed2.rss"
- "/home/zakaria/dox/blog/public/"
- "https://www.kebairia.github.io"
- blogs-html
- :title "kebairia.github.io"
- :description  "Articles and tutorials about open source, BSD and GNU/Linux system administration, and programming - the pragmatic way."
- :builder 'webfeeder-make-rss)
+(setq rss-file "/home/zakaria/dox/blog/content/files/feed2.rss")
+(defun blog/update-rss ()
+  ""
+  (interactive)
+  (progn 
+    (webfeeder-build
+     rss-file
+     "/home/zakaria/dox/blog/public/"
+     "https://www.kebairia.github.io"
+     blogs-html
+     :title "kebairia.github.io"
+     :description  "Articles and tutorials about open source, BSD and GNU/Linux system administration, and programming - the pragmatic way."
+     :builder 'webfeeder-make-rss)
+    )
+  (message "RSS updated, check out `%s'" (propertize rss-file 'face 'ansi-color-green)))
 
 (require 'transient)
 
@@ -1296,7 +1303,7 @@
     ]
   ;; Second row
   ["RSS"
-   [ ("r" "Update RSS file " zk/start-local-server)]
+   [ ("r" "Update RSS file " blog/update-rss)]
    ]
   )
 
