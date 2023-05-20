@@ -62,6 +62,7 @@
         org-pdftools        ; A custom org link type for pdf-tools
         org-noter-pdftools  ; Support for org-noter 
         org-noter           ; Emacs document annotator, using Org-mode
+        webfeeder           ; Build RSS and Atom webfeeds from HTML files
         f                   ; Modern API for working with files and directories
         corfu               ; Completion Overlay Region FUnction
         deft                ; Quickly browse, filter, and edit plain text notes
@@ -1253,6 +1254,36 @@
   (interactive)
     (zk/generate-blog-file)
     (zk/start-local-server))
+
+(require 'webfeeder)
+
+;; get all the blogs post filenames, excluding the index.org file
+(defun zk/generate-list-of-blogs (blogs-directory)
+  "Generate a list of blog post filenames, excluding index.org file."
+  (interactive)
+  (remove "index.org" 
+          (mapcar #'file-name-nondirectory 
+                  (directory-files blogs-directory t ".org" nil nil)
+                  )))
+(setq blogs (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" ))
+
+(defun blog/filename-to-html (filename)
+  "Change the filename extension of a blog post from .org to .html."
+  (string-replace  ".org" ".html" filename))
+
+(setq blogs-html (mapcar #'blog/filename-to-html (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content")))
+
+;; Calculate the number of blog posts
+(setq number-of-blogs (length (zk/generate-list-of-blogs "/home/zakaria/dox/blog/content" )))
+
+(webfeeder-build
+ "/home/zakaria/dox/blog/content/files/feed2.rss"
+ "/home/zakaria/dox/blog/public/"
+ "https://www.kebairia.github.io"
+ blogs-html
+ :title "kebairia.github.io"
+ :description  "Articles and tutorials about open source, BSD and GNU/Linux system administration, and programming - the pragmatic way."
+ :builder 'webfeeder-make-rss)
 
 (require 'transient)
 
