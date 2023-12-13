@@ -470,7 +470,7 @@
 
 (require 'nano-theme)
 ;; (setq nano-fonts-use t) ; Use theme font stack
-(nano-modeline-mode)    ; Use nano-modeline
+;;(nano-modeline-mode)    ; Use nano-modeline
 
 (my/report-time "Interface")
 
@@ -581,8 +581,10 @@
     ;; Arrows 
     ("ra" "→")
     ("la" "←")
-    ("lra" "⟶")
-    ("lla" "⟵")
+    ("bra" "⟶")
+    ("bla" "⟵")
+    ("lra" "↔")
+    ("eqv" "⇔")
     ))
 
 (abbrev-mode)
@@ -1334,37 +1336,38 @@
 (defun my-eglot-hook ()
   (eglot-ensure))
 
-(add-hook 'python-mode-hook 'my-eglot-hook)
-(add-hook 'sh-script-mode-hook 'my-eglot-hook)
-;; (add-hook 'yaml-mode-hook 'my-eglot-hook)
+(add-hook 'python-ts-mode-hook 'my-eglot-hook)
+(add-hook 'bash-ts-mode-hook 'my-eglot-hook)
+(add-hook 'yaml-mode-hook 'my-eglot-hook)
 (add-hook 'markdown-mode-hook 'my-eglot-hook)
 (add-hook 'terraform-mode-hook 'my-eglot-hook)
 
 ;; Python server
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
-               `(python-mode . ("pylsp" "-v" "--tcp" "--host"
+               `(python-ts-mode . ("pylsp" "-v" "--tcp" "--host"
                                 "localhost" "--port" :autoport))))
 
 ;; Bash server
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
-               `(sh-mode . ("bash-language-server" "start"))))
+               `(bash-ts-mode . ("bash-language-server" "start"))))
 
 ;; YAML server
-;; (with-eval-after-load 'eglot
-;;   (add-to-list 'eglot-server-programs
-;;                `(yaml-mode . ("yaml-language-server" "--stdio"))))
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               `(yaml-ts-mode . ("yaml-language-server" "--stdio"))))
+;; (add-hook 'yaml-mode-hook #'tree-sitter-hl-mode)
+
 
 ;; Markdown server
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
                '(markdown-mode . ("marksman"))))
-
 ;; Terraform server
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
-               '(markdown-mode . ("terraform-ls" "serve"))))
+               '(terraform-mode . ("terraform-ls" "serve"))))
 
 (my/report-time "IDE")
 
